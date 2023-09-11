@@ -180,12 +180,19 @@ impl Lattice {
             .expect("☠ ☆ CSV");
 
         // write out header
-        let hdr = "id,E,I,R\n";
+        let hdr = "id,w,h,E,I,R\n";
         csv.write_all(hdr.as_bytes()).expect("☠ ✏ CSV");
 
         // write out the state of each cell
         for cell_i in 0..Lattice::CAPACITY {
-            let mut line: Vec<String> = vec![cell_i.to_string(),];
+            let cell_w = cell_i / Lattice::WIDTH;
+            let cell_h = cell_i % Lattice::WIDTH;
+
+            let mut line: Vec<String> = vec![
+                cell_i.to_string(),
+                cell_w.to_string(),
+                cell_h.to_string(),
+            ];
             macro_rules! count_s {
                 ($m:ident) => {
                     self.cells[cell_i].molecules[$m as usize].to_string()
