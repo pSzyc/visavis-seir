@@ -9,9 +9,9 @@ def make_protocol(pulse_intervals, duration, out_folder, template = './template.
     pulse_times = list(np.cumsum(pulse_intervals))
     simulation_periods = list(zip([0] + pulse_times, pulse_times))
 
-    out_folder = Path(out_folder)
-    out_folder.mkdir(parents=True, exist_ok=True)
-    with open(out_folder / 'out.protocol', 'w') as f:
+    Path(out_folder).mkdir(parents=True, exist_ok=True)
+    with open(f'{out_folder}/out.protocol', 'w') as f:
         f.write(
             template.render(simulation_periods=simulation_periods, duration=duration)
         )
+    return f'{out_folder}/out.protocol'
