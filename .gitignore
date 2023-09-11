@@ -1,4 +1,6 @@
-target
 Cargo.lock
-__pycache__
+*.csv
+*.png
 private
+__pycache__
+target

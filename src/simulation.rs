@@ -187,24 +187,34 @@ impl Simulation {
             std::io::stdout().flush().unwrap()
         }
         loop {
-            // if t >= t_next_print_out && !in_sep_thread { t_next_print_out += 1.*HOUR }
-            if files_out && t >= t_next_files_out {
+            // check when next event occurs
+            let sum_propens: f64 = propens[0].iter().sum();
+            if sum_propens > 0. {
+                t += -(rng.gen_range(0.0..1.0) as f64).ln() / sum_propens; // exponential variate
+            } else {
+                t = tspan.1;
+            }
+
+            // generate output files
+            while files_out && t >= t_next_files_out && t_next_files_out <= tspan.1 {
                 if !in_sep_thread {
                     // spawn in a separate thread
                     print!(".");
                     std::io::stdout().flush().unwrap();
                     let la = lattice.clone();
-                    workers.as_ref().unwrap().execute(move || { la.out(t, images_out)});
+                    workers.as_ref().unwrap().execute(move || { la.out(t_next_files_out, images_out)});
                 }
                 t_next_files_out += files_out_interval;
             }
+
+            // reached simulation end
             if t >= tspan.1 {
                 print!(":{:.0}m ", tspan.1 / MIN);
                 std::io::stdout().flush().unwrap();
                 break;
             }
-            let sum_propens: f64 = propens[0].iter().sum();
-            t += -(rng.gen_range(0.0..1.0) as f64).ln() / sum_propens; // exponential variate
+
+            // execute event if it happened in finite time
             if sum_propens > 0. {
                 let (cell_i, event_i) =
                     Simulation::find_event(&propens, rng.gen_range(0.0..sum_propens));
