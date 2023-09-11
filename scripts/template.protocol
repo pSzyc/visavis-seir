@@ -1,3 +1,0 @@
-{% for t0, t1 in simulation_periods %}+batsoup 1
-run  {{t0}}s...{{t1}}s  [{{duration}}s]
-{% endfor %}
