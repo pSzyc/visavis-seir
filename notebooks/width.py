@@ -1,11 +1,7 @@
-import pandas as pd
-import matplotlib.pyplot as plt
 from track import get_infected_img
 from track import get_activations_at_h
 import sys
-from tqdm import tqdm
 from pathlib import Path
-import numpy as np
 sys.path.insert(0, '..') # in order to be able to import from scripts.py
 from scripts.client import VisAVisClient
 from scripts.make_protocol import make_protocol
@@ -16,11 +12,12 @@ PARAMETERS_DEFAULT = {
   "i_incr": 1,
   "r_incr": 0.0667
 }
-intervals =range(400 ,900 ,100)
-signal_count = 250
-sim_num = 4
 
-for chanel_width in tqdm(range(400, 500, 100)):
+intervals = range(100 ,350 ,100)
+signal_count = int(sys.argv[1]) # number of signals in each simulations
+sim_num = int(sys.argv[2]) # number fo simulations
+
+for chanel_width in range(400, 900, 200):
     folder = f"results/width-{chanel_width}"
     Path(folder).mkdir(parents=True, exist_ok=True)
     client = VisAVisClient(
