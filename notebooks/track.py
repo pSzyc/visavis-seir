@@ -24,8 +24,8 @@ def get_activations_at_h(img, h, plot = False, roll = 10):
         plt.show()
     return activations_start
 
-def get_activations_time(img, plot = False, roll = 10):
-    roll_start = img.rolling(roll, center=True, win_type='gaussian', min_periods = 1).mean(std=roll/6) # img indexed by position in channel 
+def get_activations_time(img, plot = False, roll = 10, std_factor = 1/6):
+    roll_start = img.rolling(roll, center=True, win_type='gaussian', min_periods = 1).mean(std=std_factor* roll) # img indexed by position in channel 
     roll_start_diff = roll_start.diff()
     activations_start = roll_start[(roll_start_diff.fillna(np.inf) >= 0) & (roll_start_diff.shift(-1).fillna(-np.inf) < 0) & (roll_start  > 0)]    
     df_activations = activations_start.reset_index().melt(
@@ -45,8 +45,8 @@ def get_infected_img(df):
     img = img_E + img_I
     return img
 
-def get_tracks(img, lt, eps = 1e-3, roll = 20):
-    df_activations = get_activations_time(img, 0, roll=roll)
+def get_tracks(img, lt, eps = 1e-3, roll = 20, std_factor = 1/6):
+    df_activations = get_activations_time(img, 0, roll=roll, std_factor=std_factor)
     df_activations['seconds'] = df_activations['seconds'].astype(int)
     df_activations['seconds']//=4
     df_activations['h'] += eps * df_activations['seconds']
