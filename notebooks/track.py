@@ -3,17 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-def get_laptrack(max_distance = 32):
-    lt = LapTrack(
-        track_dist_metric="sqeuclidean",  # The similarity metric for particles. See `scipy.spatial.distance.cdist` for allowed values.
-        splitting_dist_metric="sqeuclidean",
-        merging_dist_metric="sqeuclidean",
-        track_cost_cutoff=max_distance**2,
-        splitting_cost_cutoff=max_distance**2,  # or False for non-splitting case
-        merging_cost_cutoff= False,  # or False for non-merging case
-        )
-    return lt
-
 def get_activations_at_h(img, h, plot = False, roll = 10):
     roll_start = img.iloc[h].rolling(roll, center=True, win_type='gaussian', min_periods = 1).mean(std=roll/6) # img indexed by position in channel 
     roll_start_diff = roll_start.diff()
@@ -64,11 +53,9 @@ def plot_tracks(track_df, split_df, merge_df):
     k1, k2 = "seconds", "h"
     keys = [k1, k2]
 
-
     def get_track_end(track_id, first=True):
         df = track_df[track_df["track_id"] == track_id].sort_index(level="frame")
         return df.iloc[0 if first else -1][keys]
-
 
     for track_id, grp in track_df.groupby("track_id"):
         df = grp.reset_index().sort_values("frame")
@@ -81,7 +68,6 @@ def plot_tracks(track_df, split_df, merge_df):
             pos1 = get_track_end(row["parent_track_id"], first=False)
             pos2 = get_track_end(row["child_track_id"], first=True)
             plt.plot([pos1[0], pos2[0]], [pos1[1], pos2[1]], "-k")
-    plt.show()
     
 def get_events_df(track_df, split_df):
     df = pd.pivot_table(track_df, 'h', ['track_id', 'seconds'])
