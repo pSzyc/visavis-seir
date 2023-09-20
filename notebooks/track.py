@@ -1,5 +1,6 @@
 from laptrack import LapTrack
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 import pandas as pd
 
@@ -47,7 +48,7 @@ def get_tracks(img, lt, eps = 1e-3, roll = 20, std_factor = 1/6):
     )
     return (track_df, split_df, merge_df)
 
-def plot_tracks(track_df, split_df, merge_df):
+def plot_tracks(track_df, split_df, merge_df, color_by = 'tree_id'):
     frames = track_df.index.get_level_values("frame")
     frame_range = [frames.min(), frames.max()]
     k1, k2 = "seconds", "h"
@@ -59,7 +60,10 @@ def plot_tracks(track_df, split_df, merge_df):
 
     for track_id, grp in track_df.groupby("track_id"):
         df = grp.reset_index().sort_values("frame")
-        plt.scatter(df[k1], df[k2], c=df["tree_id"], vmin=0, vmax=20, cmap='tab20')#, vmin=frame_range[0], vmax=frame_range[1])
+        n = len(track_df['tree_id'].unique())
+        colors = [list(np.random.uniform(0,1,3)) for _ in range(n)]
+        cmap = matplotlib.colors.ListedColormap(colors)
+        plt.scatter(df[k1], df[k2], c=df[color_by], vmin=0, vmax=n, cmap=cmap)#, vmin=frame_range[0], vmax=frame_range[1])
         for i in range(len(df) - 1):
             pos1 = df.iloc[i][keys]
             pos2 = df.iloc[i + 1][keys]
