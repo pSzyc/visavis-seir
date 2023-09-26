@@ -34,8 +34,10 @@ def conditional_entropy_discrete(
         neighs_classes.reshape(-1, n_neighbors, 1) == np.arange(n_classes).reshape(1, 1, -1)
     ).mean(axis=1)
 
+    neighs_n_classes_observed = (neighs_dists > 0).sum(axis=-1)
+
     # Miller correction (in bits)
-    corr = (n_classes - 1) / 2 / n_neighbors / np.log(2) if correction else 0
+    corr = (neighs_n_classes_observed - 1) / 2 / n_neighbors / np.log(2) if correction else 0
     cond_entropies_naive = mplog2p(neighs_dists).sum(axis=-1)
     cond_entropies = cond_entropies_naive + corr
     cond_entropy = cond_entropies.mean()
