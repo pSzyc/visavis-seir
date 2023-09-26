@@ -5,3 +5,4 @@ Cargo.lock
 private
 __pycache__
 target
+.vscode
