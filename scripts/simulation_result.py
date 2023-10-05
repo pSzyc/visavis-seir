@@ -25,7 +25,7 @@ class SimulationResult:
 
             states_parts.append(states_part)
 
-        self._states = pd.concat(states_parts)
+        self._states = pd.concat(states_parts, ignore_index=True)
 
     @property
     def simulation_dir(self):

@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e
 
+usage="$(basename "$0") [-h] -w width -l length [-t target_directory] [-u] 
+Compile visavis and copy to target_directory
+Options:
+    -w  channel width
+    -l  channel length
+    -t  target directory
+    -u  (flag) update existing build
+    -h  show this help"
+
 binary_dir=./target/bins/
 update_existing=false
 
@@ -14,17 +23,16 @@ do
     esac
 done
 
-if [ -d $binary_dir ] && [ $update_existing = false ]; then
-    echo $update_existing 
+if [ -d $binary_dir/vis-a-vis-${width}-${length} ] && [ $update_existing = false ]; then
     echo "${binary_dir}/vis-a-vis-${width}-${length}: Directory exists, skipping"
 else
     mkdir -p $binary_dir
-    # sic! the names below don't match notation in the paper
-    sed -i "s/HEIGHT: usize = .*/HEIGHT: usize = $width;/" src/lattice.rs;
-    sed -i "s/WIDTH: usize = .*/WIDTH: usize = $length;/" src/lattice.rs;
+    sed -i "s/HEIGHT: usize = .*/HEIGHT: usize = $length;/" src/lattice.rs;
+    sed -i "s/WIDTH: usize = .*/WIDTH: usize = $width;/" src/lattice.rs;
     echo "compiling for length=$length"
     cargo build --release;
     sleep 1;
+    echo "copying to $binary_dir/vis-a-vis-$width-$length";
     cp ./target/release/vis-a-vis ${binary_dir}/vis-a-vis-${width}-${length};
 fi
 

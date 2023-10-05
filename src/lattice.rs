@@ -33,7 +33,7 @@ impl Lattice {
     // lattice output
     pub const NEIGHS_TO_FILE: bool = false; // whether lattice neighbor indices are to be dumped
     pub const IMAGE_RESOLUTION: u16 = 20; // default: 10
-    pub const IMAGE_RECTANGULAR: bool = false; // if true, the parallelogram-shaped lattice is
+    pub const IMAGE_RECTANGULAR: bool = true; // if true, the parallelogram-shaped lattice is
                                               // right-to-left wrapped to form a rectangle
 
     pub fn new(rng: &mut StdRng) -> Self {
@@ -115,6 +115,11 @@ impl Lattice {
         cx.set_line_width(0.02 * IMG_SCALING);
 
         for cell_i in 0..Lattice::CAPACITY {
+
+            if !self.cells[cell_i].alive {
+                continue;
+            }
+
             // cell index --> its (x, y) coordinates
             let (mut i, j) = (cell_i % Lattice::WIDTH, cell_i / Lattice::WIDTH);
             if Lattice::IMAGE_RECTANGULAR {
@@ -185,8 +190,8 @@ impl Lattice {
 
         // write out the state of each cell
         for cell_i in 0..Lattice::CAPACITY {
-            let cell_w = cell_i / Lattice::WIDTH;
-            let cell_h = cell_i % Lattice::WIDTH;
+            let cell_h = cell_i / Lattice::WIDTH;
+            let cell_w = cell_i % Lattice::WIDTH;
 
             let mut line: Vec<String> = vec![
                 cell_i.to_string(),

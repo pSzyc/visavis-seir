@@ -12,14 +12,14 @@ use crate::simulation::Simulation;
 use rand::rngs::StdRng;
 
 pub fn initialize_epidemics(lattice: &mut Lattice) {
-    for h in 0..Lattice::HEIGHT {
+    for w in 0..Lattice::WIDTH {
 
         // barrier
-        let ref mut c = lattice.cells[h*Lattice::WIDTH + 0];
+        let ref mut c = lattice.cells[0*Lattice::WIDTH + w];
         c.alive = false;
 
         // I
-        let ref mut c = lattice.cells[h*Lattice::WIDTH + 1];
+        let ref mut c = lattice.cells[1*Lattice::WIDTH + w];
         c.molecules[Mol::I as usize] = 1;
         c.molecules[Mol::E as usize] = 0;
         c.molecules[Mol::R as usize] = 0;
