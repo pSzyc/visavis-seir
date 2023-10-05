@@ -6,7 +6,7 @@
 use crate::cell::Cell;
 use crate::molecule::{Mol, N_MOLECULE_SPECIES};
 
-use cairo::{Context, Format, ImageSurface};
+use cairo::{Context, Format, ImageSurface, Matrix};
 use rand::{rngs::StdRng, seq::SliceRandom};
 use std::f64::consts::PI;
 use std::fs::{File, OpenOptions};
@@ -24,8 +24,9 @@ pub struct Lattice {
 impl Lattice {
     pub const N_NEIGHBORS: usize = 6; // fixed "kissing number" of the lattice, do not change
 
-    pub const WIDTH: usize = 200; // if you increase this, you may also need to increase config::THREAD_STACK_SIZE!
-    pub const HEIGHT: usize = 8;
+    pub const WIDTH: usize = 10;
+    pub const HEIGHT: usize = 100;
+    pub const SWAP_AXES: bool = true;
     pub const CAPACITY: usize = Lattice::WIDTH * Lattice::HEIGHT;
 
     pub const OCCUPANCY: f64 = 1.0; // used as ceil(WIDTH * HEIGHT * the given fraction)
@@ -108,8 +109,16 @@ impl Lattice {
             + (if Lattice::IMAGE_RECTANGULAR { 2 } else { Lattice::HEIGHT }) as f64)
             * H;
 
-        let sf = ImageSurface::create(Format::Rgb24, WIDTH as i32, HEIGHT as i32).unwrap();
+        const PNG_HEIGHT: f64 = if Lattice::SWAP_AXES { WIDTH } else { HEIGHT };
+        const PNG_WIDTH: f64 = if Lattice::SWAP_AXES { HEIGHT } else { WIDTH };
+        let sf = ImageSurface::create(Format::Rgb24, PNG_WIDTH as i32, PNG_HEIGHT as i32).unwrap();
         let cx = Context::new(&sf).unwrap();
+
+        if Lattice::SWAP_AXES {
+            let swap_axes_matrix = Matrix::new(0., 1., 1., 0., 0., 0.); 
+            cx.transform(swap_axes_matrix); // The axes are swapped
+        }
+
         cx.set_source_rgb(0., 0., 0.);
         cx.paint().unwrap_or_else(|err| println!("☠ ✏ lattice: {:?}", err));
         cx.set_line_width(0.02 * IMG_SCALING);
