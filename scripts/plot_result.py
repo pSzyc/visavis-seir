@@ -2,13 +2,20 @@ import matplotlib.pyplot as plt
 from subplots_from_axsize import subplots_from_axsize
 
 
-def plot_result(result, outfile=None, title=None, t_min=None, t_max=None):
+def plot_result(result, outfile=None, title=None, t_min=None, t_max=None, ax=None, panel_size=(20, 8), show=True):
     data = result.states
+    return plot_result_from_states(data, outfile=outfile, title=title, t_min=t_min, t_max=t_max, ax=ax, panel_size=panel_size, show=show)
+
+
+def plot_result_from_states(data, outfile=None, title=None, t_min=None, t_max=None, ax:plt.Axes = None, panel_size=(20, 8), show=True):
     
-    fig, ax = subplots_from_axsize(
-        1, 1, axsize=(20, 8),
-        left=0., right=0., bottom=0., top=0.
-    )
+    if ax is None:
+        fig, ax = subplots_from_axsize(
+            1, 1, axsize=panel_size,
+            left=0., right=0., bottom=0., top=0.
+        )
+    else:
+        fig = ax.get_figure()
 
     data_selected = data.copy()
     
@@ -50,5 +57,7 @@ def plot_result(result, outfile=None, title=None, t_min=None, t_max=None):
     if outfile is not None:
         fig.savefig(outfile)
         plt.close(fig)
-    else:
+    elif show:
         plt.show()
+
+    return fig, ax
