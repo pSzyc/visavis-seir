@@ -8,12 +8,12 @@ import json
 import os
 from multiprocessing import Pool
 from functools import partial
+import time
 
 import sys
-sys.path.insert(0, '..') # in order to be able to import from scripts.py
-sys.path.insert(0, '.') # in order to be able to import from scripts.py
+sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to import from scripts.py
 
-from scripts.client import VisAVisClient
+from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
 from scripts.tracking import determine_fates
 from scripts.defaults import PARAMETERS_DEFAULT
@@ -47,9 +47,11 @@ def generate_dataset(
             ],
             stdout=subprocess.DEVNULL,
         )
+    sim_root = Path('/run/user') / os.environ['USER'] # 
     client = VisAVisClient(
         visavis_bin=visavis_bin,
-        sim_root=Path('/run/user') / os.environ['USER'],
+        sim_root=sim_root,
+        
     )
 
     pulse_intervals = list(input_protocol) + [interval_after]
@@ -59,19 +61,22 @@ def generate_dataset(
     
     data_parts = []
     for simulation_id in tqdm(range(n_simulations)):
-        (outdir / f'sim-{simulation_id}').absolute().mkdir(parents=True, exist_ok=True)
-        with open (outdir / f'sim-{simulation_id}' / 'input_protocol.json', 'w') as file:
-            json.dump(pulse_intervals, file)
+
+        sim_dir_name = f'w-{channel_width}--l-{channel_length}--sim-{simulation_id}'
+        (sim_root / sim_dir_name).mkdir(exist_ok=True, parents=True)
+        
+        
         protocol_file_path = make_protocol(
             pulse_intervals=pulse_intervals,
             duration=duration,
-            out_folder='/tmp/',
+            out_folder=sim_root / sim_dir_name,
         )
 
         result = client.run(
             parameters_json=parameters,
             protocol_file_path=protocol_file_path,
             verbose=False,
+            dir_name=sim_dir_name + '/' +  _random_name(5),
         )
         
         data_part = determine_fates(
@@ -84,6 +89,13 @@ def generate_dataset(
 
         data_part['simulation_id'] = simulation_id
         data_parts.append(data_part)
+
+        sim_out_dir = outdir / f'sim-{simulation_id}'
+        sim_out_dir.absolute().mkdir(parents=True, exist_ok=True)
+        with open (sim_out_dir / 'input_protocol.json', 'w') as file:
+            json.dump(pulse_intervals, file)
+
+        result.states.to_csv(sim_out_dir / 'simulation_results.csv')
 
     data = pd.concat(data_parts)
 
@@ -116,8 +128,11 @@ def get_occurrences(
         offset=offset,
         n_margin=n_margin,
         outdir=outdir,
-        ).value_counts(['fate', 'forward', 'backward']).sort_index().rename(columns={0: 'count'})
+        ).value_counts(['fate', 'forward', 'backward']).sort_index()
     
+    counts = pd.DataFrame({'count': counts})
+    counts['channel_width'] = channel_width
+    counts['channel_length'] = channel_length
     if outdir:
         counts.to_csv(outdir / 'pulse_fate_count.csv')
     return counts
@@ -128,36 +143,25 @@ def with_expanded_kwargs(fn, kwargs):
 
 if __name__ == '__main__':
 
-    outdir = Path('../private/fates')
+    outdir = Path('../private/fates/approach5')
 
     input_protocol = []
     
     channel_lengths = [300]
     channel_widths = list(range(1,10)) + list(range(10,21,2))
     
-    with Pool(12) as pool:
-        data_parts = pool.starmap(with_expanded_kwargs, ((get_occurrences, dict(
+    with Pool(20) as pool:
+        data_parts = pool.starmap(with_expanded_kwargs, [(get_occurrences, dict(
                 input_protocol=input_protocol,
                 n_simulations=1000,
                 channel_length=channel_length,
                 channel_width=channel_width,
                 outdir=outdir / f"w-{channel_width}-l-{channel_length}",
                 n_margin=0,
-        )) for channel_length in channel_lengths  for channel_width in channel_widths[8:]
-        ), chunksize=1)
+        )) for channel_length in channel_lengths for channel_width in channel_widths
+        ], chunksize=1)
 
-    # data_parts = []
-    # for channel_length in channel_lengths:
-    #     for channel_width in channel_widths:
-    #         data_part = get_occurrences(
-    #             input_protocol=input_protocol,
-    #             n_simulations=1000,
-    #             channel_length=channel_length,
-    #             channel_width=channel_width,
-    #             outdir=outdir / f"w-{channel_width}-l-{channel_length}",
-    #             n_margin=0,
-    #             )
-    #         data_parts.append(data_part)
+    time.sleep(1)
 
     data = pd.concat(data_parts)
     data.to_csv(outdir / 'pulse_fate_count.csv')

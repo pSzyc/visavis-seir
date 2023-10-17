@@ -26,7 +26,7 @@ fate_to_color = {
 
 
 
-def get_pulse_positions(data, min_distance=6):
+def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=1., smoothing_sigma_frames=1.5):
 
     data['act'] = 1.0 * ((data['E'] > 0) | (data['I'] > 0))
 
@@ -34,20 +34,9 @@ def get_pulse_positions(data, min_distance=6):
 
     raw_data_df = data_grouped['act']
     raw_data = raw_data_df.unstack('h').to_numpy()
-    # plt.figure(figsize=(100,10))
-    # plt.imshow(raw_data, cmap='binary')
-    # plt.show()
 
-    smoothed_data = gaussian_filter(raw_data, sigma=[2., 2.5], mode='nearest', truncate=2.01)
-    # plt.figure(figsize=(100,10))
-    # plt.imshow(smoothed_data, cmap='binary')
+    smoothed_data = gaussian_filter(raw_data, sigma=[smoothing_sigma_frames, smoothing_sigma_h], mode='nearest', truncate=2.01)
     data_grouped['act'] = pd.DataFrame(smoothed_data).stack().to_numpy()
-
-    # plt.figure(figsize=(100,10))
-    # plt.imshow(data_grouped['act'].unstack('h').to_numpy(), cmap='binary')
-    # plt.show()
-    # return
-
 
     pulse_positions = []
     for seconds, data_slice in data_grouped.groupby('seconds'):
@@ -172,7 +161,7 @@ def get_front_fates(tracks, track_info, channel_length, v, channel_end_tolerance
         ], index=fates.index) 
 
     fates['fate'] = 'failure' # note that this can be overriden
-    fates['fate'] = fates['fate'].mask(has_near_ending, 'anihilated') # note that this can be overriden
+    fates['fate'] = fates['fate'].mask(has_near_neighbor | has_near_ending, 'anihilated') # note that this can be overriden
     fates['fate'] = fates['fate'].mask(~has_near_neighbor & fates['track_end_position'].ge(channel_length - channel_end_tolerance) & fates['front_direction'].eq(1), 'transmitted')
     fates['fate'] = fates['fate'].mask(~has_near_neighbor & fates['track_end_position'].lt(channel_end_tolerance) & fates['front_direction'].eq(-1), 'transmitted')
 
@@ -339,7 +328,7 @@ def plot_tracks_from_file(outdir, indir=None):
     pulse_times = [0] + list(np.cumsum(input_protocol))[:-1]
 
     panel_size = (tracks['frame'].max() / 100, (tracks['h'].max() + 1) / 100)
-    return plot_tracks(tracks, track_info, front_fates, pulse_fates, pulse_times, show=False, outpath=(outdir / 'out.svg') if outdir else None, panel_size=panel_size)
+    return plot_tracks(tracks, track_info, front_fates, pulse_fates, pulse_times, show=False, outpath=(outdir / 'tracks.svg') if outdir else None, panel_size=panel_size)
 
 
 def plot_kymograph_from_file(outdir, indir=None):
@@ -357,7 +346,7 @@ def plot_kymograph_from_file(outdir, indir=None):
     pulse_times = [0] + list(np.cumsum(input_protocol))[:-1]
 
     panel_size = (len(states['seconds'].unique()) / 100, (states['h'].max() + 1) / 100)
-    return plot_kymograph_with_endings(states, front_fates, duration, pulse_fates, pulse_times, show=False, outpath=(outdir / 'out.svg') if outdir else None, panel_size=panel_size)
+    return plot_kymograph_with_endings(states, front_fates, duration, pulse_fates, pulse_times, show=False, outpath=(outdir / 'kymograph.png') if outdir else None, panel_size=panel_size)
 
 
 
