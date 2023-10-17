@@ -21,6 +21,15 @@ fn gen_seed_from_time() -> [u8; 32] {
     s
 }
 
-pub fn initialize_generator() -> StdRng {
-    SeedableRng::from_seed(gen_seed_from_time())
+pub fn initialize_generator(seed: u128, use_time: bool) -> StdRng {
+    
+    let mut s = [0u8; 32];
+    if use_time {
+        s = gen_seed_from_time();
+    }
+    else {
+        s[..16].copy_from_slice(&seed.to_le_bytes());
+        s[16..32].copy_from_slice(&seed.to_le_bytes());
+    }
+    SeedableRng::from_seed(s)
 }

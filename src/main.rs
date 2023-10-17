@@ -39,44 +39,36 @@ use protocol::Protocol;
 use randomness::initialize_generator;
 use rates::Rates;
 
-use std::env;
+use clap::Parser;
 
-fn print_usage_info() -> bool {
-    if env::args().len() == 1 || env::args().any(|x| x == "-h" || x == "--help") {
-        println!("Usage:");
-        let exe_path = &env::args().collect::<Vec<_>>()[0];
-        for invocation in [
-            [ exe_path, "[parameters JSON file] [protocol file] <-i|--images>"],
-            [ exe_path, "[-h|--help]"],
-            [ exe_path, "[-v|--version]"],
-        ] {
-            println!(" {}",
-                     invocation.into_iter().map(|s|s.to_string()).collect::<Vec<_>>().join(" "));
-        }
-        return true;
-    }
-    false
+
+#[derive(Parser)]
+#[command(version, about)]
+struct Args {
+    parameters_json_file: String,
+    protocol_file: String,
+    /// Generate png images for every frame
+    #[clap(long = "images", short = 'i', action)]
+    images: bool,
+    /// Random seed
+    #[clap(long = "seed", short = 's', default_value_t = 123)]
+    seed: u128,
 }
 
-fn print_version_info() -> bool {
-    if env::args().any(|x| x == "-v" || x == "--version") {
-        println!("{}", env!("CARGO_PKG_VERSION"));
-        return true;
-    }
-    false
-}
 
 fn execute_protocol() -> bool {
-    let argv = env::args().collect::<Vec<String>>();
-    let rates = Rates::from_json_file(&argv[1]);
-    let protocol = Protocol::from_text_file(&argv[2]);
-    let images_out = env::args().any(|x| x == "-i" || x == "--images");
+    
+    let args = Args::parse();
+    let rates = Rates::from_json_file(&args.parameters_json_file);
+    let protocol = Protocol::from_text_file(&args.protocol_file);
+    let images_out = args.images;
+    let seed = args.seed;
 
     std::thread::Builder::new()
         .name("protocol_execution".into())
         .stack_size(THREAD_STACK_SIZE)
         .spawn(move || {
-            let mut generator = initialize_generator();
+            let mut generator = initialize_generator(seed, false);
             let mut lattice = Lattice::new(&mut generator);
             protocol.execute(&mut lattice, &rates, &mut generator, images_out);
         })
@@ -87,5 +79,5 @@ fn execute_protocol() -> bool {
 }
 
 fn main() {
-    let _ = print_usage_info() || print_version_info() || execute_protocol();
+    let _ = execute_protocol();
 }

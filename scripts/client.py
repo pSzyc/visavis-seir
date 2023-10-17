@@ -48,6 +48,7 @@ class VisAVisClient:
         clean_up: bool = True,  # remove files?
         verbose: bool = True,  # print information about progress
         images: bool = False,  # save output images
+        seed: Optional[int] = None,
     ) -> Optional[SimulationResult]:
         if isinstance(protocol_file_path, str):
             protocol_file_path = Path(protocol_file_path)
@@ -80,6 +81,7 @@ class VisAVisClient:
                 parameters.absolute(),
                 protocol_file_dst_path.absolute(),
                 *(["--images"] if images else []),
+                *(["--seed", f"{seed}"] if seed is not None else []),
             ],
             cwd=simulation_dir,
             stdout=subprocess.DEVNULL,
