@@ -2,7 +2,9 @@
 Cargo.lock
 *.csv
 *.png
+*.svg
 private
 __pycache__
 target
 .vscode
+**data

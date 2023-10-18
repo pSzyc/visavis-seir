@@ -26,7 +26,7 @@ def conditional_entropy_discrete(
     assert set(np.unique(classes)) <= set(range(n_classes))
 
     nn = NearestNeighbors(n_neighbors=n_neighbors).fit(points)
-    dists, neighs = nn.kneighbors()
+    neighs = nn.kneighbors(return_distance=False)
     
     neighs_classes = np.take(classes, neighs)
 
@@ -43,3 +43,39 @@ def conditional_entropy_discrete(
     cond_entropy = cond_entropies.mean()
 
     return cond_entropy
+
+
+def conditional_entropy_discrete_reconstruction(
+    classes: np.ndarray,
+    points: np.ndarray,
+    n_classes=2,
+    n_neighbors=11,
+):
+    "estimates H(class | point)"
+
+    assert len(classes.shape) == 1
+    assert len(points.shape) == 2
+    assert classes.shape[0] == points.shape[0]
+    assert set(np.unique(classes)) <= set(range(n_classes))
+    assert n_neighbors % 2, "Number of neighbors must be odd"
+
+    nn = NearestNeighbors(n_neighbors=n_neighbors).fit(points)
+    neighs = nn.kneighbors(return_distance=False)
+    neighs_classes = np.take(classes, neighs)
+
+    neighs_dists = (
+        neighs_classes.reshape(-1, n_neighbors, 1) == np.arange(n_classes).reshape(1, 1, -1)
+    ).sum(axis=1)
+    is_mle = (neighs_dists == neighs_dists.max(axis=-1).reshape(-1, 1))
+    is_mle_ties_normalized = is_mle / is_mle.sum(axis=-1).reshape(-1, 1)
+
+    confusion_matrix = (
+        (classes.reshape(-1, 1) == np.arange(n_classes).reshape(1, -1)).reshape(-1, n_classes, 1).repeat(n_classes, axis=2) 
+        * is_mle_ties_normalized.reshape(-1, 1, n_classes).repeat(n_classes, axis=1)
+    ).mean(axis=0)
+
+    cond_entropy = mplog2p(confusion_matrix).sum().sum() - mplog2p(confusion_matrix.sum(axis=0)).sum()
+
+    return cond_entropy
+
+

@@ -3,12 +3,8 @@ from pathlib import Path
 import pandas as pd
 
 from tqdm import tqdm
-import subprocess
 import json
 import os
-from multiprocessing import Pool
-from functools import partial
-import time
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to import from scripts.py
@@ -17,6 +13,7 @@ from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
 from scripts.tracking import determine_fates
 from scripts.defaults import PARAMETERS_DEFAULT
+from scripts.utils import starmap, compile_if_not_exists
 
 
 
@@ -33,25 +30,12 @@ def generate_dataset(
     outdir=None,
 ):
     
-    path_to_compiling_script = './scripts/compile_visavis.sh'
-
-    visavis_bin = f'./target/bins/vis-a-vis-{channel_width}-{channel_length}'
-    if not Path(visavis_bin).exists() and Path(path_to_compiling_script).exists():
-        subprocess.call(
-            [
-                path_to_compiling_script,
-                '-l',
-                str(channel_length),
-                '-w',
-                str(channel_width),
-            ],
-            stdout=subprocess.DEVNULL,
-        )
-    sim_root = Path('/run/user') / os.environ['USER'] # 
+    visavis_bin = compile_if_not_exists(channel_width, channel_length)
+    
+    sim_root = Path('/run/user') / os.environ['USER'] / 'tracking' 
     client = VisAVisClient(
         visavis_bin=visavis_bin,
         sim_root=sim_root,
-        
     )
 
     pulse_intervals = list(input_protocol) + [interval_after]
@@ -64,8 +48,7 @@ def generate_dataset(
 
         sim_dir_name = f'w-{channel_width}--l-{channel_length}--sim-{simulation_id}'
         (sim_root / sim_dir_name).mkdir(exist_ok=True, parents=True)
-        
-        
+
         protocol_file_path = make_protocol(
             pulse_intervals=pulse_intervals,
             duration=duration,
@@ -137,9 +120,6 @@ def get_occurrences(
         counts.to_csv(outdir / 'pulse_fate_count.csv')
     return counts
 
-def with_expanded_kwargs(fn, kwargs):
-    return fn(**kwargs)
-
 
 if __name__ == '__main__':
 
@@ -150,18 +130,17 @@ if __name__ == '__main__':
     channel_lengths = [300]
     channel_widths = list(range(1,10)) + list(range(10,21,2))
     
-    with Pool(20) as pool:
-        data_parts = pool.starmap(with_expanded_kwargs, [(get_occurrences, dict(
+    data_parts = starmap(get_occurrences, [
+            dict(
                 input_protocol=input_protocol,
                 n_simulations=1000,
                 channel_length=channel_length,
                 channel_width=channel_width,
                 outdir=outdir / f"w-{channel_width}-l-{channel_length}",
                 n_margin=0,
-        )) for channel_length in channel_lengths for channel_width in channel_widths
-        ], chunksize=1)
-
-    time.sleep(1)
+            ) 
+        for channel_length in channel_lengths for channel_width in channel_widths
+        ])
 
     data = pd.concat(data_parts)
     data.to_csv(outdir / 'pulse_fate_count.csv')

@@ -43,7 +43,7 @@ def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=1., smoothing_si
         # data_slice = data_time.groupby('h').mean()
         pulse_positions_time, _ = find_peaks(data_slice['act'], distance=min_distance)
         pulse_positions.extend(
-            {   
+            {
                 'seconds': seconds,
                 'h': h,
             } for h in pulse_positions_time
@@ -56,7 +56,7 @@ def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=1., smoothing_si
 def get_tracks(pulse_positions, duration):
 
     lt = LapTrack(
-        track_dist_metric="sqeuclidean",  
+        track_dist_metric="sqeuclidean",
         splitting_dist_metric="sqeuclidean",
         merging_dist_metric="sqeuclidean",
         
@@ -166,8 +166,6 @@ def get_front_fates(tracks, track_info, channel_length, v, channel_end_tolerance
     fates['fate'] = fates['fate'].mask(~has_near_neighbor & fates['track_end_position'].lt(channel_end_tolerance) & fates['front_direction'].eq(-1), 'transmitted')
 
     return fates.sort_values(['tree_id', 'track_end'])
-
-
 
 
 def get_input_pulse_to_tree_id(tracks, pulse_times):
