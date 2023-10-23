@@ -28,6 +28,7 @@ def generate_dataset(
     offset=None,
     n_margin=2,
     outdir=None,
+    plot_results=False,
 ):
     
     visavis_bin = compile_if_not_exists(channel_width, channel_length)
@@ -68,7 +69,7 @@ def generate_dataset(
             input_protocol=pulse_intervals,
             outdir=outdir and outdir / f'sim-{simulation_id}',
             verbose=False,
-            plot_results=True,
+            plot_results=plot_results,
             )
         if n_margin > 0:
             data_part = data_part.iloc[n_margin:-n_margin]
@@ -113,7 +114,7 @@ def generate_dataset(
     return data
 
 
-def get_occurrences(
+def get_pulse_fate_counts(
         input_protocol,
         n_simulations,
         parameters=PARAMETERS_DEFAULT,
@@ -125,6 +126,7 @@ def get_occurrences(
         offset=None,
         n_margin=2,
         outdir=None,
+        plot_results=False,
         ):
 
     fields_to_groupby = (
@@ -143,6 +145,7 @@ def get_occurrences(
         offset=offset,
         n_margin=n_margin,
         outdir=outdir,
+        plot_results=plot_results,
         ).value_counts(['channel_length', 'channel_width'] + fields_to_groupby).sort_index()
     
     counts = pd.DataFrame({'count': counts})
@@ -166,15 +169,16 @@ if __name__ == '__main__':
     # channel_widths = list(range(1,10)) + list(range(10,21,2))
     channel_widths = [6]
     
-    data_parts = starmap(get_occurrences, [
+    data_parts = starmap(get_pulse_fate_counts, [
             dict(
                 input_protocol=input_protocol,
-                n_simulations=100,
+                n_simulations=10,
                 channel_length=channel_length,
                 channel_width=channel_width,
                 outdir=outdir / f"w-{channel_width}-l-{channel_length}",
                 n_margin=0,
-                interval_after=int(2.2 * channel_length * 3.6)
+                interval_after=int(2.2 * channel_length * 3.6),
+                plot_results=True,
             ) 
         for channel_length in channel_lengths for channel_width in channel_widths
         ])

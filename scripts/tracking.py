@@ -191,17 +191,21 @@ def get_input_pulse_to_tree_id(tracks, pulse_times):
 def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, v, channel_length, channel_end_tolerance=8):
     front_fates = front_fates.assign(timespace= lambda x: x['track_end'] - x['track_end_position'] / v).sort_values(['tree_id', 'timespace'])
 
-    pulse_fates = pd.Series([
-        ('lost_somewhere' if (arrivals['front_direction'] == 1).sum() == 0
-        else arrivals[arrivals['front_direction'] == 1]['fate'].iloc[0]
-        )
-        
-        for tree_id in input_pulse_to_tree_id
-        for arrivals in [
-            front_fates[front_fates['tree_id'] == tree_id]
+    pulse_fates = pd.DataFrame(
+        [
+            ({
+                'fate': 'lost_somewhere',
+                'track_end': np.nan,
+                'track_end_position': np.nan,
+             } if (arrivals['front_direction'] == 1).sum() == 0
+            else arrivals[arrivals['front_direction'] == 1].iloc[0][['fate', 'track_end', 'track_end_position']].to_dict()
+            )
+            for tree_id in input_pulse_to_tree_id
+            for arrivals in [
+                front_fates[front_fates['tree_id'] == tree_id]
+                ]
             ]
-    ])
-    pulse_fates.name = 'fate'
+        )
 
     spawning_counts = pd.DataFrame([{
         'forward': (arrivals['front_direction'] == 1).sum() - 1,
