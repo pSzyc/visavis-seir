@@ -34,7 +34,7 @@ def get_entropy(data_all: pd.DataFrame, fields=['c'], reconstruction=False, k_ne
             'channel_length': channel_length,
             'interval': interval,
             'cond_entropy': cond_entropy,
-            'mi_slot': mi_slot,
+            'efficiency': mi_slot,
             'bitrate_per_hour': bitrate_per_hour,
         })
         
@@ -44,7 +44,8 @@ def get_entropy(data_all: pd.DataFrame, fields=['c'], reconstruction=False, k_ne
 def plot_scan(results, x_field, c_field, y_field='bitrate_per_hour', ax=None, fmt='-o', **kwargs):
     if ax == None:
         fig, ax = subplots_from_axsize(1, 1, (5, 4), left=0.7)
-
+    else:
+        fig = ax.get_figure()
     x_vals = np.unique(results[x_field])
 
 
@@ -59,10 +60,10 @@ def plot_scan(results, x_field, c_field, y_field='bitrate_per_hour', ax=None, fm
         )
         
 
-    if x_field == 'interval':
+    if x_field == 'interval' and y_field in ('bitrate_per_hour', 'efficiency'):
         ax.plot(
             x_vals,
-            60 / x_vals,
+            60 / x_vals if y_field == 'bitrate_per_hour' else np.ones(len(x_vals)),
             ':',
             color='grey',
             label=f'perfect',
@@ -84,6 +85,7 @@ def plot_scan(results, x_field, c_field, y_field='bitrate_per_hour', ax=None, fm
 
     ax.legend(title=c_field)
 
+    return fig, ax
 
     # fig.savefig(outdir / 'bitrates.png')
 

@@ -26,7 +26,7 @@ fate_to_color = {
 
 
 
-def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=1., smoothing_sigma_frames=1.5):
+def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=2., smoothing_sigma_frames=1.8):
 
     data['act'] = 1.0 * ((data['E'] > 0) | (data['I'] > 0))
 
@@ -188,11 +188,11 @@ def get_input_pulse_to_tree_id(tracks, pulse_times):
     return input_pulse_to_tree_id
 
 
-def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, v):
+def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, v, channel_length, channel_end_tolerance=8):
     front_fates = front_fates.assign(timespace= lambda x: x['track_end'] - x['track_end_position'] / v).sort_values(['tree_id', 'timespace'])
 
     pulse_fates = pd.Series([
-        ('lost_somewhere' if len(arrivals[arrivals['front_direction'] == 1]) == 0
+        ('lost_somewhere' if (arrivals['front_direction'] == 1).sum() == 0
         else arrivals[arrivals['front_direction'] == 1]['fate'].iloc[0]
         )
         
@@ -207,6 +207,8 @@ def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, v):
         'forward': (arrivals['front_direction'] == 1).sum() - 1,
         'short': (arrivals['front_direction'] == 0).sum(),
         'backward': (arrivals['front_direction'] == -1).sum(),
+        'reached_end': (arrivals['track_end_position'] >= channel_length - channel_end_tolerance - 1).sum(),
+        'reached_start': (arrivals['track_end_position'] <= channel_end_tolerance).sum(),
     } 
         for tree_id in input_pulse_to_tree_id
         for arrivals in [
@@ -388,7 +390,7 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
         pd.Series(input_pulse_to_tree_id).to_csv(outdir / 'input_pulse_to_tree_id.csv')
 
     if verbose: print('Determining pulse fates...')
-    pulse_fates = get_pulse_fates(front_fates, input_pulse_to_tree_id, v)
+    pulse_fates = get_pulse_fates(front_fates, input_pulse_to_tree_id, v, channel_length=channel_length)
     if outdir is not None:
         pulse_fates.to_csv(outdir / 'pulse_fates.csv')
 
@@ -397,7 +399,9 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
         if verbose: print("Plotting tracks...")
         panel_size = (tracks['frame'].max() / 100, (tracks['h'].max() + 1) / 100)
         plot_tracks(tracks, track_info, front_fates, pulse_fates, pulse_times, show=False, outpath=(outdir / 'out.svg') if outdir else None, panel_size=panel_size)
+        plt.close()
         plot_kymograph_with_endings(states, front_fates, duration, pulse_fates,  pulse_times, show=False, outpath=(outdir / 'out-kymo.png') if outdir else None, panel_size=panel_size)
+        plt.close()
 
 
     if verbose: print('Done.')

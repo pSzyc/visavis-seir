@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to i
 from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
 from scripts.tracking import determine_fates
-from scripts.defaults import PARAMETERS_DEFAULT
+from scripts.defaults import PARAMETERS_DEFAULT, TEMP_DIR
 from scripts.utils import starmap, compile_if_not_exists
 
 
@@ -32,7 +32,7 @@ def generate_dataset(
     
     visavis_bin = compile_if_not_exists(channel_width, channel_length)
     
-    sim_root = Path('/run/user') / os.environ['USER'] / 'tracking' 
+    sim_root = Path(TEMP_DIR) / 'tracking' 
     client = VisAVisClient(
         visavis_bin=visavis_bin,
         sim_root=sim_root,
@@ -60,13 +60,16 @@ def generate_dataset(
             protocol_file_path=protocol_file_path,
             verbose=False,
             dir_name=sim_dir_name + '/' +  _random_name(5),
+            seed=19 + simulation_id,
         )
         
         data_part = determine_fates(
             result.states,
             input_protocol=pulse_intervals,
             outdir=outdir and outdir / f'sim-{simulation_id}',
-            verbose=False)
+            verbose=False,
+            plot_results=True,
+            )
         if n_margin > 0:
             data_part = data_part.iloc[n_margin:-n_margin]
 
@@ -84,7 +87,29 @@ def generate_dataset(
 
     data['channel_width'] = channel_width
     data['channel_length'] = channel_length
+    
+    if outdir:
+        data.set_index(['channel_length', 'channel_width', 'simulation_id']).to_csv(outdir / 'pulse_fates.csv')
 
+        with open(outdir / 'kymographs.html', 'w') as kymo_html:
+            kymo_html.write('<html><body>')
+            kymo_html.write('''<style>
+                            .overlay_title {
+                                position: absolute;
+                                top: 0;
+                                left: 12;
+                                color: yellow;
+                            }
+                            </style>''')
+            for simulation_id in range(n_simulations):
+                kymo_html.write(f'''
+                                <div style="display: inline-block; position:relative"> 
+                                <img src="sim-{simulation_id}/out-kymo.png" alt="{simulation_id}" />
+                                <span class="overlay_title">{simulation_id} {
+                                    data.set_index(["channel_length", "channel_width", "simulation_id"]).loc[channel_length, channel_width, simulation_id][["fate", "reached_end", "reached_start"]].tolist()
+                                    }</span></div>
+                                    ''')
+            kymo_html.write('</body></html>')
     return data
 
 
@@ -96,10 +121,17 @@ def get_occurrences(
         channel_length=300,
         duration=5,
         interval_after=1500,
+        fate_criterion='reached',
         offset=None,
         n_margin=2,
         outdir=None,
         ):
+
+    fields_to_groupby = (
+        ['fate', 'forward', 'backward'] if fate_criterion == 'generated' else 
+        ['fate', 'reached_end', 'reached_start'] if fate_criterion == 'reached' else
+        []
+    )
     counts = generate_dataset(
         input_protocol=input_protocol,
         n_simulations=n_simulations,
@@ -111,39 +143,47 @@ def get_occurrences(
         offset=offset,
         n_margin=n_margin,
         outdir=outdir,
-        ).value_counts(['fate', 'forward', 'backward']).sort_index()
+        ).value_counts(['channel_length', 'channel_width'] + fields_to_groupby).sort_index()
     
     counts = pd.DataFrame({'count': counts})
-    counts['channel_width'] = channel_width
-    counts['channel_length'] = channel_length
+    # counts['channel_width'] = channel_width
+    # counts['channel_length'] = channel_length
+    # counts = counts.set_index( + fields_to_groupby)
     if outdir:
         counts.to_csv(outdir / 'pulse_fate_count.csv')
+
     return counts
 
 
 if __name__ == '__main__':
 
-    outdir = Path('../private/fates/approach5')
+    outdir = Path('../private/fates/approach6')
+    outdir.mkdir(exist_ok=True, parents=True)
 
     input_protocol = []
     
     channel_lengths = [300]
-    channel_widths = list(range(1,10)) + list(range(10,21,2))
+    # channel_widths = list(range(1,10)) + list(range(10,21,2))
+    channel_widths = [6]
     
     data_parts = starmap(get_occurrences, [
             dict(
                 input_protocol=input_protocol,
-                n_simulations=1000,
+                n_simulations=100,
                 channel_length=channel_length,
                 channel_width=channel_width,
                 outdir=outdir / f"w-{channel_width}-l-{channel_length}",
                 n_margin=0,
+                interval_after=int(2.2 * channel_length * 3.6)
             ) 
         for channel_length in channel_lengths for channel_width in channel_widths
         ])
 
     data = pd.concat(data_parts)
     data.to_csv(outdir / 'pulse_fate_count.csv')
-    
+
+
+
+
 
 

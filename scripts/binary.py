@@ -5,6 +5,7 @@ import pandas as pd
 from scipy.signal import find_peaks
 import os
 from pathlib import Path
+from shutil import rmtree
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to import from scripts.py
@@ -183,7 +184,7 @@ def generate_dataset(
     data['channel_length'] = channel_length
     data['interval'] = interval
 
-    sim_dir.unlink()
+    rmtree(sim_dir)
 
     return data
 
@@ -204,12 +205,12 @@ def generate_dataset_batch(
     ):
     if append and Path(outpath).exists():
         data_parts = [
-            data.drop(columns=[col for col in data.columns if col.startswith('Unnamed')]) for _, data in pd.read_csv(outpath).groupby(['channel_length', 'channel_width', 'interval'], group_keys=False)
+            data for _, data in pd.read_csv(outpath).groupby(['channel_length', 'channel_width', 'interval']) #data.drop(columns=[col for col in data.columns if col.startswith('Unnamed')]) for _, data in pd.read_csv(outpath).groupby(['channel_length', 'channel_width', 'interval'], group_keys=False)
         ]
-        data_all = pd.concat(data_parts, ignore_index=True)
-        data_all = data_all.set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
-        if outpath:
-            data_all.to_csv(outpath)
+        # data_all = pd.concat(data_parts, ignore_index=True)
+        # data_all = data_all.set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
+        # if outpath:
+        #     data_all.to_csv(outpath)
     else:
         data_parts = []
 
@@ -230,7 +231,6 @@ def generate_dataset_batch(
                     processes=processes,
                 )
                 data.index.name = 'pulse_id'
-                
                 data_parts.append(data.reset_index())
                 data_all = pd.concat(data_parts, ignore_index=True)
                 data_all = data_all.set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
