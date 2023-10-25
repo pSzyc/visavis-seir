@@ -3,6 +3,7 @@ Cargo.lock
 *.csv
 *.png
 *.svg
+*.mp4
 private
 __pycache__
 target

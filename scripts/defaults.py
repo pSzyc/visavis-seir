@@ -8,5 +8,5 @@ PARAMETERS_DEFAULT = {
 }
 
 TEMP_DIR = f"/mnt/export/{os.environ['USER']}/tmp" #f"/run/user/{os.environ['USER']}"
-TEMP_DIR = f"/run/user/{os.environ['USER']}"
+TEMP_DIR = f"/tmp"
 

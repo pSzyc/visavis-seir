@@ -7,7 +7,7 @@ import json
 import os
 
 import sys
-sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to import from scripts.py
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
@@ -185,9 +185,3 @@ if __name__ == '__main__':
 
     data = pd.concat(data_parts)
     data.to_csv(outdir / 'pulse_fate_count.csv')
-
-
-
-
-
-
