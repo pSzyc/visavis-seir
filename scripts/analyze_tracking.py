@@ -26,7 +26,7 @@ def generate_dataset(
     duration=5,
     interval_after=1500,
     offset=None,
-    n_margin=2,
+    n_margin=0,
     outdir=None,
     plot_results=False,
 ):
@@ -77,20 +77,21 @@ def generate_dataset(
         data_part['simulation_id'] = simulation_id
         data_parts.append(data_part)
 
-        sim_out_dir = outdir / f'sim-{simulation_id}'
-        sim_out_dir.absolute().mkdir(parents=True, exist_ok=True)
-        with open (sim_out_dir / 'input_protocol.json', 'w') as file:
-            json.dump(pulse_intervals, file)
+        if outdir:
+            sim_out_dir = outdir / f'sim-{simulation_id}'
+            sim_out_dir.absolute().mkdir(parents=True, exist_ok=True)
+            with open (sim_out_dir / 'input_protocol.json', 'w') as file:
+                json.dump(pulse_intervals, file)
 
         result.states.to_csv(sim_out_dir / 'simulation_results.csv')
 
-    data = pd.concat(data_parts)
+    pulse_fates = pd.concat(data_parts)
 
-    data['channel_width'] = channel_width
-    data['channel_length'] = channel_length
+    pulse_fates['channel_width'] = channel_width
+    pulse_fates['channel_length'] = channel_length
     
     if outdir:
-        data.set_index(['channel_length', 'channel_width', 'simulation_id']).to_csv(outdir / 'pulse_fates.csv')
+        pulse_fates.set_index(['channel_length', 'channel_width', 'simulation_id']).to_csv(outdir / 'pulse_fates.csv')
 
         with open(outdir / 'kymographs.html', 'w') as kymo_html:
             kymo_html.write('<html><body>')
@@ -107,11 +108,11 @@ def generate_dataset(
                                 <div style="display: inline-block; position:relative"> 
                                 <img src="sim-{simulation_id}/out-kymo.png" alt="{simulation_id}" />
                                 <span class="overlay_title">{simulation_id} {
-                                    data.set_index(["channel_length", "channel_width", "simulation_id"]).loc[channel_length, channel_width, simulation_id][["fate", "reached_end", "reached_start"]].tolist()
+                                    pulse_fates.set_index(["channel_length", "channel_width", "simulation_id"]).loc[channel_length, channel_width, simulation_id][["fate", "reached_end", "reached_start"]].tolist()
                                     }</span></div>
                                     ''')
             kymo_html.write('</body></html>')
-    return data
+    return pulse_fates
 
 
 def get_pulse_fate_counts(
@@ -124,7 +125,7 @@ def get_pulse_fate_counts(
         interval_after=1500,
         fate_criterion='reached',
         offset=None,
-        n_margin=2,
+        n_margin=0,
         outdir=None,
         plot_results=False,
         ):

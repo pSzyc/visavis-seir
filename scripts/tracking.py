@@ -88,7 +88,7 @@ def get_tracks(pulse_positions, duration):
     return tracks, split_df, merge_df
 
 
-def get_track_info(tracks, split_df, v, front_direction_minimal_distance=5, min_track_length=5):
+def get_track_info(tracks, split_df, v, front_direction_minimal_distance=5, min_track_length=5, min_significant_track_length=20):
 
     enhanced_split_df = split_df.copy()
     enhanced_split_df['child_no'] = np.arange(len(split_df)) % 2
@@ -129,6 +129,25 @@ def get_track_info(tracks, split_df, v, front_direction_minimal_distance=5, min_
 
     track_info['is_good_track'] = track_info.index.isin(good_tracks)
 
+
+    significant_tracks = track_info.index.unique()
+    previous_significant_tracks = []
+    while len(previous_significant_tracks) != len(significant_tracks):
+        track_info['is_first_child_significant'] = track_info['first_child_track_id'].isin(significant_tracks)
+        track_info['is_second_child_significant'] = track_info['second_child_track_id'].isin(significant_tracks)
+        previous_significant_tracks = significant_tracks
+        significant_tracks = track_info[
+            (
+                (track_info['track_length'] >= min_significant_track_length) 
+                & (track_info['front_direction'] != 0)
+            )
+            | track_info['is_first_child_significant']
+            | track_info['is_second_child_significant']
+            # | track_info['track_end_position'].gt(channel_length - CHANNEL_END_TOLERANCE)
+            ].index.unique()
+    track_info['is_significant'] = track_info.index.isin(significant_tracks)
+    track_info['splits_significantly'] = track_info['is_significant'] & track_info['is_first_child_significant'] & track_info['is_second_child_significant']
+
     return track_info
 
 
@@ -168,6 +187,25 @@ def get_front_fates(tracks, track_info, channel_length, v, channel_end_tolerance
     return fates.sort_values(['tree_id', 'track_end'])
 
 
+def get_significant_splits(track_info):
+    significant_split_tracks = track_info[
+        track_info['is_significant']
+        & track_info['is_first_child_significant']
+        & track_info['is_second_child_significant']
+    ]
+
+    significant_splits = pd.DataFrame({
+        'parent_track_id': significant_split_tracks.index,
+        'first_child_track_id': significant_split_tracks['first_child_track_id'],
+        'second_child_track_id': significant_split_tracks['second_child_track_id'],
+        'tree_id': significant_split_tracks['tree_id'],
+        'significant_split_time': significant_split_tracks['track_end'],
+        'significant_split_position': significant_split_tracks['track_end_position'],
+    })
+
+    return significant_splits
+
+
 def get_input_pulse_to_tree_id(tracks, pulse_times):
     input_pulse_to_tree_id = [
         
@@ -188,7 +226,8 @@ def get_input_pulse_to_tree_id(tracks, pulse_times):
     return input_pulse_to_tree_id
 
 
-def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, v, channel_length, channel_end_tolerance=8):
+
+def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, significant_splits: pd.DataFrame, v, channel_length, channel_end_tolerance=8):
     front_fates = front_fates.assign(timespace= lambda x: x['track_end'] - x['track_end_position'] / v).sort_values(['tree_id', 'timespace'])
 
     pulse_fates = pd.DataFrame(
@@ -220,8 +259,9 @@ def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, v, channe
             ]
     ])
 
+    first_significant_splits = significant_splits.drop_duplicates('tree_id', keep='first').set_index('tree_id')[['significant_split_time', 'significant_split_position']]
 
-    pulse_fates_and_spawned = pd.concat([pulse_fates, spawning_counts], axis='columns')
+    pulse_fates_and_spawned = pd.concat([pulse_fates, spawning_counts], axis='columns').join(first_significant_splits, on='tree_id')
 
     return pulse_fates_and_spawned
 
@@ -265,7 +305,6 @@ def plot_tracks(tracks, track_info, fates, pulse_fates=None, pulse_times=None, o
             marker='x',
             color=color,
         )
-
 
     axs[1].scatter(
         tracks_selected['seconds'],
@@ -388,13 +427,18 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
     if outdir is not None:
         front_fates.to_csv(outdir / 'front_fates.csv')
 
+    if verbose: print('Determining significant splits...')
+    significant_splits = get_significant_splits(track_info)
+    if outdir is not None:
+        significant_splits.to_csv(outdir / 'significant_splits.csv')
+
     if verbose: print('Matching input pulses with trees...')
     input_pulse_to_tree_id = get_input_pulse_to_tree_id(tracks, pulse_times)
     if outdir is not None:
         pd.Series(input_pulse_to_tree_id).to_csv(outdir / 'input_pulse_to_tree_id.csv')
 
     if verbose: print('Determining pulse fates...')
-    pulse_fates = get_pulse_fates(front_fates, input_pulse_to_tree_id, v, channel_length=channel_length)
+    pulse_fates = get_pulse_fates(front_fates, input_pulse_to_tree_id, significant_splits, v, channel_length=channel_length)
     if outdir is not None:
         pulse_fates.to_csv(outdir / 'pulse_fates.csv')
 
