@@ -83,7 +83,7 @@ def generate_dataset(
             with open (sim_out_dir / 'input_protocol.json', 'w') as file:
                 json.dump(pulse_intervals, file)
 
-        result.states.to_csv(sim_out_dir / 'simulation_results.csv')
+            result.states.to_csv(sim_out_dir / 'simulation_results.csv')
 
     pulse_fates = pd.concat(data_parts)
 
