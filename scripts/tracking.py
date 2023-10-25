@@ -397,7 +397,7 @@ def plot_kymograph_from_file(outdir, indir=None):
 
 ## ---------
 
-def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3.6, outdir=None, plot_results=False, verbose=True, save_csv=True):
+def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3.6, front_direction_minimal_distance=5, outdir=None, plot_results=False, verbose=True, save_csv=True):
 
     if outdir is not None:
         outdir = Path(outdir)
@@ -420,7 +420,7 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
         tracks.to_csv(outdir / 'tracks.csv')
 
     if verbose: print('Extracting track information...')
-    track_info = get_track_info(tracks, split_df, v)
+    track_info = get_track_info(tracks, split_df, v, front_direction_minimal_distance=front_direction_minimal_distance)
     if save_csv and outdir is not None:
         track_info.to_csv(outdir / 'track_info.csv')
 

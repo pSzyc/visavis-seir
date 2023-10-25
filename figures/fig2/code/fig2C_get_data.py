@@ -31,9 +31,10 @@ data_parts = starmap(generate_dataset, [
             outdir=outdir / f"w-{channel_width}-l-{channel_length}",
             n_margin=0,
             interval_after=int(2.2 * channel_length * 3.6),
-            plot_results=False,
+            plot_results=True,
             save_states=False,
-            save_iterations=False,
+            save_iterations=True,
+            front_direction_minimal_distance=min(channel_width, 5),
         )
     for channel_length in channel_lengths for channel_width in channel_widths
     ], processes=20)

@@ -31,6 +31,7 @@ def generate_dataset(
     plot_results=False,
     save_states=True,
     save_iterations=True,
+    **kwargs
 ):
     
     visavis_bin = compile_if_not_exists(channel_width, channel_length)
@@ -75,6 +76,7 @@ def generate_dataset(
             verbose=False,
             plot_results=plot_results,
             save_csv=save_iterations,
+            **kwargs,
             )
         if n_margin > 0:
             data_part = data_part.iloc[n_margin:-n_margin]
@@ -135,6 +137,7 @@ def get_pulse_fate_counts(
         plot_results=False,
         save_states=True,
         save_iterations=True,
+        **kwargs,
         ):
 
     fields_to_groupby = (
@@ -156,6 +159,7 @@ def get_pulse_fate_counts(
         plot_results=plot_results,
         save_states=save_states,
         save_iterations=save_iterations,
+        **kwargs
         ).value_counts(['channel_length', 'channel_width'] + fields_to_groupby).sort_index()
     
     counts = pd.DataFrame({'count': counts})
