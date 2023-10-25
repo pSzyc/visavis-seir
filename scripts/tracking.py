@@ -246,13 +246,14 @@ def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, significa
             ]
         )
 
-    spawning_counts = pd.DataFrame([{
-        'forward': (arrivals['front_direction'] == 1).sum() - 1,
-        'short': (arrivals['front_direction'] == 0).sum(),
-        'backward': (arrivals['front_direction'] == -1).sum(),
-        'reached_end': (arrivals['track_end_position'] >= channel_length - channel_end_tolerance - 1).sum(),
-        'reached_start': (arrivals['track_end_position'] <= channel_end_tolerance).sum(),
-    } 
+    spawning_counts = pd.DataFrame([
+        {
+            'forward': (arrivals['front_direction'] == 1).sum() - 1,
+            'short': (arrivals['front_direction'] == 0).sum(),
+            'backward': (arrivals['front_direction'] == -1).sum(),
+            'reached_end': (arrivals['track_end_position'] >= channel_length - channel_end_tolerance - 1).sum(),
+            'reached_start': (arrivals['track_end_position'] <= channel_end_tolerance).sum(),
+        }
         for tree_id in input_pulse_to_tree_id
         for arrivals in [
             front_fates[front_fates['tree_id'] == tree_id]
@@ -260,8 +261,9 @@ def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, significa
     ])
 
     first_significant_splits = significant_splits.drop_duplicates('tree_id', keep='first').set_index('tree_id')[['significant_split_time', 'significant_split_position']]
+    first_significant_splits = first_significant_splits.reindex(input_pulse_to_tree_id)
 
-    pulse_fates_and_spawned = pd.concat([pulse_fates, spawning_counts], axis='columns').join(first_significant_splits, on='tree_id')
+    pulse_fates_and_spawned = pd.concat([pulse_fates, spawning_counts, first_significant_splits], axis='columns')
 
     return pulse_fates_and_spawned
 
@@ -395,7 +397,7 @@ def plot_kymograph_from_file(outdir, indir=None):
 
 ## ---------
 
-def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3.6, outdir=None, plot_results=False, verbose=True):
+def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3.6, outdir=None, plot_results=False, verbose=True, save_csv=True):
 
     if outdir is not None:
         outdir = Path(outdir)
@@ -407,39 +409,39 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
 
     if verbose: print('Determining pulse positions...')
     pulse_positions = get_pulse_positions(states)
-    if outdir is not None:
+    if save_csv and outdir is not None:
         pulse_positions.to_csv(outdir / 'pulse_positions.csv')
 
     if verbose: print('Tracking...')
     tracks, split_df, merge_df = get_tracks(pulse_positions, duration)
     if len(split_df) == 0:
         split_df = pd.DataFrame(columns=['parent_track_id', 'child_track_id'])
-    if outdir is not None:
+    if save_csv and outdir is not None:
         tracks.to_csv(outdir / 'tracks.csv')
 
     if verbose: print('Extracting track information...')
     track_info = get_track_info(tracks, split_df, v)
-    if outdir is not None:
+    if save_csv and outdir is not None:
         track_info.to_csv(outdir / 'track_info.csv')
 
     if verbose: print('Determining front fates...')
     front_fates = get_front_fates(tracks, track_info, channel_length, v)
-    if outdir is not None:
+    if save_csv and outdir is not None:
         front_fates.to_csv(outdir / 'front_fates.csv')
 
     if verbose: print('Determining significant splits...')
     significant_splits = get_significant_splits(track_info)
-    if outdir is not None:
+    if save_csv and outdir is not None:
         significant_splits.to_csv(outdir / 'significant_splits.csv')
 
     if verbose: print('Matching input pulses with trees...')
     input_pulse_to_tree_id = get_input_pulse_to_tree_id(tracks, pulse_times)
-    if outdir is not None:
+    if save_csv and outdir is not None:
         pd.Series(input_pulse_to_tree_id).to_csv(outdir / 'input_pulse_to_tree_id.csv')
 
     if verbose: print('Determining pulse fates...')
     pulse_fates = get_pulse_fates(front_fates, input_pulse_to_tree_id, significant_splits, v, channel_length=channel_length)
-    if outdir is not None:
+    if save_csv and outdir is not None:
         pulse_fates.to_csv(outdir / 'pulse_fates.csv')
 
     

@@ -29,9 +29,13 @@ def generate_dataset(
     n_margin=0,
     outdir=None,
     plot_results=False,
+    save_states=True,
+    save_iterations=True,
 ):
     
     visavis_bin = compile_if_not_exists(channel_width, channel_length)
+    if outdir:
+        outdir.mkdir(exist_ok=True, parents=True)
     
     sim_root = Path(TEMP_DIR) / 'tracking' 
     client = VisAVisClient(
@@ -70,6 +74,7 @@ def generate_dataset(
             outdir=outdir and outdir / f'sim-{simulation_id}',
             verbose=False,
             plot_results=plot_results,
+            save_csv=save_iterations,
             )
         if n_margin > 0:
             data_part = data_part.iloc[n_margin:-n_margin]
@@ -77,7 +82,7 @@ def generate_dataset(
         data_part['simulation_id'] = simulation_id
         data_parts.append(data_part)
 
-        if outdir:
+        if outdir and save_states:
             sim_out_dir = outdir / f'sim-{simulation_id}'
             sim_out_dir.absolute().mkdir(parents=True, exist_ok=True)
             with open (sim_out_dir / 'input_protocol.json', 'w') as file:
@@ -128,6 +133,8 @@ def get_pulse_fate_counts(
         n_margin=0,
         outdir=None,
         plot_results=False,
+        save_states=True,
+        save_iterations=True,
         ):
 
     fields_to_groupby = (
@@ -147,6 +154,8 @@ def get_pulse_fate_counts(
         n_margin=n_margin,
         outdir=outdir,
         plot_results=plot_results,
+        save_states=save_states,
+        save_iterations=save_iterations,
         ).value_counts(['channel_length', 'channel_width'] + fields_to_groupby).sort_index()
     
     counts = pd.DataFrame({'count': counts})
@@ -161,28 +170,31 @@ def get_pulse_fate_counts(
 
 if __name__ == '__main__':
 
-    outdir = Path('../private/fates/approach6')
+    outdir = Path('../private/fates/approach7')
     outdir.mkdir(exist_ok=True, parents=True)
 
     input_protocol = []
     
     channel_lengths = [300]
     # channel_widths = list(range(1,10)) + list(range(10,21,2))
-    channel_widths = [6]
+    channel_widths = [10]
     
     data_parts = starmap(get_pulse_fate_counts, [
             dict(
                 input_protocol=input_protocol,
-                n_simulations=10,
+                n_simulations=20,
                 channel_length=channel_length,
                 channel_width=channel_width,
                 outdir=outdir / f"w-{channel_width}-l-{channel_length}",
                 n_margin=0,
                 interval_after=int(2.2 * channel_length * 3.6),
-                plot_results=True,
+                plot_results=False,
+                save_states=False,
+                save_iterations=False,
             ) 
         for channel_length in channel_lengths for channel_width in channel_widths
         ])
 
     data = pd.concat(data_parts)
     data.to_csv(outdir / 'pulse_fate_count.csv')
+
