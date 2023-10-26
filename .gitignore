@@ -4,6 +4,7 @@ Cargo.lock
 *.png
 *.svg
 *.mp4
+movies/*
 private
 __pycache__
 target
