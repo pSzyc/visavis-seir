@@ -1,10 +1,10 @@
+import pandas as pd
 import matplotlib.pyplot as plt
 from subplots_from_axsize import subplots_from_axsize
 
 
 def plot_result(result, outfile=None, title=None, t_min=None, t_max=None, ax=None, panel_size=(20, 8), show=True):
-    data = result.states
-    return plot_result_from_states(data, outfile=outfile, title=title, t_min=t_min, t_max=t_max, ax=ax, panel_size=panel_size, show=show)
+    return plot_result_from_states(result.states, outfile=outfile, title=title, t_min=t_min, t_max=t_max, ax=ax, panel_size=panel_size, show=show)
 
 
 def plot_result_from_states(data, outfile=None, title=None, t_min=None, t_max=None, ax:plt.Axes = None, panel_size=(20, 8), show=True):
@@ -17,24 +17,31 @@ def plot_result_from_states(data, outfile=None, title=None, t_min=None, t_max=No
     else:
         fig = ax.get_figure()
 
-    data_selected = data.copy()
-    
-    if t_min is not None:
-        data_selected =  data_selected[data_selected['seconds'] >= t_min].copy()
-        
-    if t_max is not None:
-        data_selected =  data_selected[data_selected['seconds'] <= t_max].copy()
-    
-    
-    data_selected['E'] = data_selected['E'] > 0
-    data_selected['I'] = data_selected['I'] > 0
-    data_selected['R'] = data_selected['R'] > 0
+    if t_min is None:
+        t_min = data['seconds'].min()
+    if t_max is None:
+        t_max = data['seconds'].max()
 
-    img_E = data_selected.groupby(['seconds', 'h'])['E'].mean().unstack().to_numpy().T
-    img_I = data_selected.groupby(['seconds', 'h'])['I'].mean().unstack().to_numpy().T
-    img_R = data_selected.groupby(['seconds', 'h'])['R'].mean().unstack().to_numpy().T
+    data_selected = data[data['seconds'].between(t_min, t_max)].set_index(['h', 'seconds'])
+    
+    # act = 1.0 * ((data['E'] > 0) | (data['I'] > 0))
+    act = pd.Series(
+        (data_selected['E'].to_numpy() + data_selected['I'].to_numpy() > 0) * 1.,
+        index = data_selected.index,
+    )
+    del data_selected
+    
+    img = act.groupby(['h', 'seconds']).mean().unstack().to_numpy()
+    
+    # data_selected['E'] = data_selected['E'] > 0
+    # data_selected['I'] = data_selected['I'] > 0
+    # data_selected['R'] = data_selected['R'] > 0
 
-    img = img_E + img_I
+    # img_E = data_selected.groupby(['seconds', 'h'])['E'].mean().unstack().to_numpy().T
+    # img_I = data_selected.groupby(['seconds', 'h'])['I'].mean().unstack().to_numpy().T
+    # img_R = data_selected.groupby(['seconds', 'h'])['R'].mean().unstack().to_numpy().T
+
+    # img = img_E + img_I
 
     ax.imshow(
         img,
@@ -55,9 +62,12 @@ def plot_result_from_states(data, outfile=None, title=None, t_min=None, t_max=No
         )
 
     if outfile is not None:
+        print("Don't call me off")
         fig.savefig(outfile)
+        print("Please!")
         plt.close(fig)
     elif show:
         plt.show()
+
 
     return fig, ax

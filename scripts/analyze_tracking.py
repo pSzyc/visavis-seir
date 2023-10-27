@@ -4,7 +4,7 @@ import pandas as pd
 
 from tqdm import tqdm
 import json
-import os
+from shutil import rmtree
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -68,7 +68,16 @@ def generate_dataset(
             dir_name=sim_dir_name + '/' +  _random_name(5),
             seed=19 + simulation_id,
         )
-        
+        rmtree(str(sim_root /sim_dir_name))
+
+        if outdir and save_states:
+            sim_out_dir = outdir / f'sim-{simulation_id}'
+            sim_out_dir.absolute().mkdir(parents=True, exist_ok=True)
+            with open (sim_out_dir / 'input_protocol.json', 'w') as file:
+                json.dump(pulse_intervals, file)
+
+            result.states.to_csv(sim_out_dir / 'simulation_results.csv')     
+
         data_part = determine_fates(
             result.states,
             input_protocol=pulse_intervals,
@@ -84,13 +93,7 @@ def generate_dataset(
         data_part['simulation_id'] = simulation_id
         data_parts.append(data_part)
 
-        if outdir and save_states:
-            sim_out_dir = outdir / f'sim-{simulation_id}'
-            sim_out_dir.absolute().mkdir(parents=True, exist_ok=True)
-            with open (sim_out_dir / 'input_protocol.json', 'w') as file:
-                json.dump(pulse_intervals, file)
 
-            result.states.to_csv(sim_out_dir / 'simulation_results.csv')
 
     pulse_fates = pd.concat(data_parts)
 

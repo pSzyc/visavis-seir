@@ -28,15 +28,15 @@ fate_to_color = {
 
 def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=2., smoothing_sigma_frames=1.8):
 
-    data['act'] = 1.0 * ((data['E'] > 0) | (data['I'] > 0))
 
-    data_grouped = data.groupby(['seconds', 'h'], sort=True).mean()
+    data['act'] = (data['E'].to_numpy() + data['I'].to_numpy() > 0) * 1
 
-    raw_data_df = data_grouped['act']
-    raw_data = raw_data_df.unstack('h').to_numpy()
+    data_grouped = data.groupby(['h', 'seconds'], sort=True).mean()
 
-    smoothed_data = gaussian_filter(raw_data, sigma=[smoothing_sigma_frames, smoothing_sigma_h], mode='nearest', truncate=2.01)
-    data_grouped['act'] = pd.DataFrame(smoothed_data).stack().to_numpy()
+    raw_data = data_grouped['act'].unstack('seconds').to_numpy()
+
+    smoothed_data = gaussian_filter(raw_data, sigma=[smoothing_sigma_h, smoothing_sigma_frames], mode='nearest', truncate=2.01)
+    data_grouped['act'] = smoothed_data.reshape(-1)#pd.DataFrame(smoothed_data).stack().to_numpy()
 
     pulse_positions = []
     for seconds, data_slice in data_grouped.groupby('seconds'):
@@ -74,6 +74,8 @@ def get_tracks(pulse_positions, duration):
         no_splitting_cost=0,
         no_merging_cost=0,
     )
+    # print(pulse_positions.dtypes, pulse_positions, pulse_positions['seconds'], duration, pulse_positions['seconds'] // duration) 
+
     pulse_positions['frame'] = pulse_positions['seconds'] // duration
 
     track_df, split_df, merge_df = lt.predict_dataframe(
@@ -88,7 +90,7 @@ def get_tracks(pulse_positions, duration):
     return tracks, split_df, merge_df
 
 
-def get_track_info(tracks, split_df, v, front_direction_minimal_distance=5, min_track_length=5, min_significant_track_length=20):
+def get_track_info(tracks, split_df, v, front_direction_minimal_distance=5, min_track_length=5, min_significant_track_length=10):
 
     enhanced_split_df = split_df.copy()
     enhanced_split_df['child_no'] = np.arange(len(split_df)) % 2
@@ -330,7 +332,7 @@ def plot_tracks(tracks, track_info, fates, pulse_fates=None, pulse_times=None, o
 
 
 
-def plot_kymograph_with_endings(states, fates, duration, pulse_fates= None,pulse_times=None, outpath=None, show=True, panel_size=(10, 4)):
+def plot_kymograph_with_endings(states, fates, duration, pulse_fates=None, pulse_times=None, significant_splits=None, outpath=None, show=True, panel_size=(10, 4)):
 
     fig, ax = plot_result_from_states(states, show=False, panel_size=panel_size)
 
@@ -350,6 +352,9 @@ def plot_kymograph_with_endings(states, fates, duration, pulse_fates= None,pulse
     
     if pulse_fates is not None and pulse_times is not None:
         ax.scatter(np.array(pulse_times) / duration, [0]*len(pulse_times), marker='^', c=[fate_to_color[fate] for fate in pulse_fates['fate']])
+   
+    if significant_splits is not None:
+        ax.scatter(significant_splits['significant_split_time'] / duration, significant_splits['significant_split_position'] , marker='o', edgecolors='cyan', facecolor='none')
    
 
     if outpath is not None:
@@ -403,7 +408,8 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
         outdir = Path(outdir)
         outdir.absolute().mkdir(exist_ok=True, parents=True)
 
-    duration = states['seconds'].drop_duplicates().sort_values().diff()[0]
+
+    duration = states['seconds'].drop_duplicates().sort_values().diff().dropna().unique()[0]
     channel_length = states['h'].max() + 1
     pulse_times = [0] + list(np.cumsum(input_protocol))[:-1]
 
@@ -450,7 +456,7 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
         panel_size = (tracks['frame'].max() / 100, (tracks['h'].max() + 1) / 100)
         plot_tracks(tracks, track_info, front_fates, pulse_fates, pulse_times, show=False, outpath=(outdir / 'out.svg') if outdir else None, panel_size=panel_size)
         plt.close()
-        plot_kymograph_with_endings(states, front_fates, duration, pulse_fates,  pulse_times, show=False, outpath=(outdir / 'out-kymo.png') if outdir else None, panel_size=panel_size)
+        plot_kymograph_with_endings(states, front_fates, duration, pulse_fates,  pulse_times, significant_splits=significant_splits, show=False, outpath=(outdir / 'out-kymo.png') if outdir else None, panel_size=panel_size)
         plt.close()
 
 
