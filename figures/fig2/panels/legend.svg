@@ -1,0 +1,27 @@
+<svg width="300" height="140" xmlns="http://www.w3.org/2000/svg">
+  <!-- Legend for S -->
+  <rect x="10" y="10" width="20" height="20" fill="rgb(216, 216, 216)" />
+  <text x="40" y="25" font-family="Arial" font-size="14" fill="black">S</text>
+
+  <!-- Legend for E -->
+  <rect x="10" y="40" width="20" height="20" fill="rgb(77, 51, 0)" />
+  <rect x="40" y="40" width="20" height="20" fill="rgb(102, 77, 0)" />
+  <rect x="70" y="40" width="20" height="20" fill="rgb(128, 102, 0)" />
+  <rect x="100" y="40" width="20" height="20" fill="rgb(153, 128, 0)" />
+  <text x="130" y="55" font-family="Arial" font-size="14" fill="black">E</text>
+
+  <!-- Legend for I -->
+  <rect x="10" y="70" width="20" height="20" fill="rgb(102, 0, 0)" />
+  <rect x="40" y="70" width="20" height="20" fill="rgb(140, 0, 0)" />
+  <text x="70" y="85" font-family="Arial" font-size="14" fill="black">I</text>
+
+  <!-- Legend for R -->
+  <rect x="10" y="100" width="20" height="20" fill="rgb(89, 89, 217)" />
+  <rect x="40" y="100" width="20" height="20" fill="rgb(89, 140, 217)" />
+  <rect x="70" y="100" width="20" height="20" fill="rgb(89, 191, 217)" />
+  <rect x="100" y="100" width="20" height="20" fill="rgb(89, 242, 217)" />
+  <text x="130" y="115" font-family="Arial" font-size="14" fill="black">R</text>
+</svg>
+
+
+
