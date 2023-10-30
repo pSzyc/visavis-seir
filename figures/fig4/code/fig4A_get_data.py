@@ -13,22 +13,38 @@ data_dir.mkdir(parents=True, exist_ok=True)
 
 channel_widths = [6]
 channel_lengths = [30, 100, 300, 1000]
-# channel_lengths = [1000]
+# channel_lengths = [100, 300, 1000]
+channel_lengths = [1000]
 # intervals = list(range(20, 110, 10)) + list(range(110, 180, 5)) + list(range(180, 300, 20))
+intervals = [105, 185, 190, 195]
+intervals = list(range(35, 100, 10))
 intervals = []
 
 nearest_pulses = generate_dataset_batch(
     channel_lengths=channel_lengths,
     channel_widths=channel_widths,
     intervals=intervals,#[60,70,80,90,100],#list(range(110, 181, 5)), #[60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 130, 150, 180, 220, 260, 300, 400], 
-    outpath=data_dir / 'fig4A_nearest_pulses1.csv',
+    outpath=data_dir / 'fig4A_nearest_pulses2.csv',
     n_simulations=20,
     n_slots=250,
     n_margin=4,
     n_nearest=4,
     append=True,
-    processes=20,
+    processes=3,
 )
-entropies = get_entropy(nearest_pulses.reset_index(), fields=['c'], reconstruction=False, k_neighbors=25)
-entropies.to_csv(data_dir / 'fig4A_entropies1-c25.csv')
+
+fields_letter_to_fields = {
+    'c': ['c'],
+    'rl': ['l0', 'r0'],
+    'cm': ['c', 'c-1'],
+    'cp': ['c', 'c+1'],
+    'cmp': ['c', 'c-1', 'c+1'],
+}
+
+for fields in 'c', 'rl', 'cm', 'cp', 'cmp':
+    for k_neighbors in (15, 25):
+        for reconstruction in (True, False):
+            print(f"Estimating entropy ({fields}{k_neighbors}{'-reconstruction' if reconstruction else ''})")
+            entropies = get_entropy(nearest_pulses.reset_index(), fields=fields_letter_to_fields[fields], reconstruction=reconstruction, k_neighbors=k_neighbors)
+            entropies.to_csv(data_dir / f"fig4A_entropies2-{fields}{k_neighbors}{'-reconstruction' if reconstruction else ''}.csv")
 

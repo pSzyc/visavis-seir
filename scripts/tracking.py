@@ -26,7 +26,7 @@ fate_to_color = {
 
 
 
-def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=2., smoothing_sigma_frames=1.8):
+def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=2., smoothing_sigma_frames=1.8, min_peak_height=0.02, outdir=None):
 
 
     data['act'] = (data['E'].to_numpy() + data['I'].to_numpy() > 0) * 1
@@ -38,10 +38,15 @@ def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=2., smoothing_si
     smoothed_data = gaussian_filter(raw_data, sigma=[smoothing_sigma_h, smoothing_sigma_frames], mode='nearest', truncate=2.01)
     data_grouped['act'] = smoothed_data.reshape(-1)#pd.DataFrame(smoothed_data).stack().to_numpy()
 
+    # plt.imshow(data_grouped[data_grouped['seconds'].between(1000,1120) & data_grouped['h'].between(270,300)]['act'].unstack('seconds').to_numpy())
+    # plt.savefig(outdir / 'fig.svg')
+
+    # pd.DataFrame(smoothed_data).to_csv(outdir / 'smoothed.csv')
+
     pulse_positions = []
     for seconds, data_slice in data_grouped.groupby('seconds'):
         # data_slice = data_time.groupby('h').mean()
-        pulse_positions_time, _ = find_peaks(data_slice['act'], distance=min_distance)
+        pulse_positions_time, _ = find_peaks(data_slice['act'], distance=min_distance, height=min_peak_height)
         pulse_positions.extend(
             {
                 'seconds': seconds,
@@ -74,8 +79,6 @@ def get_tracks(pulse_positions, duration):
         no_splitting_cost=0,
         no_merging_cost=0,
     )
-    # print(pulse_positions.dtypes, pulse_positions, pulse_positions['seconds'], duration, pulse_positions['seconds'] // duration) 
-
     pulse_positions['frame'] = pulse_positions['seconds'] // duration
 
     track_df, split_df, merge_df = lt.predict_dataframe(
@@ -161,30 +164,31 @@ def get_front_fates(tracks, track_info, channel_length, v, channel_end_tolerance
         & ~track_info['is_second_child_good']
         ].copy()
 
-    has_near_neighbor = pd.Series(
-    [(
-        tracks['track_id'].ne(track_id) 
-        & tracks['track_id'].ne(track_info.loc[track_id]['first_child_track_id'])
-        & tracks['track_id'].ne(track_info.loc[track_id]['second_child_track_id'])
-        & tracks['seconds'].between(row['track_end'] - te_back, row['track_end'] + te_forward)
-        & tracks['h'].between(row['track_end_position'] - te_space, row['track_end_position'] + te_space)
-        ).any()
-        for track_id, row in fates.iterrows()
-    ], index=fates.index)
+    if len(fates):
+        has_near_neighbor = pd.Series(
+        [(
+            tracks['track_id'].ne(track_id) 
+            & tracks['track_id'].ne(track_info.loc[track_id]['first_child_track_id'])
+            & tracks['track_id'].ne(track_info.loc[track_id]['second_child_track_id'])
+            & tracks['seconds'].between(row['track_end'] - te_back, row['track_end'] + te_forward)
+            & tracks['h'].between(row['track_end_position'] - te_space, row['track_end_position'] + te_space)
+            ).any()
+            for track_id, row in fates.iterrows()
+        ], index=fates.index)
 
-    nbrs = NearestNeighbors(n_neighbors=3)
-    nbrs.fit(list(zip(fates['track_end'] * v, fates['track_end_position'])))
-    nearest_endings = nbrs.radius_neighbors(radius=ending_search_radius, return_distance=False)
-    front_directions = fates['front_direction'].to_numpy()
-    has_near_ending = pd.Series([
-        any(direction * front_directions[other_ending] < 1 for other_ending in nes) 
-        for direction, nes in zip(front_directions, nearest_endings)
-        ], index=fates.index) 
+        nbrs = NearestNeighbors(n_neighbors=3)
+        nbrs.fit(list(zip(fates['track_end'] * v, fates['track_end_position'])))
+        nearest_endings = nbrs.radius_neighbors(radius=ending_search_radius, return_distance=False)
+        front_directions = fates['front_direction'].to_numpy()
+        has_near_ending = pd.Series([
+            any(direction * front_directions[other_ending] < 1 for other_ending in nes) 
+            for direction, nes in zip(front_directions, nearest_endings)
+            ], index=fates.index) 
 
-    fates['fate'] = 'failure' # note that this can be overriden
-    fates['fate'] = fates['fate'].mask(has_near_neighbor | has_near_ending, 'anihilated') # note that this can be overriden
-    fates['fate'] = fates['fate'].mask(~has_near_neighbor & fates['track_end_position'].ge(channel_length - channel_end_tolerance) & fates['front_direction'].eq(1), 'transmitted')
-    fates['fate'] = fates['fate'].mask(~has_near_neighbor & fates['track_end_position'].lt(channel_end_tolerance) & fates['front_direction'].eq(-1), 'transmitted')
+        fates['fate'] = 'failure' # note that this can be overriden
+        fates['fate'] = fates['fate'].mask(has_near_neighbor | has_near_ending, 'anihilated') # note that this can be overriden
+        fates['fate'] = fates['fate'].mask(~has_near_neighbor & fates['track_end_position'].ge(channel_length - channel_end_tolerance) & fates['front_direction'].eq(1), 'transmitted')
+        fates['fate'] = fates['fate'].mask(~has_near_neighbor & fates['track_end_position'].lt(channel_end_tolerance) & fates['front_direction'].eq(-1), 'transmitted')
 
     return fates.sort_values(['tree_id', 'track_end'])
 
@@ -414,7 +418,7 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
     pulse_times = [0] + list(np.cumsum(input_protocol))[:-1]
 
     if verbose: print('Determining pulse positions...')
-    pulse_positions = get_pulse_positions(states)
+    pulse_positions = get_pulse_positions(states, outdir=outdir)
     if save_csv and outdir is not None:
         pulse_positions.to_csv(outdir / 'pulse_positions.csv')
 
