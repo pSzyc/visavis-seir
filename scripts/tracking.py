@@ -51,7 +51,7 @@ def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=2., smoothing_si
             {
                 'seconds': seconds,
                 'h': h,
-            } for h in [-200] + pulse_positions_part # -200 is an artificial maximum added so that LapTrack does not omit emtpy frames
+            } for h in [-200] + list(pulse_positions_part) # -200 is an artificial maximum added so that LapTrack does not omit emtpy frames
         )
         
     pulse_positions = pd.DataFrame(pulse_positions)

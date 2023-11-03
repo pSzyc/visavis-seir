@@ -100,7 +100,7 @@ def generate_dataset(
     pulse_fates['channel_width'] = channel_width
     pulse_fates['channel_length'] = channel_length
     
-    if outdir:
+    if plot_results and outdir:
         pulse_fates.set_index(['channel_length', 'channel_width', 'simulation_id']).to_csv(outdir / 'pulse_fates.csv')
 
         with open(outdir / 'kymographs.html', 'w') as kymo_html:
@@ -113,12 +113,12 @@ def generate_dataset(
                                 color: yellow;
                             }
                             </style>''')
-            for simulation_id in range(n_simulations):
+            for (_, _, simulation_id, pulse_id), pulse in pulse_fates.groupby(["channel_length", "channel_width", "simulation_id", "pulse_id"]):
                 kymo_html.write(f'''
                                 <div style="display: inline-block; position:relative"> 
-                                <img src="sim-{simulation_id}/out-kymo.png" alt="{simulation_id}" />
-                                <span class="overlay_title">{simulation_id} {
-                                    pulse_fates.set_index(["channel_length", "channel_width", "simulation_id"]).loc[channel_length, channel_width, simulation_id][["fate", "reached_end", "reached_start"]].tolist()
+                                <img src="sim-{simulation_id}/out-kymo.png" alt="{simulation_id}:{pulse_id}" />
+                                <span class="overlay_title">{simulation_id}:{pulse_id} {
+                                    pulse.iloc[0][["fate", "reached_end", "reached_start"]].tolist()
                                     }</span></div>
                                     ''')
             kymo_html.write('</body></html>')
