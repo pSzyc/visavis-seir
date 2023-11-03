@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
-import numba as np
+import numpy as np
 from scripts.analyze_tracking import generate_dataset
 from scripts.propensities import get_results, compute_propensities
 from scripts.utils import starmap
