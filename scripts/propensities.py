@@ -28,7 +28,6 @@ def compute_propensities(n_any_event, mean_steps, n_samples, length, event_count
 def get_propensities(channel_length, n_sim, channel_width, outdir=None, **kwargs):
     print('----------', channel_width)
     pulse_fates = generate_dataset([], n_simulations=n_sim, channel_width=channel_width, channel_length=channel_length, outdir=outdir, save_states=False, **kwargs)
-    # pulse_fates = pd.read_csv(outdir / 'pulse_fates.csv') 
 
     # Extintion position if failure
     pulse_fates['failure'] = (
@@ -36,6 +35,7 @@ def get_propensities(channel_length, n_sim, channel_width, outdir=None, **kwargs
         pulse_fates['track_end_position'].where(pulse_fates['fate'] == 'failure',
         np.nan
         ))) - 1 # minus one, as the simulation starts from h=1
+    
     # First pulse spawning position if spawning
     pulse_fates['spawning'] = pulse_fates['significant_split_position'] - 1# minus one, as the simulation starts from h=1
 
