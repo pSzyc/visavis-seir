@@ -26,7 +26,7 @@ fate_to_color = {
 
 
 
-def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=2., smoothing_sigma_frames=1.8, min_peak_height=0.02, outdir=None):
+def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=2., smoothing_sigma_frames=1.8, min_peak_height=0.002, outdir=None):
 
 
     data['act'] = (data['E'].to_numpy() + data['I'].to_numpy() > 0) * 1
@@ -46,12 +46,12 @@ def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=2., smoothing_si
     pulse_positions = []
     for seconds, data_slice in data_grouped.groupby('seconds'):
         # data_slice = data_time.groupby('h').mean()
-        pulse_positions_time, _ = find_peaks(data_slice['act'], distance=min_distance, height=min_peak_height)
+        pulse_positions_part, _ = find_peaks(data_slice['act'], distance=min_distance, height=min_peak_height)
         pulse_positions.extend(
             {
                 'seconds': seconds,
                 'h': h,
-            } for h in pulse_positions_time
+            } for h in [-200] + pulse_positions_part # -200 is an artificial maximum added so that LapTrack does not omit emtpy frames
         )
         
     pulse_positions = pd.DataFrame(pulse_positions)
@@ -89,6 +89,7 @@ def get_tracks(pulse_positions, duration):
         validate_frame=False,
     )
     tracks = track_df.reset_index(drop=True).rename(columns={'frame_y': 'frame'})
+    tracks = tracks[tracks['h'] != -200] # remove the artificial track
    
     return tracks, split_df, merge_df
 
@@ -249,7 +250,7 @@ def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, significa
             for arrivals in [
                 front_fates[front_fates['tree_id'] == tree_id]
                 ]
-            ]
+            ], index=input_pulse_to_tree_id
         )
 
     spawning_counts = pd.DataFrame([
@@ -264,10 +265,11 @@ def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, significa
         for arrivals in [
             front_fates[front_fates['tree_id'] == tree_id]
             ]
-    ])
+    ], index=input_pulse_to_tree_id)
 
     first_significant_splits = significant_splits.drop_duplicates('tree_id', keep='first').set_index('tree_id')[['significant_split_time', 'significant_split_position']]
     first_significant_splits = first_significant_splits.reindex(input_pulse_to_tree_id)
+    first_significant_splits['pulse_id'] = list(range(len(input_pulse_to_tree_id)))
 
     pulse_fates_and_spawned = pd.concat([pulse_fates, spawning_counts, first_significant_splits], axis='columns')
 
@@ -406,7 +408,7 @@ def plot_kymograph_from_file(outdir, indir=None):
 
 ## ---------
 
-def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3.6, front_direction_minimal_distance=5, outdir=None, plot_results=False, verbose=True, save_csv=True):
+def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3.6, front_direction_minimal_distance=5, min_peak_height=0.002, outdir=None, plot_results=False, verbose=True, save_csv=True):
 
     if outdir is not None:
         outdir = Path(outdir)
@@ -418,7 +420,7 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
     pulse_times = [0] + list(np.cumsum(input_protocol))[:-1]
 
     if verbose: print('Determining pulse positions...')
-    pulse_positions = get_pulse_positions(states, outdir=outdir)
+    pulse_positions = get_pulse_positions(states, outdir=outdir, min_peak_height=min_peak_height)
     if save_csv and outdir is not None:
         pulse_positions.to_csv(outdir / 'pulse_positions.csv')
 

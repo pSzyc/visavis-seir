@@ -3,10 +3,10 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from subplots_from_axsize import subplots_from_axsize
 
-data_dir = Path(__file__).parent.parent / 'data' / 'approach0'
-out_dir = data_dir / '../../panels'
+data_dir = Path(__file__).parent.parent / 'data2' /'fig2C' / 'approach2'
+out_dir = Path(__file__).parent.parent / 'panels'
 
-data = pd.read_csv(data_dir / 'fig2C--propensities2.csv').set_index('channel_width')
+data = pd.read_csv(data_dir / 'fig2C--propensities.csv').set_index('channel_width')
 
 fig, ax = subplots_from_axsize(1, 1, (3,2.5))
 

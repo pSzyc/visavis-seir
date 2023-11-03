@@ -33,7 +33,7 @@ def generate_dataset(
     save_iterations=True,
     **kwargs
 ):
-    
+    print(interval_after)
     visavis_bin = compile_if_not_exists(channel_width, channel_length)
     if outdir:
         outdir.mkdir(exist_ok=True, parents=True)

@@ -32,7 +32,7 @@ def get_propensities(channel_length, n_sim, channel_width, outdir=None, **kwargs
 
     # Extintion position if failure
     pulse_fates['failure'] = (
-        (pulse_fates['track_end_position'].fillna(1)).where(pulse_fates['fate'] == 'lost_somewhere',
+        (pulse_fates['track_end_position'].fillna(1 if channel_width < 7 else np.nan)).where(pulse_fates['fate'] == 'lost_somewhere',
         pulse_fates['track_end_position'].where(pulse_fates['fate'] == 'failure',
         np.nan
         ))) - 1 # minus one, as the simulation starts from h=1
