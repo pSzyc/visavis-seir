@@ -15,7 +15,7 @@ from laptrack import LapTrack
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to import from scripts.py
 
-from scripts.plot_result import plot_result_from_states
+from scripts.plot_result import plot_result_from_activity
 
 fate_to_color = {
     'anihilated': 'red',
@@ -26,34 +26,21 @@ fate_to_color = {
 
 
 
-def get_pulse_positions(data, min_distance=6, smoothing_sigma_h=2., smoothing_sigma_frames=1.8, min_peak_height=0.002, outdir=None):
+def get_pulse_positions(activity, min_distance=6, smoothing_sigma_h=2., smoothing_sigma_frames=1.8, min_peak_height=0.002, outdir=None):
 
-
-    data['act'] = (data['E'].to_numpy() + data['I'].to_numpy() > 0) * 1
-
-    data_grouped = data.groupby(['h', 'seconds'], sort=True).mean()
-
-    raw_data = data_grouped['act'].unstack('seconds').to_numpy()
-
-    smoothed_data = gaussian_filter(raw_data, sigma=[smoothing_sigma_h, smoothing_sigma_frames], mode='nearest', truncate=2.01)
-    data_grouped['act'] = smoothed_data.reshape(-1)#pd.DataFrame(smoothed_data).stack().to_numpy()
-
-    # plt.imshow(data_grouped[data_grouped['seconds'].between(1000,1120) & data_grouped['h'].between(270,300)]['act'].unstack('seconds').to_numpy())
-    # plt.savefig(outdir / 'fig.svg')
-
-    # pd.DataFrame(smoothed_data).to_csv(outdir / 'smoothed.csv')
+    smoothed_data = gaussian_filter(1.*activity.to_numpy(), sigma=[smoothing_sigma_frames, smoothing_sigma_h], mode='nearest', truncate=2.01)
 
     pulse_positions = []
-    for seconds, data_slice in data_grouped.groupby('seconds'):
+    for seconds, activity_slice in zip(activity.index.get_level_values('seconds'), smoothed_data):
         # data_slice = data_time.groupby('h').mean()
-        pulse_positions_part, _ = find_peaks(data_slice['act'], distance=min_distance, height=min_peak_height)
+        pulse_positions_part, _ = find_peaks(activity_slice, distance=min_distance, height=min_peak_height)
         pulse_positions.extend(
             {
                 'seconds': seconds,
                 'h': h,
             } for h in [-200] + list(pulse_positions_part) # -200 is an artificial maximum added so that LapTrack does not omit emtpy frames
         )
-        
+    
     pulse_positions = pd.DataFrame(pulse_positions)
     return pulse_positions
 
@@ -338,9 +325,9 @@ def plot_tracks(tracks, track_info, fates, pulse_fates=None, pulse_times=None, o
 
 
 
-def plot_kymograph_with_endings(states, fates, duration, pulse_fates=None, pulse_times=None, significant_splits=None, outpath=None, show=True, panel_size=(10, 4)):
+def plot_kymograph_with_endings(activity, fates, duration, pulse_fates=None, pulse_times=None, significant_splits=None, outpath=None, show=True, panel_size=(10, 4)):
 
-    fig, ax = plot_result_from_states(states, show=False, panel_size=panel_size)
+    fig, ax = plot_result_from_activity(activity, show=False, panel_size=panel_size)
 
     for fate, color in (
         ('transmitted', 'blue'),
@@ -392,8 +379,8 @@ def plot_kymograph_from_file(outdir, indir=None):
     if indir is None:
         indir = outdir
 
-    states = pd.read_csv(indir / 'simulation_results.csv')
-    duration = states['seconds'].drop_duplicates().sort_values().diff()[0]
+    activity = pd.read_csv(indir / 'activity.csv')
+    duration = pd.Series(activity.index.get_level_values('seconds').unique().sort_values()).diff()[0]
     front_fates = pd.read_csv(indir / 'front_fates.csv').set_index('track_id')
     pulse_fates = pd.read_csv(indir / 'pulse_fates.csv')
     
@@ -401,26 +388,26 @@ def plot_kymograph_from_file(outdir, indir=None):
         input_protocol = json.load(file)
     pulse_times = [0] + list(np.cumsum(input_protocol))[:-1]
 
-    panel_size = (len(states['seconds'].unique()) / 100, (states['h'].max() + 1) / 100)
-    return plot_kymograph_with_endings(states, front_fates, duration, pulse_fates, pulse_times, show=False, outpath=(outdir / 'kymograph.png') if outdir else None, panel_size=panel_size)
+    panel_size = (len(activity) / 100, (int(activity.columns[-1]) + 1) / 100)
+    return plot_kymograph_with_endings(activity, front_fates, duration, pulse_fates, pulse_times, show=False, outpath=(outdir / 'kymograph.png') if outdir else None, panel_size=panel_size)
 
 
 
 ## ---------
 
-def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3.6, front_direction_minimal_distance=5, min_peak_height=0.002, outdir=None, plot_results=False, verbose=True, save_csv=True):
+def determine_fates(activity: pd.DataFrame, input_protocol: Iterable[float], v=1/3.6, front_direction_minimal_distance=5, min_peak_height=0.002, outdir=None, plot_results=False, verbose=True, save_csv=True):
 
     if outdir is not None:
         outdir = Path(outdir)
         outdir.absolute().mkdir(exist_ok=True, parents=True)
 
 
-    duration = states['seconds'].drop_duplicates().sort_values().diff().dropna().unique()[0]
-    channel_length = states['h'].max() + 1
+    duration = pd.Series(activity.index.get_level_values('seconds')).diff().dropna().unique()[0]
+    channel_length = int(activity.columns[-1]) + 1
     pulse_times = [0] + list(np.cumsum(input_protocol))[:-1]
 
     if verbose: print('Determining pulse positions...')
-    pulse_positions = get_pulse_positions(states, outdir=outdir, min_peak_height=min_peak_height)
+    pulse_positions = get_pulse_positions(activity, outdir=outdir, min_peak_height=min_peak_height)
     if save_csv and outdir is not None:
         pulse_positions.to_csv(outdir / 'pulse_positions.csv')
 
@@ -462,7 +449,7 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
         panel_size = (tracks['frame'].max() / 100, (tracks['h'].max() + 1) / 100)
         plot_tracks(tracks, track_info, front_fates, pulse_fates, pulse_times, show=False, outpath=(outdir / 'out.svg') if outdir else None, panel_size=panel_size)
         plt.close()
-        plot_kymograph_with_endings(states, front_fates, duration, pulse_fates,  pulse_times, significant_splits=significant_splits, show=False, outpath=(outdir / 'out-kymo.png') if outdir else None, panel_size=panel_size)
+        plot_kymograph_with_endings(activity, front_fates, duration, pulse_fates,  pulse_times, significant_splits=significant_splits, show=False, outpath=(outdir / 'out-kymo.png') if outdir else None, panel_size=panel_size)
         plt.close()
 
 
@@ -473,10 +460,10 @@ def determine_fates(states: pd.DataFrame, input_protocol: Iterable[float], v=1/3
 if __name__ == '__main__':
     indir = Path('../private/current_simulation')
     outdir = indir
-    states = pd.read_csv(indir / 'states.csv')
+    activity = pd.read_csv(indir / 'activity.csv')
     with open(indir / 'input_protocol.json') as file:
         input_protocol = json.load(file)
     
-    determine_fates(states, input_protocol, outdir=outdir, plot_results=True)
+    determine_fates(activity, input_protocol, outdir=outdir, plot_results=True)
 
 

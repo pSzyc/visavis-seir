@@ -48,6 +48,8 @@ class VisAVisClient:
         clean_up: bool = True,  # remove files?
         verbose: bool = True,  # print information about progress
         images: bool = False,  # save output images
+        activity: bool = True,  # save average activity (E+I) in every row
+        states: bool = False,  # save full state
         seed: Optional[int] = None,
     ) -> Optional[SimulationResult]:
         if isinstance(protocol_file_path, str):
@@ -81,6 +83,7 @@ class VisAVisClient:
                 parameters.absolute(),
                 protocol_file_dst_path.absolute(),
                 *(["--images"] if images else []),
+                *(["--activity"] if activity else []),
                 *(["--seed", f"{seed}"] if seed is not None else []),
             ],
             cwd=simulation_dir,
@@ -101,7 +104,7 @@ class VisAVisClient:
                     f"Finished simulation {simulation_dir}\n", end="", color="green"
                 )
 
-        res = SimulationResult(simulation_dir)
+        res = SimulationResult(simulation_dir, has_states=states, has_activity=activity)
 
         if clean_up:
             shutil.rmtree(simulation_dir)

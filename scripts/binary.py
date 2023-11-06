@@ -36,17 +36,24 @@ def make_binary_protocol(interval, n_slots, p=0.5):
     return pulse_times, pulse_intervals
 
 
-def results_to_arrival_times(result):
+# def results_to_arrival_times(result):
 
-    data = result.states
-    h_max = data['h'].max()
+#     data = result.states
+#     h_max = data['h'].max()
 
-    data['act'] = 1.0 * ((data['E'] > 0) | (data['I'] > 0))
-    data_grouped = data.groupby(['seconds', 'h'])['act'].mean()
+#     data['act'] = 1.0 * ((data['E'] > 0) | (data['I'] > 0))
+#     data_grouped = data.groupby(['seconds', 'h'])['act'].mean()
     
-    output_series = data_grouped[:, h_max]
-    arrival_idxs, _ = find_peaks(output_series, distance=5)
-    arrival_times = output_series.index[arrival_idxs]
+#     output_series = data_grouped[:, h_max]
+#     arrival_idxs, _ = find_peaks(output_series, distance=5)
+#     arrival_times = output_series.index[arrival_idxs]
+    
+#     return arrival_times
+
+def activity_to_arrival_times(activity):
+   
+    arrival_idxs, _ = find_peaks(activity[activity.columns[-1]].to_numpy(), distance=5)
+    arrival_times = activity.index.get_level_values('seconds')[arrival_idxs]
     
     return arrival_times
 
@@ -115,9 +122,11 @@ def perform_single(interval, n_slots, duration, offset, n_margin, n_nearest, sim
             verbose=False,
             dir_name=f"sim-{simulation_id}/simulation",
             seed=simulation_id+19,
+            states=False,
+            activity=True,
         )
     # print('Result_loaded')
-    arrival_times = results_to_arrival_times(result)
+    arrival_times = activity_to_arrival_times(result.activity)
     # print('Arrivals_computed')
         
     data_part = arrival_times_to_dataset(
@@ -207,8 +216,8 @@ def generate_dataset_batch(
         data_parts = [
             data for _, data in pd.read_csv(outpath).groupby(['channel_length', 'channel_width', 'interval']) #data.drop(columns=[col for col in data.columns if col.startswith('Unnamed')]) for _, data in pd.read_csv(outpath).groupby(['channel_length', 'channel_width', 'interval'], group_keys=False)
         ]
-        # data_all = pd.concat(data_parts, ignore_index=True)
-        # data_all = data_all.set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
+        data_all = pd.concat(data_parts, ignore_index=True)
+        data_all = data_all.set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
         # if outpath:
         #     data_all.to_csv(outpath)
     else:

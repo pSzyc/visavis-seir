@@ -9,6 +9,21 @@ def plot_result(result, outfile=None, title=None, t_min=None, t_max=None, ax=Non
 
 def plot_result_from_states(data, outfile=None, title=None, t_min=None, t_max=None, ax:plt.Axes = None, panel_size=(20, 8), show=True):
     
+    
+    # act = 1.0 * ((data['E'] > 0) | (data['I'] > 0))
+    act = pd.Series(
+        (data['E'].to_numpy() + data['I'].to_numpy() > 0) * 1.,
+        index = data.index,
+    )
+
+    activity = act.groupby(['seconds', 'h']).mean().unstack()
+
+    return plot_result_from_activity(activity, outfile=outfile, title=title, t_min=t_min, t_max=t_max, ax=ax, panel_size=panel_size, show=show)
+
+
+def plot_result_from_activity(activity, outfile=None, title=None, t_min=None, t_max=None, ax:plt.Axes = None, panel_size=(20, 8), show=True):
+
+
     if ax is None:
         fig, ax = subplots_from_axsize(
             1, 1, axsize=panel_size,
@@ -17,32 +32,14 @@ def plot_result_from_states(data, outfile=None, title=None, t_min=None, t_max=No
     else:
         fig = ax.get_figure()
 
+
     if t_min is None:
-        t_min = data['seconds'].min()
+        t_min = activity.index.get_level_values('seconds').min()
     if t_max is None:
-        t_max = data['seconds'].max()
+        t_max = activity.index.get_level_values('seconds').max()
 
-    data_selected = data[data['seconds'].between(t_min, t_max)].set_index(['h', 'seconds'])
+    img = activity[activity.index.get_level_values('seconds').between(t_min, t_max)].to_numpy().T
     
-    # act = 1.0 * ((data['E'] > 0) | (data['I'] > 0))
-    act = pd.Series(
-        (data_selected['E'].to_numpy() + data_selected['I'].to_numpy() > 0) * 1.,
-        index = data_selected.index,
-    )
-    del data_selected
-    
-    img = act.groupby(['h', 'seconds']).mean().unstack().to_numpy()
-    
-    # data_selected['E'] = data_selected['E'] > 0
-    # data_selected['I'] = data_selected['I'] > 0
-    # data_selected['R'] = data_selected['R'] > 0
-
-    # img_E = data_selected.groupby(['seconds', 'h'])['E'].mean().unstack().to_numpy().T
-    # img_I = data_selected.groupby(['seconds', 'h'])['I'].mean().unstack().to_numpy().T
-    # img_R = data_selected.groupby(['seconds', 'h'])['R'].mean().unstack().to_numpy().T
-
-    # img = img_E + img_I
-
     ax.imshow(
         img,
         cmap='gray',

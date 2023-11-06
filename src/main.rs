@@ -48,8 +48,14 @@ struct Args {
     parameters_json_file: String,
     protocol_file: String,
     /// Generate png images for every frame
-    #[clap(long = "images", short = 'i', action)]
+    #[clap(long = "images", short = 'I', action)]
     images: bool,
+    /// Write number of active (E/I) cells in every row for every frame
+    #[clap(long = "activity", short = 'A', action)]
+    activity: bool,
+    /// Write full state for every frame
+    #[clap(long = "states", short = 'S', action)]
+    states: bool,
     /// Random seed
     #[clap(long = "seed", short = 's', default_value_t = 123)]
     seed: u128,
@@ -62,6 +68,8 @@ fn execute_protocol() -> bool {
     let rates = Rates::from_json_file(&args.parameters_json_file);
     let protocol = Protocol::from_text_file(&args.protocol_file);
     let images_out = args.images;
+    let activity_out = args.activity;
+    let states_out = args.states;
     let seed = args.seed;
 
     std::thread::Builder::new()
@@ -70,7 +78,7 @@ fn execute_protocol() -> bool {
         .spawn(move || {
             let mut generator = initialize_generator(seed, false);
             let mut lattice = Lattice::new(&mut generator);
-            protocol.execute(&mut lattice, &rates, &mut generator, images_out);
+            protocol.execute(&mut lattice, &rates, &mut generator, images_out, activity_out, states_out);
         })
         .expect("☠ @ protocol_execution thread")
         .join()
