@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="500"
-   height="100"
+   width="1000"
+   height="200"
    version="1.1"
    id="svg7"
-   sodipodi:docname="quier.svg"
+   sodipodi:docname="QUEIR.svg"
    inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -19,17 +19,66 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.328753"
-     inkscape:cx="283.8429"
-     inkscape:cy="46.591459"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="511.59174"
+     inkscape:cy="153.08861"
      inkscape:window-width="1920"
      inkscape:window-height="1011"
      inkscape:window-x="0"
      inkscape:window-y="32"
      inkscape:window-maximized="1"
-     inkscape:current-layer="Tags" />
+     inkscape:current-layer="svg7"
+     showguides="true" />
   <defs
      id="defs7">
+    <rect
+       x="153.44217"
+       y="27.577164"
+       width="713.47072"
+       height="36.769552"
+       id="rect32" />
+    <rect
+       x="161.92745"
+       y="18.384776"
+       width="701.44991"
+       height="43.133513"
+       id="rect29" />
+    <rect
+       x="730"
+       y="75.5"
+       width="15.5"
+       height="29.5"
+       id="rect56" />
+    <rect
+       x="695.5"
+       y="67.75"
+       width="47.75"
+       height="39.25"
+       id="rect55" />
+    <rect
+       x="733.5"
+       y="76.25"
+       width="12"
+       height="32"
+       id="rect54" />
+    <rect
+       x="512.75"
+       y="81.625"
+       width="55.25"
+       height="26.625"
+       id="rect53" />
+    <rect
+       x="544.82581"
+       y="40.835419"
+       width="97.757515"
+       height="48.436813"
+       id="rect41" />
+    <rect
+       x="84.326248"
+       y="36.500221"
+       width="19.753061"
+       height="10.252268"
+       id="rect4" />
     <rect
        x="74.122627"
        y="61.878445"
@@ -42,25 +91,6 @@
        width="67.75354"
        height="21.21743"
        id="rect20" />
-    <marker
-       style="overflow:visible"
-       id="Triangle"
-       refX="0"
-       refY="0"
-       orient="auto-start-reverse"
-       inkscape:stockid="Triangle arrow"
-       markerWidth="1"
-       markerHeight="1"
-       viewBox="0 0 1 1"
-       inkscape:isstock="true"
-       inkscape:collect="always"
-       preserveAspectRatio="xMidYMid">
-      <path
-         transform="scale(0.5)"
-         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
-         d="M 5.77,0 -2.88,5 V -5 Z"
-         id="path135" />
-    </marker>
     <rect
        x="228.35701"
        y="72.390724"
@@ -107,7 +137,9 @@
        markerHeight="10"
        refX="5"
        refY="5"
-       orient="auto">
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
       <polygon
          points="10,5 0,10 0,0 "
          fill="#000000"
@@ -457,666 +489,1070 @@
          fill="#000000"
          id="polygon7-9-4-27-6-9-2-4-6" />
     </marker>
+    <marker
+       id="arrowhead-1-1-5-2"
+       markerWidth="30"
+       markerHeight="30"
+       refX="5"
+       refY="5"
+       orient="auto-start-reverse"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-4-0-0" />
+    </marker>
+    <marker
+       id="arrowhead-1-1-2"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,0 10,5 0,10 "
+         fill="#000000"
+         id="polygon7-9-4-3" />
+    </marker>
+    <marker
+       id="arrowhead-1-1-9-7"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-4-2-5" />
+    </marker>
+    <marker
+       id="arrowhead-1-1-7-9"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-4-27-2" />
+    </marker>
+    <marker
+       id="arrowhead-1-0"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,10 0,0 10,5 "
+         fill="#000000"
+         id="polygon7-9-61" />
+    </marker>
+    <marker
+       id="arrowhead-1-17"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,10 0,0 10,5 "
+         fill="#000000"
+         id="polygon7-9-7" />
+    </marker>
+    <marker
+       id="arrowhead-1-73"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,10 0,0 10,5 "
+         fill="#000000"
+         id="polygon7-9-65" />
+    </marker>
+    <marker
+       id="arrowhead-1-2"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,10 0,0 10,5 "
+         fill="#000000"
+         id="polygon7-9-9" />
+    </marker>
+    <marker
+       id="arrowhead-1-17-3"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,0 10,5 0,10 "
+         fill="#000000"
+         id="polygon7-9-7-9" />
+    </marker>
+    <marker
+       id="arrowhead-1-73-0"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,0 10,5 0,10 "
+         fill="#000000"
+         id="polygon7-9-65-8" />
+    </marker>
+    <marker
+       id="arrowhead-1-0-8"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,0 10,5 0,10 "
+         fill="#000000"
+         id="polygon7-9-61-5" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-8"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,0 10,5 0,10 "
+         fill="#000000"
+         id="polygon7-9-9-8" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-3"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,0 10,5 0,10 "
+         fill="#000000"
+         id="polygon7-9-9-3" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-9"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,0 10,5 0,10 "
+         fill="#000000"
+         id="polygon7-9-9-7" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-2"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,0 10,5 0,10 "
+         fill="#000000"
+         id="polygon7-9-9-5" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-2-4"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-9-5-7" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-2-9"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-9-5-3" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-2-1"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-9-5-0" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-28"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,0 10,5 0,10 "
+         fill="#000000"
+         id="polygon7-9-9-4" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-8-7"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-9-8-2" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-3-4"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-9-3-0" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-9-6"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-9-7-2" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-6"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0,0 10,5 0,10 "
+         fill="#000000"
+         id="polygon7-9-9-0" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-2-99"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-9-5-1" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-2-2"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-9-5-2" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-2-8"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-9-5-8" />
+    </marker>
+    <marker
+       id="arrowhead-1-2-2-80"
+       markerWidth="10"
+       markerHeight="10"
+       refX="5"
+       refY="5"
+       orient="auto"
+       viewBox="0 0 10 10"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="10,5 0,10 0,0 "
+         fill="#000000"
+         id="polygon7-9-9-5-4" />
+    </marker>
   </defs>
   <g
-     id="Borders">
-    <rect
-       style="fill:none;stroke:#e1e1e1;stroke-width:0.84247;stroke-opacity:1"
-       id="rect1"
-       width="100.78659"
-       height="39.210205"
-       x="110.98952"
-       y="29.487579" />
-    <rect
-       style="fill:none;stroke:#e1e1e1;stroke-width:0.614929;stroke-opacity:1"
-       id="rect1-2"
-       width="53.386505"
-       height="39.437744"
-       x="57.526833"
-       y="29.37381" />
-    <rect
-       style="fill:none;stroke:#e1e1e1;stroke-width:0.84247;stroke-opacity:1"
-       id="rect1-1"
-       width="100.78659"
-       height="39.210205"
-       x="211.96606"
-       y="29.487579" />
-    <rect
-       style="fill:none;stroke:#e1e1e1;stroke-width:0.84247;stroke-opacity:1"
-       id="rect1-1-9"
-       width="100.78659"
-       height="39.210205"
-       x="312.9426"
-       y="29.487579" />
-  </g>
-  <g
-     id="Tags">
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, ';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#0a0a0a;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0.684832"
-       x="145.48283"
-       y="24.795441"
-       id="text2"><tspan
-         sodipodi:role="line"
-         id="tspan1"
-         x="145.48283"
-         y="24.795441">Exposed</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, ';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#0a0a0a;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0.684832"
-       x="65.172096"
-       y="24.98344"
-       id="text2-3"><tspan
-         sodipodi:role="line"
-         id="tspan1-75"
-         x="65.172096"
-         y="24.98344">Quiescent</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, ';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#0a0a0a;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0.684832"
-       x="243.71536"
-       y="25.735441"
-       id="text2-8"><tspan
-         sodipodi:role="line"
-         id="tspan1-7"
-         x="243.71536"
-         y="25.735441">Infectious</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, ';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#0a0a0a;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0.684832"
-       x="345.82388"
-       y="25.62344"
-       id="text2-8-2"><tspan
-         sodipodi:role="line"
-         id="tspan1-7-0"
-         x="345.82388"
-         y="25.62344">Resistant</tspan></text>
-  </g>
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:C059;-inkscape-font-specification:C059;fill:none;stroke:#0a0a0a;stroke-width:0.4;stroke-dasharray:none;stroke-opacity:0.684832"
-     x="204.69363"
-     y="-22.24098"
-     id="text3"><tspan
-       sodipodi:role="line"
-       id="tspan2"
-       x="204.69363"
-       y="-22.24098" /></text>
-  <path
-     style="fill:none;stroke:#000000;stroke-width:0.823754;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker1)"
-     d="m 413.67699,47.365527 31.78033,0.0018 V 79.004918 L 30.745692,78.981457 V 46.191211 l 22.223883,0.0013"
-     id="path13" />
-  <g
-     id="Infect"
-     transform="translate(-5.9210153,-0.60728363)">
+     id="g16-5"
+     transform="translate(367.30877,-6.8435065)">
     <g
-       id="g7"
-       transform="translate(12.525225,0.60728363)">
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
-         d="M 78.765667,72.894768 V 62.477695"
-         id="path15" />
-      <text
-         x="98.866562"
-         y="62.063076"
-         font-family="Arial"
-         font-size="10.7268px"
-         fill="#000000"
-         id="text1-8"
-         transform="scale(0.85901421,1.1641251)"
-         style="stroke-width:0.536343"><tspan
-           sodipodi:role="line"
-           id="tspan14"
-           x="98.866562"
-           y="62.063076"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans">I</tspan><tspan
-           sodipodi:role="line"
-           id="tspan15"
-           x="98.866562"
-           y="75.471573" /></text>
+       id="g17-7">
+      <g
+         id="g18-4"
+         transform="translate(13.965359,-13.788582)" />
     </g>
   </g>
   <g
-     id="Quiescent"
-     transform="translate(0.29048429,0.62054125)">
+     id="g25"
+     transform="translate(0,-0.0750001)">
+    <g
+       id="g6"
+       transform="translate(6.1903409,3.7605842)">
+      <line
+         x1="530.86273"
+         y1="97.155533"
+         x2="547.38055"
+         y2="97.155533"
+         stroke="#000000"
+         marker-end="url(#arrowhead-1-2)"
+         id="line4-6-96"
+         style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="534.33032"
+         y="90.107971"
+         id="text22-3"><tspan
+           sodipodi:role="line"
+           id="tspan22-8"
+           x="534.33032"
+           y="90.107971"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+             id="tspan30"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+             id="tspan44"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">I</tspan></tspan></text>
+    </g>
+    <g
+       id="g7"
+       transform="translate(-0.1914613,3.7605842)">
+      <line
+         x1="603.01758"
+         y1="97.155533"
+         x2="619.5354"
+         y2="97.155533"
+         stroke="#000000"
+         marker-end="url(#arrowhead-1-2-6)"
+         id="line4-6-96-6"
+         style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2-6)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="606.48517"
+         y="90.107971"
+         id="text22-3-1"><tspan
+           sodipodi:role="line"
+           id="tspan22-8-3"
+           x="606.48517"
+           y="90.107971"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+             id="tspan30-21"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+             id="tspan44-5"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">I</tspan></tspan></text>
+    </g>
     <text
-       x="84.50116"
-       y="44.614944"
+       x="605.56238"
+       y="85.480347"
+       font-family="Arial"
+       font-size="20px"
+       fill="#000000"
+       id="text2-5-97-7"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#000000;stroke-width:0.536343"
+       transform="scale(0.85901421,1.1641251)"><tspan
+         sodipodi:role="line"
+         id="tspan7-0-3-5"
+         x="605.56238"
+         y="85.480347"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#660000;fill-opacity:1;stroke-width:0.536343">I<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub;fill:#660000;fill-opacity:1"
+   id="tspan39">1</tspan></tspan></text>
+    <g
+       id="g8"
+       transform="translate(4.5827505,3.938988)">
+      <text
+         x="653.93988"
+         y="81.191628"
+         font-family="Arial"
+         font-size="20px"
+         fill="#000000"
+         id="text13-1"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#8c0000;fill-opacity:1;stroke-width:0.536343"
+         transform="scale(0.85901421,1.1641251)"><tspan
+           sodipodi:role="line"
+           id="tspan13-8"
+           x="653.93988"
+           y="81.191628"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#8c0000;fill-opacity:1;stroke-width:0.536343">I</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-family:Serif;-inkscape-font-specification:Serif;baseline-shift:baseline;fill:#000000;stroke:none;stroke-width:0.2;stroke-linecap:round;paint-order:stroke fill markers"
+         x="568.25916"
+         y="98.011726"
+         id="text16-9"><tspan
+           sodipodi:role="line"
+           id="tspan16-7"
+           x="568.25916"
+           y="98.011726"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#8c0000;fill-opacity:1;stroke:none"><tspan
+             style="font-size:10.6667px;fill:#8c0000;fill-opacity:1;stroke:none"
+             id="tspan17">n</tspan><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub;fill:#8c0000;fill-opacity:1;stroke:none"
+             id="tspan38">I</tspan><tspan
+             style="font-size:10.6667px;fill:#8c0000;fill-opacity:1;stroke:none"
+             id="tspan18">=2</tspan></tspan><tspan
+           sodipodi:role="line"
+           x="568.25916"
+           y="113.15408"
+           style="baseline-shift:baseline;stroke:none"
+           id="tspan41" /></text>
+    </g>
+  </g>
+  <g
+     id="g24"
+     transform="translate(-1.337684e-5,0.31471185)">
+    <g
+       id="g11"
+       transform="translate(-3.645223,0.37087203)">
+      <line
+         x1="681.76324"
+         y1="100.15553"
+         x2="698.28107"
+         y2="100.15553"
+         stroke="#000000"
+         marker-end="url(#arrowhead-1-2-28)"
+         id="line4-6-96-1"
+         style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2-28)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="685.23083"
+         y="93.107971"
+         id="text22-3-3"><tspan
+           sodipodi:role="line"
+           id="tspan22-8-1"
+           x="685.23083"
+           y="93.107971"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+             id="tspan30-1"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+             id="tspan32-0"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">R</tspan></tspan></text>
+    </g>
+    <g
+       id="g12"
+       transform="translate(-3.6537879,0.37087203)">
+      <line
+         x1="729.8288"
+         y1="100.15553"
+         x2="746.34662"
+         y2="100.15553"
+         stroke="#000000"
+         marker-end="url(#arrowhead-1-2-8-7)"
+         id="line4-6-96-8-0"
+         style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2-8-7)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="733.29639"
+         y="93.107971"
+         id="text22-3-9-3"><tspan
+           sodipodi:role="line"
+           id="tspan22-8-6-9"
+           x="733.29639"
+           y="93.107971"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+             id="tspan30-4-1"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+             id="tspan32-3-9"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">R</tspan></tspan></text>
+    </g>
+    <g
+       id="g13"
+       transform="translate(-1.1428461,0.37087203)">
+      <line
+         x1="775.64056"
+         y1="100.15553"
+         x2="792.15839"
+         y2="100.15553"
+         stroke="#000000"
+         marker-end="url(#arrowhead-1-2-3-4)"
+         id="line4-6-96-0-3"
+         style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2-3-4)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="779.10815"
+         y="93.107971"
+         id="text22-3-4-3"><tspan
+           sodipodi:role="line"
+           id="tspan22-8-8-8"
+           x="779.10815"
+           y="93.107971"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+             id="tspan30-8-0"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+             id="tspan32-8-5"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">R</tspan></tspan></text>
+    </g>
+    <text
+       x="766.82098"
+       y="86.184547"
+       font-family="Arial"
+       font-size="20px"
+       fill="#000000"
+       id="text2-5-97-7-6"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#000000;stroke-width:0.536343"
+       transform="scale(0.85901421,1.1641251)"><tspan
+         sodipodi:role="line"
+         id="tspan7-0-3-5-6"
+         x="766.82098"
+         y="86.184547"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#5959d9;fill-opacity:1;stroke-width:0.536343">R<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub;fill:#5959d9;fill-opacity:1"
+   id="tspan25-4">1</tspan></tspan></text>
+    <text
+       x="188.51208"
+       y="35.938751"
+       font-family="Arial"
+       font-size="20px"
+       fill="#000000"
+       id="text10-1-4"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;white-space:pre;inline-size:0;fill:#598cd9;fill-opacity:1;stroke-width:0.536343"
+       transform="matrix(0.85901421,0,0,1.1641251,543.14658,58.554482)"><tspan
+         id="tspan10-7-6"
+         x="188.51208"
+         y="35.938751"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#598cd9;fill-opacity:1;stroke-width:0.536343">R<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub;fill:#598cd9;fill-opacity:1"
+   id="tspan26-2">2</tspan></tspan></text>
+    <text
+       x="188.51208"
+       y="35.938751"
+       font-family="Arial"
+       font-size="20px"
+       fill="#000000"
+       id="text10-1-4-5"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;white-space:pre;inline-size:0;fill:#59bfd9;fill-opacity:1;stroke-width:0.536343"
+       transform="matrix(0.85901421,0,0,1.1641251,591.20357,58.417891)"><tspan
+         id="tspan10-7-6-4"
+         x="188.51208"
+         y="35.938751"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#59bfd9;fill-opacity:1;stroke-width:0.536343">R<tspan
+   style="font-size:10.6667px;baseline-shift:sub;fill:#59bfd9;fill-opacity:1"
+   id="tspan24">3</tspan></tspan></text>
+    <g
+       id="g15"
+       transform="translate(-1.0028246,0.69961191)">
+      <text
+         x="934.16809"
+         y="83.763916"
+         font-family="Arial"
+         font-size="20px"
+         fill="#000000"
+         id="text13-1-6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#59f2d9;fill-opacity:1;stroke-width:0.536343"
+         transform="scale(0.85901421,1.1641251)"><tspan
+           sodipodi:role="line"
+           id="tspan13-8-7"
+           x="934.16809"
+           y="83.763916"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#59f2d9;fill-opacity:1;stroke-width:0.536343">R</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-family:Serif;-inkscape-font-specification:Serif;baseline-shift:baseline;fill:#59f2d9;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-linecap:round;paint-order:stroke fill markers"
+         x="812.96155"
+         y="101.01727"
+         id="text16-9-5"><tspan
+           sodipodi:role="line"
+           id="tspan16-7-6"
+           x="812.96155"
+           y="101.01727"
+           style="baseline-shift:baseline;fill:#59f2d9;fill-opacity:1;stroke:none"><tspan
+             style="font-size:10.6667px;fill:#59f2d9;fill-opacity:1;stroke:none"
+             id="tspan19">n</tspan><tspan
+             style="font-size:8px;baseline-shift:sub;fill:#59f2d9;fill-opacity:1;stroke:none"
+             id="tspan37-9">R</tspan><tspan
+             style="font-size:10.6667px;fill:#59f2d9;fill-opacity:1;stroke:none"
+             id="tspan20">=5</tspan></tspan></text>
+    </g>
+    <g
+       id="g14"
+       transform="translate(-3.2847705,0.37087203)">
+      <line
+         x1="846.63751"
+         y1="100.15553"
+         x2="863.15533"
+         y2="100.15553"
+         stroke="#000000"
+         marker-end="url(#arrowhead-1-2-9-6)"
+         id="line4-6-96-3-2"
+         style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2-9-6)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="850.1051"
+         y="93.107971"
+         id="text22-3-0-8"><tspan
+           sodipodi:role="line"
+           id="tspan22-8-3-2"
+           x="850.1051"
+           y="93.107971"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+             id="tspan30-0-9"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+             id="tspan32-9-9"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">R</tspan></tspan></text>
+    </g>
+  </g>
+  <g
+     id="g33">
+    <rect
+       style="fill:none;stroke:#e1e1e1;stroke-width:1.70624;stroke-opacity:1"
+       id="rect1"
+       width="238.29376"
+       height="68.024231"
+       x="263.52084"
+       y="60.853119" />
+    <rect
+       style="fill:none;stroke:#e1e1e1;stroke-width:1.30554;stroke-opacity:1"
+       id="rect1-1"
+       width="138.69446"
+       height="68.424942"
+       x="502.84555"
+       y="60.652763" />
+    <rect
+       style="fill:none;stroke:#e1e1e1;stroke-width:1.70624;stroke-opacity:1"
+       id="rect1-1-9"
+       width="238.29376"
+       height="68.024239"
+       x="642.57092"
+       y="60.853115" />
+    <rect
+       style="fill:none;stroke:#e1e1e1;stroke-width:1.04702;stroke-opacity:1"
+       id="rect1-2"
+       width="88.952972"
+       height="68.619667"
+       x="173.66621"
+       y="60.555401" />
+  </g>
+  <g
+     id="g32">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.3333px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:#0a0a0a;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0.684832"
+       x="350.06372"
+       y="49.386589"
+       id="text2"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         x="350.06372"
+         y="49.386589">Exposed</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.3333px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:#0a0a0a;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0.684832"
+       x="533.93811"
+       y="51.26725"
+       id="text2-8"><tspan
+         sodipodi:role="line"
+         id="tspan1-7"
+         x="533.93811"
+         y="51.26725">Infectious</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.3333px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:#0a0a0a;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0.684832"
+       x="725.39581"
+       y="50.920586"
+       id="text2-8-2"><tspan
+         sodipodi:role="line"
+         id="tspan1-7-0"
+         x="725.39581"
+         y="50.920586">Resistant</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.3333px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke:#0a0a0a;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0.684832"
+       x="179.02136"
+       y="50.729919"
+       id="text2-3"><tspan
+         sodipodi:role="line"
+         id="tspan1-75"
+         x="179.02136"
+         y="50.729919">Quiescent</tspan></text>
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#030303;stroke-width:0.5;stroke-linecap:round;stroke-dasharray:0.5, 2;stroke-dashoffset:0.5;stroke-opacity:1;paint-order:stroke fill markers"
+     x="570.63513"
+     y="19.506016"
+     id="text28"><tspan
+       sodipodi:role="line"
+       id="tspan28"
+       x="570.63513"
+       y="19.506016">s</tspan></text>
+  <text
+     xml:space="preserve"
+     transform="translate(0,-1.000079)"
+     id="text29"
+     style="font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;white-space:pre;shape-inside:url(#rect29);fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#030303;stroke-width:0.5;stroke-linecap:round;stroke-dasharray:0.5, 2;stroke-dashoffset:0.5;stroke-opacity:1;paint-order:stroke fill markers" />
+  <g
+     id="g46"
+     transform="translate(46.956977,29.426896)">
+    <text
+       x="176.82765"
+       y="60.38216"
        font-family="Arial"
        font-size="10.7268px"
        fill="#000000"
        id="text1"
        transform="scale(0.85901421,1.1641251)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">Q</text>
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#808080;stroke-width:0.536343"><tspan
+         style="fill:#808080;fill-opacity:1"
+         id="tspan21">Q</tspan></text>
     <g
-       id="g23"
-       transform="translate(-4.2509854,-1.1386568)">
+       id="g21-0-4-4"
+       transform="translate(79.743645,18.392218)">
       <g
-         id="g8"
-         transform="translate(-1.3663882,-2.505045)">
+         id="g32-0-9">
         <line
-           x1="88.430557"
-           y1="49.694042"
-           x2="97.645081"
-           y2="49.694042"
+           x1="89.879829"
+           y1="53.022003"
+           x2="106.39767"
+           y2="53.022003"
            stroke="#000000"
-           marker-end="url(#arrowhead-1)"
-           id="line4-6"
-           style="stroke-width:0.536343;marker-end:url(#arrowhead-1)" />
+           marker-end="url(#arrowhead-1-2-2-99)"
+           id="line4-6-96-5-1"
+           style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2-2-99)" />
         <text
            xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-           x="92.327568"
-           y="57.119354"
-           id="text22"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+           x="93.347427"
+           y="45.974442"
+           id="text22-3-94-0"><tspan
              sodipodi:role="line"
-             id="tspan22"
-             x="92.327568"
-             y="57.119354"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rA</tspan></text>
+             id="tspan22-8-69-7"
+             x="93.347427"
+             y="45.974442"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+               id="tspan30-2-58"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+               id="tspan46"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">A</tspan></tspan></text>
       </g>
     </g>
   </g>
+  <g
+     id="g26"
+     transform="translate(-9.1514403e-7,0.98231708)">
+    <text
+       x="330.02438"
+       y="85.611069"
+       font-family="Arial"
+       font-size="20px"
+       fill="#000000"
+       id="text2-5-97"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#000000;stroke-width:0.536343"
+       transform="scale(0.85901421,1.1641251)"><tspan
+         sodipodi:role="line"
+         id="tspan7-0-3"
+         x="330.02438"
+         y="85.611069"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#4d3300;fill-opacity:1;fill-rule:nonzero;stroke-width:0.536343">E<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub;fill:#4d3300;fill-opacity:1;fill-rule:nonzero;stroke-width:0.536343"
+   id="tspan9-3-61">1</tspan></tspan></text>
+    <text
+       x="188.51208"
+       y="35.938751"
+       font-family="Arial"
+       font-size="20px"
+       fill="#000000"
+       id="text10"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;white-space:pre;inline-size:0;fill:#664d00;fill-opacity:1;stroke-width:0.536343"
+       transform="matrix(0.85901421,0,0,1.1641251,166.31834,57.886876)"><tspan
+         id="tspan10"
+         x="188.51208"
+         y="35.938751"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#664d00;fill-opacity:1;stroke-width:0.536343">E<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub;fill:#664d00;fill-opacity:1;stroke-width:0.536343"
+   id="tspan9">2</tspan></tspan></text>
+    <text
+       x="188.51208"
+       y="35.938751"
+       font-family="Arial"
+       font-size="20px"
+       fill="#000000"
+       id="text10-0"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;white-space:pre;inline-size:0;fill:#664d00;fill-opacity:1;stroke-width:0.536343"
+       transform="matrix(0.85901421,0,0,1.1641251,212.76156,57.750285)"><tspan
+         id="tspan10-6"
+         x="188.51208"
+         y="35.938751"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#806600;fill-opacity:1;stroke-width:0.536343">E<tspan
+   style="font-size:10.6667px;baseline-shift:sub;fill:#806600;fill-opacity:1"
+   id="tspan22">3</tspan></tspan></text>
+    <g
+       id="g4"
+       transform="translate(-1.5059354,-2.6943995)">
+      <text
+         x="492.32132"
+         y="87.449394"
+         font-family="Arial"
+         font-size="20px"
+         fill="#000000"
+         id="text13"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#000000;stroke-width:0.536343"
+         transform="scale(0.85901421,1.1641251)"><tspan
+           sodipodi:role="line"
+           id="tspan13"
+           x="492.32132"
+           y="87.449394"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#998000;fill-opacity:1;stroke-width:0.536343">E</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:10.6667px;font-family:Serif;-inkscape-font-specification:Serif;baseline-shift:baseline;fill:#998000;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-linecap:round;paint-order:stroke fill markers"
+         x="430.7731"
+         y="104.01034"
+         id="text16"><tspan
+           sodipodi:role="line"
+           id="tspan16"
+           x="430.7731"
+           y="104.01034"
+           style="font-size:10.6667px;baseline-shift:baseline;fill:#998000;fill-opacity:1;stroke:none">n<tspan
+   style="font-size:8px;baseline-shift:sub;fill:#998000;fill-opacity:1;stroke:none"
+   id="tspan3">E</tspan>=4</tspan></text>
+    </g>
+    <g
+       id="g52"
+       transform="translate(211.96941,46.836795)">
+      <line
+         x1="89.879829"
+         y1="53.022003"
+         x2="106.39767"
+         y2="53.022003"
+         stroke="#000000"
+         marker-end="url(#arrowhead-1-2-2)"
+         id="line4-6-96-5"
+         style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2-2)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="93.347427"
+         y="45.974442"
+         id="text22-3-94"><tspan
+           sodipodi:role="line"
+           id="tspan22-8-69"
+           x="93.347427"
+           y="45.974442"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+             id="tspan30-2"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+             id="tspan34"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">E</tspan></tspan></text>
+    </g>
+    <g
+       id="g52-4"
+       transform="translate(258.41264,46.836795)">
+      <line
+         x1="89.879829"
+         y1="53.022003"
+         x2="106.39767"
+         y2="53.022003"
+         stroke="#000000"
+         marker-end="url(#arrowhead-1-2-2-2)"
+         id="line4-6-96-5-12"
+         style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2-2-2)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="93.347427"
+         y="45.974442"
+         id="text22-3-94-8"><tspan
+           sodipodi:role="line"
+           id="tspan22-8-69-8"
+           x="93.347427"
+           y="45.974442"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+             id="tspan30-2-9"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+             id="tspan34-2"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">E</tspan></tspan></text>
+    </g>
+    <g
+       id="g52-6"
+       transform="translate(305.12159,46.836795)">
+      <line
+         x1="89.879829"
+         y1="53.022003"
+         x2="106.39767"
+         y2="53.022003"
+         stroke="#000000"
+         marker-end="url(#arrowhead-1-2-2-8)"
+         id="line4-6-96-5-8"
+         style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2-2-8)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="93.347427"
+         y="45.974442"
+         id="text22-3-94-3"><tspan
+           sodipodi:role="line"
+           id="tspan22-8-69-83"
+           x="93.347427"
+           y="45.974442"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+             id="tspan30-2-3"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+             id="tspan34-3"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">E</tspan></tspan></text>
+    </g>
+    <g
+       id="g52-68"
+       transform="translate(370.5872,46.836795)">
+      <line
+         x1="89.879829"
+         y1="53.022003"
+         x2="106.39767"
+         y2="53.022003"
+         stroke="#000000"
+         marker-end="url(#arrowhead-1-2-2-80)"
+         id="line4-6-96-5-9"
+         style="stroke-width:0.718096;marker-end:url(#arrowhead-1-2-2-80)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;baseline-shift:baseline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="93.347427"
+         y="45.974442"
+         id="text22-3-94-06"><tspan
+           sodipodi:role="line"
+           id="tspan22-8-69-87"
+           x="93.347427"
+           y="45.974442"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
+             id="tspan30-2-90"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:super">r</tspan><tspan
+             id="tspan34-33"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Cantarell;-inkscape-font-specification:Cantarell;baseline-shift:sub">E</tspan></tspan></text>
+    </g>
+  </g>
+  <path
+     style="fill:none;stroke:#030303;stroke-width:0.18494;stroke-linecap:round;marker-start:url(#arrowhead-1-1-5-2);paint-order:stroke fill markers"
+     d="m 169.22386,94.724674 h -21.7493 V 167.96773 H 908.98611 V 94.97256 h -28.19497"
+     id="path57" />
+  <path
+     style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#030303;stroke-width:0.487009;stroke-linecap:round;stroke-dasharray:0.487009, 1.94804;stroke-dashoffset:0.487009;stroke-opacity:1;marker-end:url(#arrowhead);paint-order:stroke fill markers"
+     d="m 573.84779,130.3245 v 23.81071 H 223.4155 v -23.13998"
+     id="path26" />
+  <text
+     x="267.23096"
+     y="128.18153"
+     font-family="Arial"
+     font-size="20px"
+     fill="#000000"
+     id="text2-5-97-7-65"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#000000;stroke-width:0.536343;fill-opacity:1"
+     transform="scale(0.85901421,1.1641251)"><tspan
+       sodipodi:role="line"
+       id="tspan7-0-3-5-69"
+       x="267.23096"
+       y="128.18153"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#000000;fill-opacity:1;stroke-width:0.536343">Activation</tspan></text>
   <text
      xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-     x="105.4752"
-     y="69.462517"
-     id="text23"><tspan
+     style="font-size:16px;font-family:Cantarell;-inkscape-font-specification:Cantarell;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#030303;stroke-width:0.5;stroke-linecap:round;stroke-dasharray:0.5, 2;stroke-dashoffset:0.5;stroke-opacity:1;paint-order:stroke fill markers"
+     x="232.63812"
+     y="-71.417786"
+     id="text31"><tspan
        sodipodi:role="line"
-       id="tspan23"
-       x="105.4752"
-       y="69.462517" /></text>
-  <g
-     id="Exposed"
-     transform="translate(-0.38750752)">
-    <text
-       x="133.24321"
-       y="44.928101"
-       font-family="Arial"
-       font-size="20px"
-       fill="#000000"
-       id="text2-5"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;fill:#000000;stroke-width:0.536343"
-       transform="scale(0.85901421,1.1641251)"><tspan
-         sodipodi:role="line"
-         id="tspan7-0"
-         x="133.24321"
-         y="44.928101"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">E<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.97247px;font-family:Sans;-inkscape-font-specification:Sans;baseline-shift:sub;stroke-width:0.536343"
-   id="tspan9-3">1</tspan></tspan></text>
-    <text
-       x="188.51208"
-       y="35.938751"
-       font-family="Arial"
-       font-size="20px"
-       fill="#000000"
-       id="text2-2-0"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;white-space:pre;inline-size:0;fill:#000000;stroke-width:0.536343"
-       transform="matrix(0.85901421,0,0,1.1641251,-25.215321,10.464725)"><tspan
-         id="tspan7-3-6"
-         x="188.51208"
-         y="35.938751"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">E<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.97247px;font-family:Sans;-inkscape-font-specification:Sans;baseline-shift:sub;stroke-width:0.536343"
-   id="tspan10-3">2</tspan></tspan></text>
-    <g
-       id="g24-4"
-       transform="translate(81.054809,-3.0231589)">
-      <line
-         x1="88.430557"
-         y1="49.694042"
-         x2="97.645081"
-         y2="49.694042"
-         stroke="#000000"
-         marker-end="url(#arrowhead-1-1-5)"
-         id="line4-6-2-8"
-         style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-5)" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         x="92.327568"
-         y="57.119354"
-         id="text22-0-7"><tspan
-           sodipodi:role="line"
-           id="tspan22-6-1"
-           x="92.327568"
-           y="57.119354"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rE</tspan></text>
-    </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#080808;stroke-width:0.536343;stroke-opacity:1"
-       x="186.8042"
-       y="42.745193"
-       id="text11-6"
-       transform="scale(0.85901421,1.1641251)"><tspan
-         sodipodi:role="line"
-         id="tspan11-1"
-         x="186.8042"
-         y="42.745193"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">...</tspan></text>
-    <text
-       x="212.44415"
-       y="44.928101"
-       font-family="Arial"
-       font-size="20px"
-       fill="#000000"
-       id="text2-1-5"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;fill:#000000;stroke-width:0.536343"
-       transform="scale(0.85901421,1.1641251)"><tspan
-         sodipodi:role="line"
-         id="tspan7-2-5"
-         x="212.44415"
-         y="44.928101"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">E<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.97247px;font-family:Sans;-inkscape-font-specification:Sans;baseline-shift:sub;stroke-width:0.536343"
-   id="tspan13-4">nE</tspan></tspan></text>
-    <g
-       id="g23-9"
-       transform="translate(35.2815,-3.0231589)">
-      <g
-         id="g24">
-        <line
-           x1="88.430557"
-           y1="49.694042"
-           x2="97.645081"
-           y2="49.694042"
-           stroke="#000000"
-           marker-end="url(#arrowhead-1-1)"
-           id="line4-6-2"
-           style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1)" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-           x="92.327568"
-           y="57.119354"
-           id="text22-0"><tspan
-             sodipodi:role="line"
-             id="tspan22-6"
-             x="92.327568"
-             y="57.119354"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rE</tspan></text>
-      </g>
-    </g>
-    <g
-       id="g24-6"
-       transform="translate(58.531188,-3.0231589)">
-      <line
-         x1="88.430557"
-         y1="49.694042"
-         x2="97.645081"
-         y2="49.694042"
-         stroke="#000000"
-         marker-end="url(#arrowhead-1-1-9)"
-         id="line4-6-2-6"
-         style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-9)" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         x="92.327568"
-         y="57.119354"
-         id="text22-0-4"><tspan
-           sodipodi:role="line"
-           id="tspan22-6-9"
-           x="92.327568"
-           y="57.119354"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rE</tspan></text>
-    </g>
-    <g
-       id="g24-2"
-       transform="translate(107.86223,-3.0231589)">
-      <line
-         x1="88.430557"
-         y1="49.694042"
-         x2="97.645081"
-         y2="49.694042"
-         stroke="#000000"
-         marker-end="url(#arrowhead-1-1-7)"
-         id="line4-6-2-2"
-         style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-7)" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         x="92.327568"
-         y="57.119354"
-         id="text22-0-6"><tspan
-           sodipodi:role="line"
-           id="tspan22-6-10"
-           x="92.327568"
-           y="57.119354"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rE</tspan></text>
-    </g>
-  </g>
-  <g
-     id="Infectious"
-     transform="translate(0,-2.1402023)">
-    <text
-       x="250.45633"
-       y="46.766563"
-       font-family="Arial"
-       font-size="20px"
-       fill="#000000"
-       id="text2-5-5"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;fill:#000000;stroke-width:0.536343"
-       transform="scale(0.85901421,1.1641251)"><tspan
-         sodipodi:role="line"
-         id="tspan7-0-2"
-         x="250.45633"
-         y="46.766563"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">I<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.97247px;font-family:Sans;-inkscape-font-specification:Sans;baseline-shift:sub;stroke-width:0.536343"
-   id="tspan9-3-5">1</tspan></tspan></text>
-    <text
-       x="188.51208"
-       y="35.938751"
-       font-family="Arial"
-       font-size="20px"
-       fill="#000000"
-       id="text2-2-0-4"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;white-space:pre;inline-size:0;fill:#000000;stroke-width:0.536343"
-       transform="matrix(0.85901421,0,0,1.1641251,76.143653,12.604927)"><tspan
-         id="tspan7-3-6-4"
-         x="188.51208"
-         y="35.938751"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">I<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.97247px;font-family:Sans;-inkscape-font-specification:Sans;baseline-shift:sub;stroke-width:0.536343"
-   id="tspan10-3-3">2</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#080808;stroke-width:0.536343;stroke-opacity:1"
-       x="304.96869"
-       y="44.58366"
-       id="text11-6-8"
-       transform="scale(0.85901421,1.1641251)"><tspan
-         sodipodi:role="line"
-         id="tspan11-1-6"
-         x="304.96869"
-         y="44.58366"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">...</tspan></text>
-    <text
-       x="333.71777"
-       y="46.766563"
-       font-family="Arial"
-       font-size="20px"
-       fill="#000000"
-       id="text2-1-5-8"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;fill:#000000;stroke-width:0.536343"
-       transform="scale(0.85901421,1.1641251)"><tspan
-         sodipodi:role="line"
-         id="tspan7-2-5-8"
-         x="333.71777"
-         y="46.766563"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">I<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.97247px;font-family:Sans;-inkscape-font-specification:Sans;baseline-shift:sub;stroke-width:0.536343"
-   id="tspan13-4-4">nI</tspan></tspan></text>
-    <g
-       id="g24-2-7"
-       transform="translate(135.04248,-0.88295696)">
-      <g
-         id="g1">
-        <line
-           x1="88.430557"
-           y1="49.694042"
-           x2="97.645081"
-           y2="49.694042"
-           stroke="#000000"
-           marker-end="url(#arrowhead-1-1-7-3)"
-           id="line4-6-2-2-5"
-           style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-7-3)" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-           x="92.327568"
-           y="57.119354"
-           id="text22-0-6-3"><tspan
-             sodipodi:role="line"
-             id="tspan22-6-10-5"
-             x="92.327568"
-             y="57.119354"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rI</tspan></text>
-      </g>
-    </g>
-    <g
-       id="g24-2-7-1"
-       transform="translate(158.9634,-0.88295696)">
-      <g
-         id="g2">
-        <line
-           x1="88.430557"
-           y1="49.694042"
-           x2="97.645081"
-           y2="49.694042"
-           stroke="#000000"
-           marker-end="url(#arrowhead-1-1-7-3-6)"
-           id="line4-6-2-2-5-2"
-           style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-7-3-6)" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-           x="92.327568"
-           y="57.119354"
-           id="text22-0-6-3-7"><tspan
-             sodipodi:role="line"
-             id="tspan22-6-10-5-0"
-             x="92.327568"
-             y="57.119354"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rI</tspan></text>
-      </g>
-    </g>
-    <g
-       id="g24-2-7-0"
-       transform="translate(183.63257,-0.88295696)">
-      <g
-         id="g2-6">
-        <line
-           x1="88.430557"
-           y1="49.694042"
-           x2="97.645081"
-           y2="49.694042"
-           stroke="#000000"
-           marker-end="url(#arrowhead-1-1-7-3-9)"
-           id="line4-6-2-2-5-26"
-           style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-7-3-9)" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-           x="92.327568"
-           y="57.119354"
-           id="text22-0-6-3-1"><tspan
-             sodipodi:role="line"
-             id="tspan22-6-10-5-8"
-             x="92.327568"
-             y="57.119354"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rI</tspan></text>
-      </g>
-    </g>
-    <g
-       id="g24-2-7-02"
-       transform="translate(209.92532,-0.88295696)">
-      <g
-         id="g2-3">
-        <line
-           x1="88.430557"
-           y1="49.694042"
-           x2="97.645081"
-           y2="49.694042"
-           stroke="#000000"
-           marker-end="url(#arrowhead-1-1-7-3-7)"
-           id="line4-6-2-2-5-7"
-           style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-7-3-7)" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-           x="92.327568"
-           y="57.119354"
-           id="text22-0-6-3-5"><tspan
-             sodipodi:role="line"
-             id="tspan22-6-10-5-9"
-             x="92.327568"
-             y="57.119354"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rI</tspan></text>
-      </g>
-    </g>
-  </g>
-  <g
-     id="Resistant"
-     transform="translate(-1.6018331)">
-    <text
-       x="370.11447"
-       y="44.928101"
-       font-family="Arial"
-       font-size="20px"
-       fill="#000000"
-       id="text2-5-9"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;fill:#000000;stroke-width:0.536343"
-       transform="scale(0.85901421,1.1641251)"><tspan
-         sodipodi:role="line"
-         id="tspan7-0-26"
-         x="370.11447"
-         y="44.928101"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">R<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.97247px;font-family:Sans;-inkscape-font-specification:Sans;baseline-shift:sub;stroke-width:0.536343"
-   id="tspan9-3-6">1</tspan></tspan></text>
-    <text
-       x="188.51208"
-       y="35.938751"
-       font-family="Arial"
-       font-size="20px"
-       fill="#000000"
-       id="text2-2-0-0"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;white-space:pre;inline-size:0;fill:#000000;stroke-width:0.536343"
-       transform="matrix(0.85901421,0,0,1.1641251,177.98117,10.464725)"><tspan
-         id="tspan7-3-6-48"
-         x="188.51208"
-         y="35.938751"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">R<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.97247px;font-family:Sans;-inkscape-font-specification:Sans;baseline-shift:sub;stroke-width:0.536343"
-   id="tspan10-3-7">2</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#080808;stroke-width:0.536343;stroke-opacity:1"
-       x="423.02521"
-       y="42.745193"
-       id="text11-6-7"
-       transform="scale(0.85901421,1.1641251)"><tspan
-         sodipodi:role="line"
-         id="tspan11-1-2"
-         x="423.02521"
-         y="42.745193"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">...</tspan></text>
-    <text
-       x="447.63208"
-       y="44.928101"
-       font-family="Arial"
-       font-size="20px"
-       fill="#000000"
-       id="text2-1-5-2"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.7268px;font-family:Sans;-inkscape-font-specification:Sans;fill:#000000;stroke-width:0.536343"
-       transform="scale(0.85901421,1.1641251)"><tspan
-         sodipodi:role="line"
-         id="tspan7-2-5-6"
-         x="447.63208"
-         y="44.928101"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;stroke-width:0.536343">R<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.97247px;font-family:Sans;-inkscape-font-specification:Sans;baseline-shift:sub;stroke-width:0.536343"
-   id="tspan13-4-1">nR</tspan></tspan></text>
-    <g
-       id="g3"
-       transform="translate(238.92171,-3.0231589)">
-      <line
-         x1="88.430557"
-         y1="49.694042"
-         x2="97.645081"
-         y2="49.694042"
-         stroke="#000000"
-         marker-end="url(#arrowhead-1-1-7-3-7-2)"
-         id="line4-6-2-2-5-7-3"
-         style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-7-3-7-2)" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         x="92.327568"
-         y="57.119354"
-         id="text22-0-6-3-5-6"><tspan
-           sodipodi:role="line"
-           id="tspan22-6-10-5-9-1"
-           x="92.327568"
-           y="57.119354"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rR</tspan></text>
-    </g>
-    <g
-       id="g3-1"
-       transform="translate(261.89212,-3.0231589)">
-      <line
-         x1="88.430557"
-         y1="49.694042"
-         x2="97.645081"
-         y2="49.694042"
-         stroke="#000000"
-         marker-end="url(#arrowhead-1-1-7-3-7-2-2)"
-         id="line4-6-2-2-5-7-3-9"
-         style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-7-3-7-2-2)" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         x="92.327568"
-         y="57.119354"
-         id="text22-0-6-3-5-6-4"><tspan
-           sodipodi:role="line"
-           id="tspan22-6-10-5-9-1-7"
-           x="92.327568"
-           y="57.119354"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rR</tspan></text>
-    </g>
-    <g
-       id="g3-0"
-       transform="translate(283.5283,-3.0231589)">
-      <line
-         x1="88.430557"
-         y1="49.694042"
-         x2="97.645081"
-         y2="49.694042"
-         stroke="#000000"
-         marker-end="url(#arrowhead-1-1-7-3-7-2-8)"
-         id="line4-6-2-2-5-7-3-3"
-         style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-7-3-7-2-8)" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         x="92.327568"
-         y="57.119354"
-         id="text22-0-6-3-5-6-6"><tspan
-           sodipodi:role="line"
-           id="tspan22-6-10-5-9-1-1"
-           x="92.327568"
-           y="57.119354"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rR</tspan></text>
-    </g>
-    <g
-       id="g3-0-2"
-       transform="translate(310.72126,-3.0231589)">
-      <line
-         x1="88.430557"
-         y1="49.694042"
-         x2="97.645081"
-         y2="49.694042"
-         stroke="#000000"
-         marker-end="url(#arrowhead-1-1-7-3-7-2-8-0)"
-         id="line4-6-2-2-5-7-3-3-0"
-         style="stroke-width:0.536343;marker-end:url(#arrowhead-1-1-7-3-7-2-8-0)" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:Sans;-inkscape-font-specification:Sans;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:none;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         x="92.327568"
-         y="57.119354"
-         id="text22-0-6-3-5-6-6-6"><tspan
-           sodipodi:role="line"
-           id="tspan22-6-10-5-9-1-1-1"
-           x="92.327568"
-           y="57.119354"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif;fill:#000000;fill-opacity:1;stroke:#030303;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers">rR</tspan></text>
-    </g>
-  </g>
+       id="tspan31"
+       x="232.63812"
+       y="-71.417786" /></text>
+  <text
+     xml:space="preserve"
+     id="text32"
+     style="font-size:13.3333px;font-family:Cantarell;-inkscape-font-specification:Cantarell;white-space:pre;shape-inside:url(#rect32);fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#030303;stroke-width:0.5;stroke-linecap:round;stroke-dasharray:0.5, 2;stroke-dashoffset:0.5;stroke-opacity:1;paint-order:stroke fill markers" />
 </svg>
