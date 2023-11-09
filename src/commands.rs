@@ -8,6 +8,7 @@ use crate::lattice::Lattice;
 use crate::molecule::Mol;
 use crate::rates::Rates;
 use crate::simulation::Simulation;
+use std::fs::{File};
 
 use rand::rngs::StdRng;
 
@@ -32,7 +33,9 @@ pub fn run_simulation_quietly(
     rng: &mut StdRng,
     tspan: (f64, f64),
     images_out: bool,
+    states_out: bool,
     init_frame_out: bool,
+    activity_csv: Option<&File>,
 ) {
     run_simulation_(
         lattice,
@@ -41,8 +44,10 @@ pub fn run_simulation_quietly(
         tspan,
         /*files_out:*/ false,
         images_out,
+        states_out,
         /*files_out_interval*/ -1.,
         init_frame_out,
+        activity_csv,
     )
 }
 
@@ -52,8 +57,10 @@ pub fn run_simulation(
     rng: &mut StdRng,
     tspan: (f64, f64),
     images_out: bool,
+    states_out: bool,
     files_out_interval: f64,
     init_frame_out: bool,
+    activity_csv: Option<&File>,
 ) {
     run_simulation_(
         lattice,
@@ -62,8 +69,10 @@ pub fn run_simulation(
         tspan,
         /*files_out:*/ true,
         images_out,
+        states_out,
         files_out_interval,
         init_frame_out,
+        activity_csv,
     )
 }
 
@@ -74,8 +83,10 @@ fn run_simulation_(
     tspan: (f64, f64),
     files_out: bool,
     images_out: bool,
+    states_out: bool,
     files_out_interval: f64,
     init_frame_out: bool,
+    activity_csv: Option<&File>,
 ) {
     let workers = Some(
         threadpool::Builder::new()
@@ -90,10 +101,12 @@ fn run_simulation_(
         tspan,
         files_out,
         images_out,
+        states_out,
         files_out_interval,
         /*ifni_secretion:*/ true,
         /*in_sep_thread:*/ false,
         init_frame_out,
+        activity_csv,
         &workers,
     );
     workers.unwrap().join()

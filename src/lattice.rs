@@ -24,8 +24,8 @@ pub struct Lattice {
 impl Lattice {
     pub const N_NEIGHBORS: usize = 6; // fixed "kissing number" of the lattice, do not change
 
-    pub const WIDTH: usize = 10;
-    pub const HEIGHT: usize = 100;
+    pub const WIDTH: usize = 20;
+    pub const HEIGHT: usize = 300;
     pub const SWAP_AXES: bool = true;
     pub const CAPACITY: usize = Lattice::WIDTH * Lattice::HEIGHT;
 
@@ -222,6 +222,36 @@ impl Lattice {
         } // for each cell/lattice node
     }
 
+
+    pub fn save_activity_csv(&self, time: f64, mut csv: &File) {
+
+
+        macro_rules! is_of_state {
+            ($w:ident, $h:ident, $m:expr) => {
+                self.cells[$h * Lattice::WIDTH + $w].molecules[$m as usize] > 0
+            };
+        }
+        macro_rules! is_active_01 {
+            ($w:ident, $h:ident) => {
+                if is_of_state!($w, $h, Mol::E) || is_of_state!($w, $h, Mol::I) {1}
+                else {0}
+            };
+        }
+
+        let mut line: Vec<String> = vec![
+            time.to_string(),
+        ];
+        // write out the state of each cell
+        for cell_h in 0..Lattice::HEIGHT {
+            let mut act: i32 = 0;
+            for cell_w in 0..Lattice::WIDTH {
+                act += is_active_01!(cell_w, cell_h)
+            }
+            line.push(act.to_string())
+        } // for each cell/lattice node
+        let line_s = line.join(",") + "\n";
+        csv.write(line_s.as_bytes()).expect("☠ ✏ CSV");
+    }
     // save output file(s)
     pub fn out(&self, time: f64, dump_image: bool) {
         if dump_image {

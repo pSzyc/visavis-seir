@@ -72,7 +72,8 @@ def simulate(n_sim, channel_widths, intervals, results_file, channel_length, n_w
                 channel_length=channel_length,
                 n_sim=n_sim,
                 interval=interval,
-                channel_width=w,                
+                channel_width=w,
+                outdir=(results_file.parent / f'w-{w}-l-{channel_length}' / f'interval-{interval}'),
                 ) | kwargs | (per_width_kwargs[w] if w in per_width_kwargs else {})
             for w in channel_widths for interval in intervals
         ],

@@ -13,6 +13,7 @@ use crate::units::MIN;
 
 use rand::{rngs::StdRng, Rng};
 use std::io::Write; // for .flush()
+use std::fs::File;
 use threadpool::ThreadPool;
 
 #[inline]
@@ -167,10 +168,12 @@ impl Simulation {
         tspan: (f64, f64),
         files_out: bool,
         images_out: bool,
+        states_out: bool,
         files_out_interval: f64,
         ifni_secretion: bool,
         in_sep_thread: bool,
         init_frame_out: bool,
+        activity_csv: Option<&File>,
         workers: &Option<ThreadPool>,
     ) {
         // (currently, these 3 parameters are redundant)
@@ -186,6 +189,8 @@ impl Simulation {
             print!("{:.0}m:", t / MIN);
             std::io::stdout().flush().unwrap()
         }
+
+
         loop {
             // check when next event occurs
             let sum_propens: f64 = propens[0].iter().sum();
@@ -201,9 +206,15 @@ impl Simulation {
                     // spawn in a separate thread
                     print!(".");
                     std::io::stdout().flush().unwrap();
-                    let la = lattice.clone();
-                    workers.as_ref().unwrap().execute(move || { la.out(t_next_files_out, images_out)});
+                    if states_out {
+                        let la = lattice.clone();
+                        workers.as_ref().unwrap().execute(move || { la.out(t_next_files_out, images_out)});
+                    }
                 }
+                if let Some(file) = &activity_csv {
+                    lattice.save_activity_csv(t_next_files_out, file);
+                }
+
                 t_next_files_out += files_out_interval;
             }
 

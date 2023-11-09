@@ -52,7 +52,7 @@ def generate_dataset(
     data_parts = []
     for simulation_id in tqdm(range(n_simulations)):
 
-        sim_dir_name = f'w-{channel_width}--l-{channel_length}--sim-{simulation_id}'
+        sim_dir_name = f'w-{channel_width}--l-{channel_length}--sim-{simulation_id}' +  _random_name(5)
         (sim_root / sim_dir_name).mkdir(exist_ok=True, parents=True)
 
         protocol_file_path = make_protocol(
@@ -67,6 +67,8 @@ def generate_dataset(
             verbose=False,
             dir_name=sim_dir_name + '/' +  _random_name(5),
             seed=19 + simulation_id,
+            states=save_states,
+            activity=True,
         )
         rmtree(str(sim_root /sim_dir_name))
 
@@ -79,7 +81,7 @@ def generate_dataset(
             result.states.to_csv(sim_out_dir / 'simulation_results.csv')     
 
         data_part = determine_fates(
-            result.states,
+            result.activity,
             input_protocol=pulse_intervals,
             outdir=outdir and outdir / f'sim-{simulation_id}',
             verbose=False,
@@ -87,6 +89,8 @@ def generate_dataset(
             save_csv=save_iterations,
             **kwargs,
             )
+
+        data_part = pd.read_csv(outdir / f"sim-{simulation_id}" / 'pulse_fates.csv')
         if n_margin > 0:
             data_part = data_part.iloc[n_margin:-n_margin]
 
@@ -100,8 +104,10 @@ def generate_dataset(
     pulse_fates['channel_width'] = channel_width
     pulse_fates['channel_length'] = channel_length
     
-    if plot_results and outdir:
+    if outdir:
         pulse_fates.set_index(['channel_length', 'channel_width', 'simulation_id']).to_csv(outdir / 'pulse_fates.csv')
+
+    if plot_results and outdir:
 
         with open(outdir / 'kymographs.html', 'w') as kymo_html:
             kymo_html.write('<html><body>')
