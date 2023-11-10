@@ -23,7 +23,7 @@ a_fail, b_fail = lreg_failure.coef_[0,0], lreg_failure.intercept_[0]
 def make_plot(ax):
     xs = np.linspace(0,20,101)
     ax.plot(propensities['channel_width'], propensities['l_failure'], 's', color='olive', label='failure')
-    ax.plot(propensities['channel_width'], propensities['l_spawning'], 'o', color='maroon',label='spawning')
+    ax.plot(propensities['channel_width'], propensities['l_spawning'], '^', color='maroon',label='spawning')
     ax.plot(xs, np.exp(lreg_failure.predict(xs.reshape(-1,1))), color='olive', alpha=0.3, label=f"$\\lambda_f$ = {np.exp(b_fail):.2f} $\\times$ {np.exp(-a_fail):.2f}$^{{-w}}$")
     ax.plot(xs, lreg.predict(xs.reshape(-1,1)), color='maroon', alpha=.4, label=f"$\\lambda_s$ = (w - {-b_sp/a_sp:.2f}) / {1/a_sp:.0f}")
     ax.plot(xs, np.exp(lreg_failure.predict(xs.reshape(-1,1))) + lreg.predict(xs.reshape(-1,1)), color='navy', alpha=.4, label=f"$\\lambda_f$ + $\\lambda_s$")
