@@ -19,3 +19,5 @@ def make_protocol(pulse_intervals, duration, out_folder):
             TEMPLATE.render(simulation_periods=simulation_periods, duration=duration)
         )
     return f'{out_folder}/out.protocol'
+
+make_protocol([100, 100], 2, '.')

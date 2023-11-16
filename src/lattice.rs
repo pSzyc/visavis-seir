@@ -24,8 +24,8 @@ pub struct Lattice {
 impl Lattice {
     pub const N_NEIGHBORS: usize = 6; // fixed "kissing number" of the lattice, do not change
 
-    pub const WIDTH: usize = 20;
-    pub const HEIGHT: usize = 300;
+    pub const WIDTH: usize = 7;
+    pub const HEIGHT: usize = 100;
     pub const SWAP_AXES: bool = true;
     pub const CAPACITY: usize = Lattice::WIDTH * Lattice::HEIGHT;
 
@@ -33,7 +33,7 @@ impl Lattice {
 
     // lattice output
     pub const NEIGHS_TO_FILE: bool = false; // whether lattice neighbor indices are to be dumped
-    pub const IMAGE_RESOLUTION: u16 = 20; // default: 10
+    pub const IMAGE_RESOLUTION: u16 = 100; // default: 10
     pub const IMAGE_RECTANGULAR: bool = true; // if true, the parallelogram-shaped lattice is
                                               // right-to-left wrapped to form a rectangle
 
