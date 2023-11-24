@@ -33,6 +33,8 @@ def generate_data(channel_width, channel_length, interval, n_pulses, interval_af
             parameters_json=PARAMETERS_DEFAULT,
             protocol_file_path=protocol_file_path,
             verbose=False,
+            activity=True,
+            states=False,
             seed=seed,
         )
     rmtree(sim_dir)
@@ -59,5 +61,5 @@ for channel_width in channel_widths:
                 duration=duration,
                 seed=1,
             )
-            result.states.to_csv(out_dir / f'fig3A_w-{channel_width}-l-{channel_length}-interval-{interval}.csv')
+            result.activity.to_csv(out_dir / f'fig3A_w-{channel_width}-l-{channel_length}-interval-{interval}--activity.csv')
 

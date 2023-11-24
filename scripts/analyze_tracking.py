@@ -1,5 +1,4 @@
 from pathlib import Path
-
 import pandas as pd
 
 from tqdm import tqdm
@@ -13,44 +12,27 @@ from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
 from scripts.tracking import determine_fates
 from scripts.defaults import PARAMETERS_DEFAULT, TEMP_DIR
-from scripts.utils import starmap, compile_if_not_exists
+from scripts.utils import simple_starmap, starmap, compile_if_not_exists
 
 
 
-def generate_dataset(
-    input_protocol,
-    n_simulations,
+
+def run_single(
+    client,
+    sim_root,
+    pulse_intervals,
+    simulation_id,
     parameters=PARAMETERS_DEFAULT,
     channel_width=7,
     channel_length=300,
     duration=5,
-    interval_after=1500,
-    offset=None,
     n_margin=0,
     outdir=None,
     plot_results=False,
     save_states=True,
     save_iterations=True,
-    **kwargs
-):
-    print(interval_after)
-    visavis_bin = compile_if_not_exists(channel_width, channel_length)
-    if outdir:
-        outdir.mkdir(exist_ok=True, parents=True)
-    
-    sim_root = Path(TEMP_DIR) / 'tracking' 
-    client = VisAVisClient(
-        visavis_bin=visavis_bin,
-        sim_root=sim_root,
-    )
-
-    pulse_intervals = list(input_protocol) + [interval_after]
-
-    if offset is None:
-        offset = channel_length * 3.6
-    
-    data_parts = []
-    for simulation_id in tqdm(range(n_simulations)):
+    indir=None,
+    **kwargs):
 
         sim_dir_name = f'w-{channel_width}--l-{channel_length}--sim-{simulation_id}' +  _random_name(5)
         (sim_root / sim_dir_name).mkdir(exist_ok=True, parents=True)
@@ -83,23 +65,79 @@ def generate_dataset(
         data_part = determine_fates(
             result.activity,
             input_protocol=pulse_intervals,
+            duration=duration,
+            channel_length=channel_length,
             outdir=outdir and outdir / f'sim-{simulation_id}',
             verbose=False,
             plot_results=plot_results,
             save_csv=save_iterations,
+            indir=indir and indir / f'sim-{simulation_id}',
             **kwargs,
             )
 
-        data_part = pd.read_csv(outdir / f"sim-{simulation_id}" / 'pulse_fates.csv')
+        # data_part = pd.read_csv(outdir / f"sim-{simulation_id}" / 'pulse_fates.csv')
         if n_margin > 0:
             data_part = data_part.iloc[n_margin:-n_margin]
 
         data_part['simulation_id'] = simulation_id
-        data_parts.append(data_part)
+        return data_part
 
 
 
-    pulse_fates = pd.concat(data_parts)
+def generate_dataset(
+    input_protocol,
+    n_simulations,
+    parameters=PARAMETERS_DEFAULT,
+    channel_width=7,
+    channel_length=300,
+    duration=5,
+    interval_after=1500,
+    n_margin=0,
+    outdir=None,
+    plot_results=False,
+    save_states=True,
+    save_iterations=True,
+    indir=None,
+    use_cached=False,
+    n_workers=None,
+    **kwargs
+):
+
+    if use_cached:
+        return pd.read_csv(outdir / 'pulse_fates.csv').set_index(['channel_length', 'channel_width', 'simulation_id'])
+    visavis_bin = compile_if_not_exists(channel_width, channel_length)
+    if outdir:
+        outdir.mkdir(exist_ok=True, parents=True)
+    
+    sim_root = Path(TEMP_DIR) / 'tracking' 
+    client = VisAVisClient(
+        visavis_bin=visavis_bin,
+        sim_root=sim_root,
+    )
+
+    pulse_intervals = list(input_protocol) + [interval_after]
+
+    pulse_fates = pd.concat(starmap(
+        run_single,
+        [dict(
+            client=client,
+            sim_root=sim_root,
+            pulse_intervals=pulse_intervals,
+            simulation_id=simulation_id,
+            parameters=parameters,
+            channel_width=channel_width,
+            channel_length=channel_length,
+            duration=duration,
+            n_margin=n_margin,
+            outdir=outdir,
+            plot_results=plot_results,
+            save_states=save_states,
+            save_iterations=save_iterations,
+            indir=indir,
+            **kwargs,
+        ) for simulation_id in range(n_simulations)],
+        processes=n_workers,
+    ))
 
     pulse_fates['channel_width'] = channel_width
     pulse_fates['channel_length'] = channel_length
@@ -140,7 +178,6 @@ def get_pulse_fate_counts(
         duration=5,
         interval_after=1500,
         fate_criterion='reached',
-        offset=None,
         n_margin=0,
         outdir=None,
         plot_results=False,
@@ -162,7 +199,6 @@ def get_pulse_fate_counts(
         channel_length=channel_length,
         duration=duration,
         interval_after=interval_after,
-        offset=offset,
         n_margin=n_margin,
         outdir=outdir,
         plot_results=plot_results,
@@ -192,7 +228,7 @@ if __name__ == '__main__':
     # channel_widths = list(range(1,10)) + list(range(10,21,2))
     channel_widths = [10]
     
-    data_parts = starmap(get_pulse_fate_counts, [
+    data_parts = simple_starmap(get_pulse_fate_counts, [
             dict(
                 input_protocol=input_protocol,
                 n_simulations=20,

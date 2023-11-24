@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 from subplots_from_axsize import subplots_from_axsize
 
 
-def plot_result(result, outfile=None, title=None, t_min=None, t_max=None, ax=None, panel_size=(20, 8), show=True):
-    return plot_result_from_states(result.states, outfile=outfile, title=title, t_min=t_min, t_max=t_max, ax=ax, panel_size=panel_size, show=show)
+def plot_result(result, outfile=None, title=None, t_min=None, t_max=None, ax=None, panel_size=(20, 8), show=True, **kwargs):
+    return plot_result_from_states(result.states, outfile=outfile, title=title, t_min=t_min, t_max=t_max, ax=ax, panel_size=panel_size, show=show, **kwargs)
 
 
-def plot_result_from_states(data, outfile=None, title=None, t_min=None, t_max=None, ax:plt.Axes = None, panel_size=(20, 8), show=True):
+def plot_result_from_states(data, outfile=None, title=None, t_min=None, t_max=None, ax:plt.Axes = None, panel_size=(20, 8), show=True, **kwargs):
     
     
     # act = 1.0 * ((data['E'] > 0) | (data['I'] > 0))
@@ -18,10 +18,10 @@ def plot_result_from_states(data, outfile=None, title=None, t_min=None, t_max=No
 
     activity = act.groupby(['seconds', 'h']).mean().unstack()
 
-    return plot_result_from_activity(activity, outfile=outfile, title=title, t_min=t_min, t_max=t_max, ax=ax, panel_size=panel_size, show=show)
+    return plot_result_from_activity(activity, outfile=outfile, title=title, t_min=t_min, t_max=t_max, ax=ax, panel_size=panel_size, show=show, **kwargs)
 
 
-def plot_result_from_activity(activity, outfile=None, title=None, t_min=None, t_max=None, ax:plt.Axes = None, panel_size=(20, 8), show=True):
+def plot_result_from_activity(activity, outfile=None, title=None, t_min=None, t_max=None, ax:plt.Axes = None, panel_size=(20, 8), show=True, **kwargs):
 
 
     if ax is None:
@@ -38,14 +38,17 @@ def plot_result_from_activity(activity, outfile=None, title=None, t_min=None, t_
     if t_max is None:
         t_max = activity.index.get_level_values('seconds').max()
 
-    img = activity[activity.index.get_level_values('seconds').between(t_min, t_max)].to_numpy().T
+    img = activity[[t_min <= x <= t_max for x in activity.index.get_level_values('seconds')]].to_numpy().T
     
     ax.imshow(
         img,
-        cmap='gray',
-        origin='lower',
-        aspect='auto',
-        interpolation='none',
+        **{
+            'cmap': 'grey',
+            'origin': 'lower',
+            'aspect': 'auto',
+            'interpolation': 'none',
+            **kwargs
+        }
     )
 
     ax.set_xlabel('time')

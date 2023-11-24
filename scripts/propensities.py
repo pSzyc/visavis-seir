@@ -9,7 +9,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from scripts.analyze_tracking import generate_dataset
-from scripts.utils import starmap
+from scripts.utils import simple_starmap
 
 def get_results(df):
     df_results = df.loc[:, ['failure', 'spawning']]
@@ -41,8 +41,15 @@ def get_propensities(channel_length, n_sim, channel_width, outdir=None, **kwargs
 
     event_counts, mean_steps = get_results(pulse_fates[['failure', 'spawning']])
     any_event_count = event_counts.sum()
+    print('any_event_count', any_event_count, 'mean_steps', mean_steps, 'n_sim', n_sim, 'event_counts', event_counts.tolist())
     l, l_chaos, l_ext = compute_propensities(any_event_count, mean_steps, n_sim, channel_length - 1, event_counts) # minus one, as the simulation starts from h=1
-    return channel_width, channel_length, l, l_chaos, l_ext
+    return {
+        'channel_width': channel_width,
+        'channel_length': channel_length,
+        'l': l,
+        'l_spawning': l_chaos,
+        'l_failure': l_ext,
+    }
 
 def to_csv(results, result_file):
     with open(result_file, 'w') as out:
@@ -58,10 +65,9 @@ def to_csv(results, result_file):
 # @click.argument('channel_length', type=int, default=300)
 # @click.argument('n_workers', type=int, default=5)
 def simulate(n_sim, channel_widths, results_file, channel_length, n_workers, per_width_kwargs={}, **kwargs):
-    results = []
 
     # with Pool(n_workers) as pool:
-    propensities = starmap(
+    propensities = pd.DataFrame(simple_starmap(
         get_propensities,
         [
             dict(
@@ -69,15 +75,15 @@ def simulate(n_sim, channel_widths, results_file, channel_length, n_workers, per
                 n_sim=n_sim,
                 channel_width=w,
                 outdir=(results_file.parent / f'w-{w}-l-{channel_length}'),
+                n_workers=n_workers,
                 
                 ) | kwargs | (per_width_kwargs[w] if w in per_width_kwargs else {})
             for w in channel_widths
         ],
-        processes=n_workers,
-        )
-
-    print(results)
-    to_csv(propensities, results_file)
+        )).set_index(['channel_width', 'channel_length'])
+    propensities.to_csv(results_file)
+    return propensities
+    # to_csv(propensities, results_file)
 
 if __name__ == '__main__':
     simulate()

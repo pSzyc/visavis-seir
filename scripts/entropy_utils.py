@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.special import xlogy
 from sklearn.neighbors import NearestNeighbors
+from warnings import warn
     
 
 def mplog2p(x):
@@ -24,6 +25,9 @@ def conditional_entropy_discrete(
     assert len(points.shape) == 2
     assert classes.shape[0] == points.shape[0]
     assert set(np.unique(classes)) <= set(range(n_classes))
+    if n_neighbors >= len(points):
+        warn(f"Expected n_neighbors < n_samples, found n_samples = {len(points)}, {n_neighbors = }. Falling back to n_neighbors = {len(points) - 1}")
+        n_neighbors = len(points) - 1
 
     nn = NearestNeighbors(n_neighbors=n_neighbors).fit(points)
     neighs = nn.kneighbors(return_distance=False)
@@ -58,6 +62,9 @@ def conditional_entropy_discrete_reconstruction(
     assert classes.shape[0] == points.shape[0]
     assert set(np.unique(classes)) <= set(range(n_classes))
     assert n_neighbors % 2, "Number of neighbors must be odd"
+    if n_neighbors >= len(points):
+        warn(f"Expected n_neighbors < n_samples, found n_samples = {len(points)}, {n_neighbors = }. Falling back to n_neighbors = {len(points) - 1}")
+        n_neighbors = len(points) - 1
 
     nn = NearestNeighbors(n_neighbors=n_neighbors).fit(points)
     neighs = nn.kneighbors(return_distance=False)

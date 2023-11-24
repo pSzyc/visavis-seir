@@ -6,7 +6,7 @@ from subplots_from_axsize import subplots_from_axsize
 from scipy.signal import find_peaks
 from typing import Iterable
 from pathlib import Path
-from scipy.ndimage import gaussian_filter
+from scipy.ndimage import gaussian_filter,gaussian_filter1d, convolve1d
 from sklearn.neighbors import NearestNeighbors
 import json
 
@@ -26,14 +26,27 @@ fate_to_color = {
 
 
 
-def get_pulse_positions(activity, min_distance=6, smoothing_sigma_h=2., smoothing_sigma_frames=1.8, min_peak_height=0.002, outdir=None):
+def get_pulse_positions(activity, min_distance_between_peaks=6, smoothing_sigma_h=1.5, smoothing_sigma_frames=1.2, min_peak_height=0.002, exp_mean=.8): #2., 1.8
 
-    smoothed_data = gaussian_filter(1.*activity.to_numpy(), sigma=[smoothing_sigma_frames, smoothing_sigma_h], mode='nearest', truncate=2.01)
+    exp_kernel_size = int(3 * exp_mean) + 1
+    exp_kernel = np.exp(-np.arange(0, exp_kernel_size) / exp_mean)
+    exp_kernel = exp_kernel / exp_kernel.sum()
+
+    # smoothed_data = gaussian_filter(1.*activity.to_numpy(), sigma=[smoothing_sigma_frames, smoothing_sigma_h], mode='nearest', truncate=2.01)
+    smoothed_data = convolve1d(
+        gaussian_filter1d(
+            1.*activity.to_numpy(), sigma=smoothing_sigma_h, axis=1, mode='constant', truncate=2.01
+        ),
+        exp_kernel,
+        origin=-(exp_kernel_size // 2),
+        mode='nearest',
+        axis=0,
+    )
 
     pulse_positions = []
     for seconds, activity_slice in zip(activity.index.get_level_values('seconds'), smoothed_data):
         # data_slice = data_time.groupby('h').mean()
-        pulse_positions_part, _ = find_peaks(activity_slice, distance=min_distance, height=min_peak_height)
+        pulse_positions_part, _ = find_peaks(activity_slice, distance=min_distance_between_peaks, height=min_peak_height)
         pulse_positions.extend(
             {
                 'seconds': seconds,
@@ -45,26 +58,30 @@ def get_pulse_positions(activity, min_distance=6, smoothing_sigma_h=2., smoothin
     return pulse_positions
 
 
-def get_tracks(pulse_positions, duration):
+def get_tracks(pulse_positions, duration, laptrack_parameters={}):
 
     lt = LapTrack(
-        track_dist_metric="sqeuclidean",
-        splitting_dist_metric="sqeuclidean",
-        merging_dist_metric="sqeuclidean",
-        
-        track_cost_cutoff=3**2,
-        splitting_cost_cutoff=14**2,
-        merging_cost_cutoff=False,  # no merging
-        gap_closing_max_frame_count=4,
-        gap_closing_cost_cutoff=5**2,
-        
-        segment_start_cost=3000,#10**2,
-        segment_end_cost=3000,#10**2,
-        track_start_cost=300,#20**2,
-        track_end_cost=300,#20**2,
-        
-        no_splitting_cost=0,
-        no_merging_cost=0,
+        **{**dict(
+            track_dist_metric="sqeuclidean",
+            splitting_dist_metric="sqeuclidean",
+            merging_dist_metric="sqeuclidean",
+            
+            track_cost_cutoff=5**2,
+            splitting_cost_cutoff=14**2,
+            merging_cost_cutoff=False,  # no merging
+            gap_closing_max_frame_count=0,
+            gap_closing_cost_cutoff=0,
+            
+            segment_start_cost=3000,#10**2,
+            segment_end_cost=3000,#10**2,
+            track_start_cost=300,#20**2,
+            track_end_cost=300,#20**2,
+            
+            no_splitting_cost=0,
+            no_merging_cost=0,
+        ),
+        **laptrack_parameters
+        }
     )
     pulse_positions['frame'] = pulse_positions['seconds'] // duration
 
@@ -81,16 +98,12 @@ def get_tracks(pulse_positions, duration):
     return tracks, split_df, merge_df
 
 
-def get_track_info(tracks, split_df, v, front_direction_minimal_distance=5, min_track_length=5, min_significant_track_length=10):
+def get_track_info(tracks, split_df, pulse_times, channel_length, v, front_direction_minimal_distance=5, min_track_length=5, min_significant_track_length=10,  channel_end_tolerance=8):
 
-    enhanced_split_df = split_df.copy()
-    enhanced_split_df['child_no'] = np.arange(len(split_df)) % 2
-    enhanced_split_df = enhanced_split_df.set_index(['parent_track_id', 'child_no'])['child_track_id'].unstack('child_no').rename(columns={0: 'first_child_track_id', 1: 'second_child_track_id'}).reindex(columns=['first_child_track_id', 'second_child_track_id'])
-    
+
     track_info = (tracks.groupby('track_id')
                 ['seconds'].agg(['size', 'min', 'max']).rename(columns={'size': 'track_length', 'min': 'track_start', 'max': 'track_end'})
                 .join(tracks[['track_id', 'tree_id']].drop_duplicates().set_index('track_id'), how='left')
-                .join(enhanced_split_df)
     )
     track_info.index.name = 'track_id'
 
@@ -100,12 +113,85 @@ def get_track_info(tracks, split_df, v, front_direction_minimal_distance=5, min_
     track_info['track_end_position'] = tracks.set_index(['track_id', 'seconds']).reindex(
         list(zip(track_info.index, track_info['track_end']))
         ).reset_index('seconds')['h']
+
+    def assign_tree_id_recursively(track_id, tree_id):
+        track_info['tree_id'][track_id] = tree_id
+        if track_id in enhanced_split_df.index:
+            first_child, second_child = enhanced_split_df.loc[track_id]
+            if not np.isnan(first_child):
+                assign_tree_id_recursively(int(first_child), tree_id)
+            if not np.isnan(second_child):
+                assign_tree_id_recursively(int(second_child), tree_id)
+
+    def merge_tracks(parent_track_id, child_track_id):
+        tracks['track_id'].replace(child_track_id, parent_track_id, inplace=True)
+        track_info.loc[parent_track_id, ['track_end', 'track_end_position']] = track_info.loc[child_track_id, ['track_end', 'track_end_position']]
+        track_info.loc[parent_track_id, 'track_length'] = track_info.loc[parent_track_id, 'track_length'] + track_info.loc[child_track_id]['track_length']
+        track_info.drop(index=child_track_id, inplace=True)
+        if child_track_id in enhanced_split_df.index:
+            enhanced_split_df.loc[parent_track_id] = enhanced_split_df.loc[child_track_id]
+            enhanced_split_df.drop(index=child_track_id, inplace=True)
+        else:
+            enhanced_split_df.drop(index=parent_track_id, inplace=True)
+
+    n_trees = track_info['tree_id'].max() + 1
     
-    track_info['front_direction'] = pd.Series({
-        track_id:
-            1 * ((track['h'].iloc[-1] - track['h'].iloc[0] >= front_direction_minimal_distance) | (track['h'].iloc[-1] - track['h'].iloc[0] >= 0.8 * v * (track['seconds'].iloc[-1] - track['seconds'].iloc[0] + 1)))
-            - 1 * ((track['h'].iloc[-1] - track['h'].iloc[0] <= -front_direction_minimal_distance) | (track['h'].iloc[-1] - track['h'].iloc[0] <= -0.8 * v * (track['seconds'].iloc[-1] - track['seconds'].iloc[0] + 1)))
-            for track_id, track in tracks.groupby('track_id')})
+    enhanced_split_df = split_df.copy()
+    enhanced_split_df['child_no'] = np.arange(len(split_df)) % 2
+    enhanced_split_df = enhanced_split_df.set_index(['parent_track_id', 'child_no'])['child_track_id'].unstack('child_no').rename(columns={0: 'first_child_track_id', 1: 'second_child_track_id'}).reindex(columns=['first_child_track_id', 'second_child_track_id'])
+    
+
+    track_info_with_children = (
+        track_info
+            .join(enhanced_split_df)
+            .join(track_info, on='first_child_track_id', rsuffix='_first_child')
+            .join(track_info, on='second_child_track_id', rsuffix='_second_child')
+    )
+
+    tracks_with_first_child_at_pulse = track_info_with_children[
+        track_info_with_children['track_start_position_first_child'].le(3)
+        & track_info_with_children['track_start_first_child'].isin(pulse_times)
+    ]
+
+    for parent_track_id, track in tracks_with_first_child_at_pulse.iterrows():
+        track_id = track['first_child_track_id']
+        sibling_track_id = track['second_child_track_id']
+        merge_tracks(parent_track_id, sibling_track_id)
+        assign_tree_id_recursively(track_id, n_trees)
+        n_trees += 1
+
+    tracks_with_second_child_at_pulse = track_info_with_children[
+        track_info_with_children['track_start_position_second_child'].le(3)
+        & track_info_with_children['track_start_second_child'].isin(pulse_times)
+    ]
+
+    for parent_track_id, track in tracks_with_second_child_at_pulse.iterrows():
+        track_id = track['second_child_track_id']
+        sibling_track_id = track['first_child_track_id']
+        merge_tracks(parent_track_id, sibling_track_id)
+        assign_tree_id_recursively(track_id, n_trees)
+        n_trees += 1
+
+    tracks['tree_id'] = tracks.join(track_info, on='track_id', lsuffix='_old')['tree_id']
+    track_info = track_info.join(enhanced_split_df)
+    first_children = track_info['first_child_track_id'].dropna()
+    second_children = track_info['second_child_track_id'].dropna()
+    track_info.loc[first_children, 'parent_track_id'] = first_children.index
+    track_info.loc[first_children, 'sibling_track_id'] = second_children.to_numpy()
+    track_info.loc[second_children, 'parent_track_id'] = second_children.index
+    track_info.loc[second_children, 'sibling_track_id'] = first_children.to_numpy()
+
+
+    track_info['front_direction'] = (
+        1 *   (  track_info['track_end_position'] - track_info['track_start_position']).ge(
+            np.minimum(front_direction_minimal_distance, 0.5 * v * (track_info['track_end'] - track_info['track_start']))) 
+        - 1 * (-(track_info['track_end_position'] - track_info['track_start_position'])).ge(
+            np.minimum(front_direction_minimal_distance, 0.5 * v * (track_info['track_end'] - track_info['track_start']))) 
+    )
+            # 1 * ((track['h'].iloc[-1] - track['h'].iloc[0] >= front_direction_minimal_distance) | (track['h'].iloc[-1] - track['h'].iloc[0] >= 0.8 * v * (track['seconds'].iloc[-1] - track['seconds'].iloc[0] + 1)))
+            # - 1 * ((track['h'].iloc[-1] - track['h'].iloc[0] <= -front_direction_minimal_distance) | (track['h'].iloc[-1] - track['h'].iloc[0] <= -0.8 * v * (track['seconds'].iloc[-1] - track['seconds'].iloc[0] + 1)))
+            # for track_id, track in tracks.groupby('track_id')})
+
 
     good_tracks = track_info.index.unique()
     previous_good_tracks = []
@@ -114,13 +200,37 @@ def get_track_info(tracks, split_df, v, front_direction_minimal_distance=5, min_
         track_info['is_second_child_good'] = track_info['second_child_track_id'].isin(good_tracks)
         previous_good_tracks = good_tracks
         good_tracks = track_info[
-            (track_info['track_length'] >= min_track_length)
+            (track_info['track_length'].ge(min_track_length) & ~track_info['front_direction'].eq(0))
             | track_info['is_first_child_good']
             | track_info['is_second_child_good']
             # | track_info['track_end_position'].gt(channel_length - CHANNEL_END_TOLERANCE)
             ].index.unique()
-
+    
     track_info['is_good_track'] = track_info.index.isin(good_tracks)
+
+
+    track_info_with_children = track_info.join(track_info, on='first_child_track_id', rsuffix='_first_child').join(track_info, on='second_child_track_id', rsuffix='_second_child')
+    
+    while True:
+        problematic_parents = track_info[
+            track_info['is_good_track']
+            & ~track_info['first_child_track_id'].isna()
+            & ~track_info['is_first_child_good']
+            & (
+                track_info_with_children['track_end_position_first_child'].ge(channel_length - channel_end_tolerance)
+                | track_info_with_children['track_end_position_first_child'].le(channel_end_tolerance)
+            )
+            & ~(
+                track_info['is_second_child_good']
+                & track_info['front_direction'].eq(track_info_with_children['front_direction_second_child'])
+            )
+            ].index
+        if not len(problematic_parents):
+            break
+        problematic_children = track_info['first_child_track_id'][problematic_parents]
+        track_info.loc[problematic_parents, 'is_first_child_good'] = True
+        track_info.loc[problematic_children, 'is_good_track'] = True
+        track_info.loc[problematic_children, 'front_direction'] = track_info.loc[problematic_parents, 'front_direction'].to_numpy()
 
 
     significant_tracks = track_info.index.unique()
@@ -144,7 +254,7 @@ def get_track_info(tracks, split_df, v, front_direction_minimal_distance=5, min_
     return track_info
 
 
-def get_front_fates(tracks, track_info, channel_length, v, channel_end_tolerance=8, te_back=20, te_forward=10, te_space=10, ending_search_radius=15):
+def get_front_fates(tracks, track_info, channel_length, v, channel_end_tolerance=8, te_back=30, te_forward=5, te_space=5, ending_search_radius=15):
     fates = track_info[
         track_info['is_good_track']
         # & track_info['front_direction'].eq(1)
@@ -158,6 +268,8 @@ def get_front_fates(tracks, track_info, channel_length, v, channel_end_tolerance
             tracks['track_id'].ne(track_id) 
             & tracks['track_id'].ne(track_info.loc[track_id]['first_child_track_id'])
             & tracks['track_id'].ne(track_info.loc[track_id]['second_child_track_id'])
+            & tracks['track_id'].ne(track_info.loc[track_id]['parent_track_id'])
+            & tracks['track_id'].ne(track_info.loc[track_id]['sibling_track_id'])
             & tracks['seconds'].between(row['track_end'] - te_back, row['track_end'] + te_forward)
             & tracks['h'].between(row['track_end_position'] - te_space, row['track_end_position'] + te_space)
             ).any()
@@ -172,11 +284,13 @@ def get_front_fates(tracks, track_info, channel_length, v, channel_end_tolerance
             any(direction * front_directions[other_ending] < 1 for other_ending in nes) 
             for direction, nes in zip(front_directions, nearest_endings)
             ], index=fates.index) 
-
+        
         fates['fate'] = 'failure' # note that this can be overriden
         fates['fate'] = fates['fate'].mask(has_near_neighbor | has_near_ending, 'anihilated') # note that this can be overriden
-        fates['fate'] = fates['fate'].mask(~has_near_neighbor & fates['track_end_position'].ge(channel_length - channel_end_tolerance) & fates['front_direction'].eq(1), 'transmitted')
-        fates['fate'] = fates['fate'].mask(~has_near_neighbor & fates['track_end_position'].lt(channel_end_tolerance) & fates['front_direction'].eq(-1), 'transmitted')
+        fates['fate'] = fates['fate'].mask(fates['track_end_position'].ge(channel_length - channel_end_tolerance) & fates['front_direction'].eq(1), 'transmitted')
+        fates['fate'] = fates['fate'].mask(fates['track_end_position'].lt(channel_end_tolerance) & fates['front_direction'].eq(-1), 'transmitted')
+    else: # just to ensure that the column 'fate' is present in the output even if neither front is complete
+        fates['fate'] = 'failure'
 
     return fates.sort_values(['tree_id', 'track_end'])
 
@@ -201,22 +315,23 @@ def get_significant_splits(track_info):
 
 
 def get_input_pulse_to_tree_id(tracks, pulse_times):
-    input_pulse_to_tree_id = [
-        
-        (lambda near_maxima: int(near_maxima.iloc[0]['tree_id']) if len(near_maxima) == 1 else 
-            print(f"WARNING: {len(near_maxima)} activity peaks found near channel start at time {input_pulse}.") or np.nan)(
-            tracks[tracks['seconds'].eq(input_pulse) & tracks['h'].le(3)]
-        )
-            
-            for input_pulse in pulse_times
-    ]
 
-    pulse_id = -1
+    def get_nearest_peak_tree_id(input_pulse):
+        near_maxima = tracks[tracks['seconds'].eq(input_pulse) & tracks['h'].le(3)]
+        if len(near_maxima) == 1:
+            return int(near_maxima.iloc[0]['tree_id'])
+        else:
+            print(f"WARNING: {len(near_maxima)} activity peaks found near channel start at time {input_pulse}.")
+            return np.nan
+
+    input_pulse_to_tree_id = [get_nearest_peak_tree_id(input_pulse) for input_pulse in pulse_times]
+
+    previous_tree_id = -1
     for i in range(len(input_pulse_to_tree_id)):
-        if input_pulse_to_tree_id[i] == pulse_id:
+        if input_pulse_to_tree_id[i] == previous_tree_id:
             input_pulse_to_tree_id[i] = np.nan
         else:
-            pulse_id = input_pulse_to_tree_id[i]
+            previous_tree_id = input_pulse_to_tree_id[i]
     return input_pulse_to_tree_id
 
 
@@ -245,8 +360,8 @@ def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, significa
             'forward': (arrivals['front_direction'] == 1).sum() - 1,
             'short': (arrivals['front_direction'] == 0).sum(),
             'backward': (arrivals['front_direction'] == -1).sum(),
-            'reached_end': (arrivals['track_end_position'] >= channel_length - channel_end_tolerance - 1).sum(),
-            'reached_start': (arrivals['track_end_position'] <= channel_end_tolerance).sum(),
+            'reached_end': (arrivals['track_end_position'].gt(channel_length - channel_end_tolerance)).sum(),
+            'reached_start': (arrivals['track_end_position'].le(channel_end_tolerance)).sum(),
         }
         for tree_id in input_pulse_to_tree_id
         for arrivals in [
@@ -346,7 +461,7 @@ def plot_kymograph_with_endings(activity, fates, duration, pulse_fates=None, pul
     if pulse_fates is not None and pulse_times is not None:
         ax.scatter(np.array(pulse_times) / duration, [0]*len(pulse_times), marker='^', c=[fate_to_color[fate] for fate in pulse_fates['fate']])
    
-    if significant_splits is not None:
+    if significant_splits is not None and len(significant_splits):
         ax.scatter(significant_splits['significant_split_time'] / duration, significant_splits['significant_split_position'] , marker='o', edgecolors='cyan', facecolor='none')
    
 
@@ -395,36 +510,50 @@ def plot_kymograph_from_file(outdir, indir=None):
 
 ## ---------
 
-def determine_fates(activity: pd.DataFrame, input_protocol: Iterable[float], v=1/3.6, front_direction_minimal_distance=5, min_peak_height=0.002, outdir=None, plot_results=False, verbose=True, save_csv=True):
+def determine_fates(activity: pd.DataFrame = None, input_protocol: Iterable[float] = None, v=1/3.6, duration=5, channel_length=None, 
+    min_distance_between_peaks=6, smoothing_sigma_h=1.5, smoothing_sigma_frames=1.2, min_peak_height=0.002, # parameters for "get_pulse_positions"
+    laptrack_parameters={},
+    front_direction_minimal_distance=5, min_track_length=5, min_significant_track_length=10, # parameters for "get_track_info"
+    channel_end_tolerance=8, te_back=30, te_forward=5, te_space=6, ending_search_radius=15, # parameters for "get_front_fates" [channel_end_tolerance also used by "get_pulse_fates"]
+    outdir=None, indir=None,
+    plot_results=False, verbose=True, save_csv=True, use_cached=[]):
 
-    if outdir is not None:
+    if outdir is not None and (save_csv or plot_results):
         outdir = Path(outdir)
         outdir.absolute().mkdir(exist_ok=True, parents=True)
+    
+    indir = indir or outdir
 
 
-    duration = pd.Series(activity.index.get_level_values('seconds')).diff().dropna().unique()[0]
-    channel_length = int(activity.columns[-1]) + 1
+    # duration = pd.Series(activity.index.get_level_values('seconds')).diff().dropna().unique()[0]
+    channel_length = channel_length or int(activity.columns[-1]) + 1
     pulse_times = [0] + list(np.cumsum(input_protocol))[:-1]
 
-    if verbose: print('Determining pulse positions...')
-    pulse_positions = get_pulse_positions(activity, outdir=outdir, min_peak_height=min_peak_height)
+    if 'pulse_positions' in use_cached:
+        pulse_positions = pd.read_csv(indir / 'pulse_positions.csv', index_col=0)
+    else:
+        if verbose: print('Determining pulse positions...')
+        pulse_positions = get_pulse_positions(activity, min_distance_between_peaks=min_distance_between_peaks, smoothing_sigma_h=smoothing_sigma_h, smoothing_sigma_frames=smoothing_sigma_frames, min_peak_height=min_peak_height)
     if save_csv and outdir is not None:
         pulse_positions.to_csv(outdir / 'pulse_positions.csv')
 
     if verbose: print('Tracking...')
-    tracks, split_df, merge_df = get_tracks(pulse_positions, duration)
+    tracks, split_df, merge_df = get_tracks(pulse_positions, duration, laptrack_parameters)
     if len(split_df) == 0:
         split_df = pd.DataFrame(columns=['parent_track_id', 'child_track_id'])
-    if save_csv and outdir is not None:
-        tracks.to_csv(outdir / 'tracks.csv')
-
+ 
     if verbose: print('Extracting track information...')
-    track_info = get_track_info(tracks, split_df, v, front_direction_minimal_distance=front_direction_minimal_distance)
+    # This modifies tracks inplace, thus they are saved later!
+    track_info = get_track_info(tracks, split_df, pulse_times, channel_length, v, front_direction_minimal_distance=front_direction_minimal_distance, min_track_length=min_track_length, min_significant_track_length=min_significant_track_length, channel_end_tolerance=channel_end_tolerance)
     if save_csv and outdir is not None:
         track_info.to_csv(outdir / 'track_info.csv')
 
+    if save_csv and outdir is not None:
+        tracks.to_csv(outdir / 'tracks.csv')
+
+
     if verbose: print('Determining front fates...')
-    front_fates = get_front_fates(tracks, track_info, channel_length, v)
+    front_fates = get_front_fates(tracks, track_info, channel_length, v, channel_end_tolerance=channel_end_tolerance, te_back=te_back, te_forward=te_forward, te_space=te_space, ending_search_radius=ending_search_radius)
     if save_csv and outdir is not None:
         front_fates.to_csv(outdir / 'front_fates.csv')
 
@@ -439,7 +568,7 @@ def determine_fates(activity: pd.DataFrame, input_protocol: Iterable[float], v=1
         pd.Series(input_pulse_to_tree_id).to_csv(outdir / 'input_pulse_to_tree_id.csv')
 
     if verbose: print('Determining pulse fates...')
-    pulse_fates = get_pulse_fates(front_fates, input_pulse_to_tree_id, significant_splits, v, channel_length=channel_length)
+    pulse_fates = get_pulse_fates(front_fates, input_pulse_to_tree_id, significant_splits, v, channel_length=channel_length, channel_end_tolerance=channel_end_tolerance)
     if save_csv and outdir is not None:
         pulse_fates.to_csv(outdir / 'pulse_fates.csv')
 

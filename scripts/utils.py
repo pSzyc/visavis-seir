@@ -30,6 +30,15 @@ def starmap(fn, kwarg_list, processes=None):
     print(f'| Took {elapsed:.2f}s  ({elapsed_per_it:.2f}s/it)')
     return result
 
+def simple_starmap(fn, kwarg_list, processes=None):
+    start_time = time.time()
+    print('|', end='', flush=True)
+    result = [fn(**kwargs) for kwargs in kwarg_list]
+    end_time = time.time()
+    elapsed = end_time - start_time
+    elapsed_per_it = elapsed / len(kwarg_list)
+    print(f'| Took {elapsed:.2f}s  ({elapsed_per_it:.2f}s/it)')
+    return result
 
 
 

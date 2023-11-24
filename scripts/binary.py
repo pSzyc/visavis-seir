@@ -1,39 +1,14 @@
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 from scipy.signal import find_peaks
-import os
 from pathlib import Path
-from shutil import rmtree
+from subplots_from_axsize import subplots_from_axsize
+from matplotlib.ticker import MultipleLocator
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to import from scripts.py
 
-from scripts.client import VisAVisClient, _random_name
-from scripts.make_protocol import make_protocol
-from scripts.utils import compile_if_not_exists, starmap
-from scripts.defaults import TEMP_DIR
-
-
-PARAMETERS_DEFAULT = {
-  "c_rate": 1,
-  "e_incr": 1,
-  "i_incr": 1,
-  "r_incr": 0.0667
-}
-
-
-def make_binary_protocol(interval, n_slots, p=0.5):
-    pulse_bits = np.random.choice(2, size=n_slots, p=[1-p, p])
-    pulse_bits[0] = 1
-
-    locs_1, = np.nonzero(pulse_bits)
-
-    pulse_times = interval * locs_1
-    pulse_intervals = pulse_times[1:] - pulse_times[:-1]
-    
-    return pulse_times, pulse_intervals
+from scripts.entropy_utils import conditional_entropy_discrete, conditional_entropy_discrete_reconstruction
 
 
 # def results_to_arrival_times(result):
@@ -62,18 +37,18 @@ def arrival_times_to_dataset(
     interval,
     departure_times,
     arrival_times,
-    offset, 
+    offset,
     n_nearest,
     n_margin=0,
 ):
     t0 = 0
-    xs = []
-    yss = []
+    is_pulse_s = []
+    near_arrivals_s = []
     while t0 <= max(departure_times):
         t0 += interval
         
         # was it a pulse?
-        x = t0 in departure_times
+        is_pulse = t0 in departure_times
 
         # predicted arrival time
         t1 = t0 + offset
@@ -86,166 +61,112 @@ def arrival_times_to_dataset(
             continue
 
         # subtract predicted arrival time!
-        ys = arrival_times[idx-n_nearest:idx+n_nearest] - t1
+        near_arrivals = arrival_times[idx-n_nearest:idx+n_nearest] - t1
 
-        xs.append(x)
-        yss.append(ys)
+        is_pulse_s.append(is_pulse)
+        near_arrivals_s.append(near_arrivals)
 
         # drop margins to increase quality of samples
-    xs = np.array(xs[n_margin:-n_margin])
-    yss = np.array(yss[n_margin:-n_margin])
+
+    if len(is_pulse_s) < 2 * n_margin + 1:
+        return pd.DataFrame([], columns=['x'] + [f'c{i:+d}' for i in range(-(n_nearest - 1), n_nearest)] + [f'l{i}' for i in reversed(range(n_nearest))] + [f'r{i}' for i in range(n_nearest)])
+    is_pulse_s = np.array(is_pulse_s[n_margin:-n_margin])
+    near_arrivals_s = np.array(near_arrivals_s[n_margin:-n_margin])
 
         # compute closest pulse
-    yss_abs_argmins = np.argmin(np.abs(yss), axis=1, keepdims=True)
-    cs = np.take_along_axis(yss, yss_abs_argmins, axis=1)[:, 0]
+    nearest_arrival_idxs = np.argmin(np.abs(near_arrivals_s), axis=1, keepdims=True)
         
-    data_part = pd.DataFrame({'x': xs, 'c': cs})
-    for i in range(n_nearest):
-        data_part[f'l{i}'] = yss[:, n_nearest-i-1]
-        data_part[f'r{i}'] = yss[:, n_nearest+i]
+    dataset_part = pd.DataFrame({
+        'x': is_pulse_s,
+        **{
+            f'c{i:+d}':  np.take_along_axis(near_arrivals_s, nearest_arrival_idxs + i, axis=1)[:, 0]
+            for i in range(-(n_nearest - 1), n_nearest)
+        },
+        **{
+            f'l{i}': near_arrivals_s[:, n_nearest-i-1]
+            for i in reversed(range(n_nearest))
+        },
+        **{
+            f'r{i}': near_arrivals_s[:, n_nearest+i]
+            for i in range(n_nearest)
+        }
+    })
+    return dataset_part
 
-    return data_part
 
+def get_entropy(dataset: pd.DataFrame, fields=['c'], reconstruction=False, k_neighbors=15):
+    results = []
+    get_conditional_entropy = conditional_entropy_discrete_reconstruction if reconstruction else conditional_entropy_discrete
 
-def perform_single(interval, n_slots, duration, offset, n_margin, n_nearest, sim_dir, client, simulation_id):
-    departure_times, pulse_intervals = make_binary_protocol(interval, n_slots, p=0.5)
+    for (channel_width, channel_length, interval), data in dataset.groupby(['channel_width', 'channel_length', 'interval']):
+        cond_entropy = get_conditional_entropy(
+                data['x'].to_numpy(),
+                data[fields].to_numpy().reshape(-1, len(fields)),
+                n_neighbors=k_neighbors,
+            )
         
-    protocol_file_path = make_protocol(
-            pulse_intervals=list(pulse_intervals) + [1500],
-            duration=duration,
-            out_folder=sim_dir / f"sim-{simulation_id}",
-        )
-
-    result = client.run(
-            parameters_json=PARAMETERS_DEFAULT,
-            protocol_file_path=protocol_file_path,
-            verbose=False,
-            dir_name=f"sim-{simulation_id}/simulation",
-            seed=simulation_id+19,
-            states=False,
-            activity=True,
-        )
-    # print('Result_loaded')
-    arrival_times = activity_to_arrival_times(result.activity)
-    # print('Arrivals_computed')
+        mi_slot = 1 - cond_entropy
+        bitrate_per_min = mi_slot / interval # seconds in simulations are minutes in reality
+        bitrate_per_hour = bitrate_per_min * 60
         
-    data_part = arrival_times_to_dataset(
-            interval=interval,
-            departure_times=departure_times,
-            arrival_times=arrival_times,
-            n_nearest=n_nearest, 
-            n_margin=n_margin,
-            offset=offset,
-        )
-    # print('Data set constructed')
-
-    data_part['simulation_id'] = simulation_id
-
-    return data_part
+        results.append({
+            'channel_width': channel_width,
+            'channel_length': channel_length,
+            'interval': interval,
+            'cond_entropy': cond_entropy,
+            'efficiency': mi_slot,
+            'bitrate_per_hour': bitrate_per_hour,
+        })
+        
+    results = pd.DataFrame(results)
+    return results
 
 
-def generate_dataset(
-    interval,
-    n_slots,
-    n_simulations,
-    channel_width=7,
-    channel_length=300,
-    duration=5,
-    offset=None,
-    n_margin=1,
-    n_nearest=4, # how should this be determined?
-    processes=20,
-):
-    # TEMP_DIR = "/tmp"
-
-    sim_dir = Path(f"{TEMP_DIR}/visavis_seir/binary/" + _random_name(12))
-    visavis_bin = compile_if_not_exists(channel_width, channel_length)
-
-    client = VisAVisClient(
-        visavis_bin=visavis_bin,
-        sim_root=sim_dir,
-    )
-
-    if offset is None:
-        offset = channel_length * 3.6
-   
-    data = pd.concat(starmap(
-            perform_single,
-            [
-                dict(
-                    interval=interval,
-                    n_slots=n_slots,
-                    duration=duration,
-                    offset=offset,
-                    n_margin=n_margin,
-                    n_nearest=n_nearest,
-                    sim_dir=sim_dir,
-                    client=client,
-                    simulation_id=simulation_id,
-                    )
-                for simulation_id in range(n_simulations)
-            ], processes=processes,
-    ))
-
-    # print('starmap completed')
-
-    data['channel_width'] = channel_width
-    data['channel_length'] = channel_length
-    data['interval'] = interval
-
-    rmtree(sim_dir)
-
-    return data
-
-
-def generate_dataset_batch(
-        channel_lengths,
-        channel_widths,
-        intervals, 
-        v=1/3.6,
-        n_slots=100,
-        n_simulations=15,
-        duration=5,
-        outpath=None,
-        n_margin=5,
-        n_nearest=1,
-        append=False,
-        processes=20,
-    ):
-    if append and Path(outpath).exists():
-        data_parts = [
-            data for _, data in pd.read_csv(outpath).groupby(['channel_length', 'channel_width', 'interval']) #data.drop(columns=[col for col in data.columns if col.startswith('Unnamed')]) for _, data in pd.read_csv(outpath).groupby(['channel_length', 'channel_width', 'interval'], group_keys=False)
-        ]
-        data_all = pd.concat(data_parts, ignore_index=True)
-        data_all = data_all.set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
-        # if outpath:
-        #     data_all.to_csv(outpath)
+def plot_scan(results, x_field, c_field, y_field='bitrate_per_hour', ax=None, fmt='-o', **kwargs):
+    if ax == None:
+        fig, ax = subplots_from_axsize(1, 1, (5, 4), left=0.7)
     else:
-        data_parts = []
+        fig = ax.get_figure()
+    x_vals = np.unique(results[x_field])
 
-    for channel_length in channel_lengths:
-        for channel_width in channel_widths:
-            for interval in intervals:
-                print(f"l={channel_length} w={channel_width} i={interval}", end='', flush=True)
-                data = generate_dataset(
-                    interval=interval,
-                    channel_width=channel_width,
-                    channel_length=channel_length,
-                    offset=channel_length / v,
-                    n_slots=n_slots,
-                    n_simulations=n_simulations,
-                    duration=duration,
-                    n_margin=n_margin,
-                    n_nearest=n_nearest,
-                    processes=processes,
-                )
-                data.index.name = 'pulse_id'
-                data_parts.append(data.reset_index())
-                data_all = pd.concat(data_parts, ignore_index=True)
-                data_all = data_all.set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
-                if outpath:
-                    data_all.to_csv(outpath)
-    return data_all
+
+    for c_it, (c_val, results_h) in enumerate(results.groupby(c_field)):
+        ax.plot(
+            results_h[x_field],
+            results_h[y_field],
+            fmt,
+            color=f"C{c_it}",
+            label=f'{c_val}',
+            **kwargs,
+        )
+        
+
+    if x_field == 'interval' and y_field in ('bitrate_per_hour', 'efficiency'):
+        ax.plot(
+            x_vals,
+            60 / x_vals if y_field == 'bitrate_per_hour' else np.ones(len(x_vals)),
+            ':',
+            color='grey',
+            label=f'perfect',
+        )
+        
+    ax.set_xlabel(x_field)
+    ax.set_ylabel('bitrate [bit/hour]')
+    ax.set_xlim(left=0)
+    ax.set_ylim(bottom=0)
+
+
+    if x_field == 'channel_length':
+        ax.xaxis.set_minor_locator(MultipleLocator(100))
+        
+    if x_field == 'interval':
+        ax.xaxis.set_minor_locator(MultipleLocator(25))
+    ax.yaxis.set_minor_locator(MultipleLocator(.1))
+    ax.grid(which='both', ls=':')
+
+    ax.legend(title=c_field)
+
+    return fig, ax
 
 
 if __name__ == '__main__':
