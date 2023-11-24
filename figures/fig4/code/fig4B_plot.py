@@ -12,7 +12,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 
 from scripts.analyze_binary import plot_scan
 
-data_dir = Path(__file__).parent.parent / 'data'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 # suffix = "-c"

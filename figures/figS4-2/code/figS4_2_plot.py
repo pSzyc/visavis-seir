@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 from scipy.special import lambertw
 from subplots_from_axsize import subplots_from_axsize
 
-data_dir = Path(__file__).parent.parent / 'data' /'figS3' / 'approach5'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS4-2' /  'figS3' / 'approach5'
 out_dir = Path(__file__).parent.parent / 'panels'
 
 coefficients = pd.read_csv(data_dir / 'fit_coefficients.csv').set_index(['altered_parameter', 'fold_change'])

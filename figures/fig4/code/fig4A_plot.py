@@ -19,8 +19,8 @@ def xlogx(x):
     return xlogy(x, x) / LOG2
 
 # data_dir = Path(__file__).parent.parent / 'data'
-data_dir = Path(__file__).parent.parent / 'data' / 'fig4A' /'approach3'
-fig3_data_dir = Path(__file__).parent.parent.parent / 'fig3' / 'data' / 'approach6'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4A' /'approach3'
+fig3_data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'approach6'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 

@@ -8,7 +8,7 @@ from scripts.analyze_binary import generate_dataset_batch
 from scripts.binary import get_entropy
 
 
-data_dir = Path(__file__).parent.parent / 'data'/ 'fig4A' / 'approach3'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4A' / 'approach3'
 data_dir.mkdir(parents=True, exist_ok=True)
 
 channel_widths = [6]

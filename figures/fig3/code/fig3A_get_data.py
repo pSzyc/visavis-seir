@@ -41,8 +41,8 @@ def generate_data(channel_width, channel_length, interval, n_pulses, interval_af
     return result
     
 
-out_dir = Path(__file__).parent.parent / 'data'
-out_dir.mkdir(exist_ok=True, parents=True)
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3'
+data_dir.mkdir(exist_ok=True, parents=True)
 
 channel_widths = [6]
 channel_lengths = [300]
@@ -61,5 +61,5 @@ for channel_width in channel_widths:
                 duration=duration,
                 seed=1,
             )
-            result.activity.to_csv(out_dir / f'fig3A_w-{channel_width}-l-{channel_length}-interval-{interval}--activity.csv')
+            result.activity.to_csv(data_dir / f'fig3A_w-{channel_width}-l-{channel_length}-interval-{interval}--activity.csv')
 

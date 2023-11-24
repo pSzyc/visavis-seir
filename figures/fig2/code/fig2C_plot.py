@@ -6,7 +6,7 @@ from matplotlib.ticker import MultipleLocator
 from sklearn.linear_model import LinearRegression
 from subplots_from_axsize import subplots_from_axsize
 
-data_dir = Path(__file__).parent.parent / 'data' /'fig2C' / 'approach6'
+Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach6'
 out_dir = Path(__file__).parent.parent / 'panels'
 
 propensities = pd.read_csv(data_dir / 'fig2C--propensities.csv')

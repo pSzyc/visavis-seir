@@ -9,7 +9,7 @@ from sklearn.linear_model import LinearRegression
 from subplots_from_axsize import subplots_from_axsize
 
 
-data_dir = Path(__file__).parent.parent / 'data' / 'fig2C' / 'approach6'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach6'
 out_dir = Path(__file__).parent.parent / 'panels'
 
 channel_widths = list(range(1,10)) + list(range(10,21,2))

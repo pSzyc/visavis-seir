@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from subplots_from_axsize import subplots_from_axsize
 from itertools import product
 
-data_dir = Path(__file__).parent.parent / 'data' / 'approach5'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'approach5'
 out_dir = Path(__file__).parent.parent / 'panels'
 
 probabilities = pd.read_csv(data_dir / 'probabilities.csv').set_index('interval')

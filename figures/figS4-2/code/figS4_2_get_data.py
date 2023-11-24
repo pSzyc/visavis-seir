@@ -11,7 +11,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.defaults import PARAMETERS_DEFAULT, STATES_DEFAULT
 from scripts.propensities import simulate
 
-data_dir = Path(__file__).parent.parent / 'data' / 'figS3' / 'approach5'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS4-2' / 'figS3' / 'approach5'
 data_dir.mkdir(exist_ok=True, parents=True)
 
 channel_length = 300

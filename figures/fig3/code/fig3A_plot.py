@@ -13,7 +13,7 @@ from scripts.plot_result import plot_result_from_activity
 from fig3A_get_data import channel_widths, channel_lengths, intervals, duration
 from subplots_from_axsize import subplots_from_axsize
 
-data_dir = Path(__file__).parent.parent / 'data'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2'
 out_dir = Path(__file__).parent.parent / 'panels'
 
 data_sets = list(product(channel_widths, channel_lengths, intervals))

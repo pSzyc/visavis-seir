@@ -7,8 +7,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order t
 from scripts.defaults import PARAMETERS_DEFAULT, STATES_DEFAULT
 
 
-data_dir = Path(__file__).parent.parent /'data' / 'approach2'
-data_dir = Path(__file__).parent.parent / 'data' / 'l-30'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / 'approach2'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1'/ 'l-30'
 out_dir = Path(__file__).parent.parent / 'panels'
 out_dir.mkdir(exist_ok=True, parents=True)
 
