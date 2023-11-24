@@ -83,14 +83,14 @@ ax_hist.set_xlim(0,25)
 ax_hist.set_xlabel('total spawned fronts')
 ax_hist.xaxis.set_major_locator(MultipleLocator(10))
 
-fig.savefig(out_dir / 'fig2E--scatters.svg')
-fig.savefig(out_dir / 'fig2E--scatters.png')
+fig.savefig(out_dir / 'fig2D--scatters.svg')
+fig.savefig(out_dir / 'fig2D--scatters.png')
 
-fig_main.savefig(out_dir / 'fig2E--shares.svg')
-fig_main.savefig(out_dir / 'fig2E--shares.png')
+fig_main.savefig(out_dir / 'fig2D--shares.svg')
+fig_main.savefig(out_dir / 'fig2D--shares.png')
 
-fig_hist.savefig(out_dir / 'fig2E--histograms.svg')
-fig_hist.savefig(out_dir / 'fig2E--histograms.png')
+fig_hist.savefig(out_dir / 'fig2D--histograms.svg')
+fig_hist.savefig(out_dir / 'fig2D--histograms.png')
 
 
 
