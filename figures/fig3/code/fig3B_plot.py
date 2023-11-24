@@ -11,15 +11,21 @@ probabilities = pd.read_csv(data_dir / 'probabilities.csv').set_index('interval'
 propensities = pd.read_csv(data_dir / 'propensities.csv').set_index('interval')
 
 
+fig, ax = subplots_from_axsize(1, 1, (5,4), left=.8)
+probabilities.plot(marker='o', ms=3, ax=ax)
+ax.set_ylabel('probability')
+ax.set_xlabel('interval [min]')
+
+plt.savefig(out_dir / 'fig3B.png')
+plt.savefig(out_dir / 'fig3B.svg')
+
+# fig, ax = subplots_from_axsize(1, 1, (5,4), left=.8)
+
 fig, axs = subplots_from_axsize(1, 2, (5,4), left=.8)
 probabilities.plot(marker='o', ms=3, ax=axs[0])
 axs[0].set_ylabel('probability')
 axs[0].set_xlabel('interval [min]')
 
-# plt.savefig(out_dir / 'fig3B.png')
-# plt.savefig(out_dir / 'fig3B.svg')
-
-# fig, ax = subplots_from_axsize(1, 1, (5,4), left=.8)
 propensities.plot(marker='o', ms=3, ax=axs[1])
 axs[1].set_ylabel('propensity [steps$^{-1}$]')
 axs[1].set_xlabel('interval [min]')

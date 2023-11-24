@@ -41,7 +41,7 @@ def generate_data(channel_width, channel_length, interval, n_pulses, interval_af
     return result
     
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3A'
 data_dir.mkdir(exist_ok=True, parents=True)
 
 channel_widths = [6]
