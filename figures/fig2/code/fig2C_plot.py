@@ -50,7 +50,7 @@ fig, axs = subplots_from_axsize(1, 2, (45 / 25.4, 45 / 25.4), left=1)
 make_plot(axs[0])
 axs[0].set_ylim(0,6e-4)
 axs[0].yaxis.set_major_locator(MultipleLocator(2e-4))
-axs[0].yaxis.set_major_formatter(lambda x,_: f"${x*10000:.0f} \\times 10^{{-4}}$")
+axs[0].yaxis.set_major_formatter(lambda x,_: f"{x*10000:.0f}×10$^{{-4}}$")
 
 make_plot(axs[1])
 axs[1].set_yscale('log')
