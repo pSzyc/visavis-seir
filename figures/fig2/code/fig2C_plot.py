@@ -5,12 +5,9 @@ from matplotlib import pyplot as plt
 from matplotlib.ticker import MultipleLocator
 from sklearn.linear_model import LinearRegression
 from subplots_from_axsize import subplots_from_axsize
-import matplotlib
-
 import sys
 root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
-
 from scripts.style import *
 
 
@@ -45,7 +42,7 @@ def make_plot(ax):
 # f"l_spawning = (w - {-b_sp/a_sp:.2f}) / {1/a_sp:.0f}"
 # f"l_failure =  1/({np.exp(-a_fail):.2f}^(w + {b_fail/a_fail:.3f})"
 
-fig, axs = subplots_from_axsize(1, 2, (45 / 25.4, 45 / 25.4), left=1)
+fig, axs = subplots_from_axsize(1, 2, (60 / 25.4, 42 / 25.4), wspace=0.6, bottom=0.4)
 
 make_plot(axs[0])
 axs[0].set_ylim(0,6e-4)
@@ -57,6 +54,6 @@ axs[1].set_yscale('log')
 axs[1].set_ylim(2e-5, None)
 axs[1].legend()
 
-plt.savefig(out_dir / 'fig2C.png')
-plt.savefig(out_dir / 'fig2C.svg')
+plt.savefig(out_dir / 'fig2C.png', bbox_inches="tight")
+plt.savefig(out_dir / 'fig2C.svg', bbox_inches="tight")
 

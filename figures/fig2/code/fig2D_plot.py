@@ -3,7 +3,11 @@ import numpy as np
 from pathlib import Path
 from matplotlib import pyplot as plt
 from matplotlib.ticker import MultipleLocator
+import sys
+root_repo_dir = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
+from scripts.style import *
 from sklearn.linear_model import LinearRegression
 
 from subplots_from_axsize import subplots_from_axsize
@@ -13,11 +17,12 @@ data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C
 out_dir = Path(__file__).parent.parent / 'panels'
 
 channel_widths = list(range(1,10)) + list(range(10,21,2))
-chosen_channel_widths = [4,6,8,10,20]
+chosen_channel_widths = [4,6,10,20]
 
-fig, axs = subplots_from_axsize((len(chosen_channel_widths)-1) // 5 + 1, 5, (1.5, 1.5), wspace=.45)
+#fig, axs = subplots_from_axsize((len(chosen_channel_widths)-1) // 4 + 1, 4, ( 28/25.4, 28/25.4), wspace=.45)
+fig, axs = subplots_from_axsize(2, 2, ( 28/25.4, 28/25.4), wspace=.45)
 
-fig_main, ax_main = subplots_from_axsize(1, 1, (2,1.5), left=1., right=3)
+fig_main, ax_main = subplots_from_axsize(1, 1, (68 / 25.4, 68 / 25.4), left=0.5, right=0)
 fig_hist, ax_hist = subplots_from_axsize(1, 1, (2,6))
 
 field_forward = 'reached_end'
@@ -39,9 +44,9 @@ for w in channel_widths:
 
 for it, (ax, w) in enumerate(zip(axs.flatten(), chosen_channel_widths)):
     counts_selected = counts_selected_parts[w]
-    ax.scatter(counts_selected[field_forward], counts_selected[field_backward], s=counts_selected['count']/4, alpha=0.4)
+    ax.scatter(counts_selected[field_forward], counts_selected[field_backward], s=counts_selected['count']/4, alpha=0.4, c='red' )
     ax.set_xlabel('# forward fronts')
-    ax.set_ylabel('# backward fronts' if not it else '')
+    ax.set_ylabel('# backward fronts' if it in [0, 2] else '')
     ax.set_xlim(0 - .5, 13 + .5)
     ax.set_ylim(0 - .5, 18 + .5)
     ax.set_title(f"{w = }", y=.8)
@@ -68,7 +73,7 @@ ax_main.set_ylabel('probability')
 ax_main.set_xlim(0, 21)
 ax_main.set_xlabel('channel width')
 ax_main.xaxis.set_major_locator(MultipleLocator(5))
-ax_main.legend(loc='center left', bbox_to_anchor=(1,.5))
+ax_main.legend()
 
 
 # ax_main.scatter([w] * (len(specific)+1), specific.tolist() + [counts_selected['count'].sum() - specific.sum()], c=range(len(specific)+1), vmin=0, vmax=len(specific))
@@ -83,11 +88,11 @@ ax_hist.set_xlim(0,25)
 ax_hist.set_xlabel('total spawned fronts')
 ax_hist.xaxis.set_major_locator(MultipleLocator(10))
 
-fig.savefig(out_dir / 'fig2D--scatters.svg')
-fig.savefig(out_dir / 'fig2D--scatters.png')
+fig.savefig(out_dir / 'fig2D--scatters.svg', dpi = 150)
+fig.savefig(out_dir / 'fig2D--scatters.png', dpi = 150)
 
-fig_main.savefig(out_dir / 'fig2D--shares.svg')
-fig_main.savefig(out_dir / 'fig2D--shares.png')
+fig_main.savefig(out_dir / 'fig2D--shares.svg', dpi = 150)
+fig_main.savefig(out_dir / 'fig2D--shares.png', dpi = 150)
 
 fig_hist.savefig(out_dir / 'fig2D--histograms.svg')
 fig_hist.savefig(out_dir / 'fig2D--histograms.png')
