@@ -20,7 +20,7 @@ channel_widths = list(range(1,10)) + list(range(10,21,2))
 chosen_channel_widths = [4,6,10,20]
 
 #fig, axs = subplots_from_axsize((len(chosen_channel_widths)-1) // 4 + 1, 4, ( 28/25.4, 28/25.4), wspace=.45)
-fig, axs = subplots_from_axsize(2, 2, ( 28/25.4, 28/25.4), wspace=.45)
+fig, axs = subplots_from_axsize(2, 2, ( 28/25.4, 28/25.4), wspace=0.3, hspace= 0.3, left=0.4)
 
 fig_main, ax_main = subplots_from_axsize(1, 1, (68 / 25.4, 68 / 25.4), left=0.5, right=0)
 fig_hist, ax_hist = subplots_from_axsize(1, 1, (2,6))
@@ -45,7 +45,7 @@ for w in channel_widths:
 for it, (ax, w) in enumerate(zip(axs.flatten(), chosen_channel_widths)):
     counts_selected = counts_selected_parts[w]
     ax.scatter(counts_selected[field_forward], counts_selected[field_backward], s=counts_selected['count']/4, alpha=0.4, c='red' )
-    ax.set_xlabel('# forward fronts')
+    ax.set_xlabel('# forward fronts' if it in [2, 3] else '')
     ax.set_ylabel('# backward fronts' if it in [0, 2] else '')
     ax.set_xlim(0 - .5, 13 + .5)
     ax.set_ylim(0 - .5, 18 + .5)
