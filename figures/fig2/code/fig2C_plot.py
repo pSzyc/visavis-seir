@@ -11,7 +11,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.style import *
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach6'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
 out_dir = Path(__file__).parent.parent / 'panels'
 
 propensities = pd.read_csv(data_dir / 'fig2C--propensities.csv')
