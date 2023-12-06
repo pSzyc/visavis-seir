@@ -7,7 +7,7 @@ PARAMETERS_DEFAULT = {
   "r_incr": 0.0667,
 }
 
-STATES_DEFAULT = {
+MOL_STATES_DEFAULT = {
   "n_e": 4,
   "n_i": 2,
   "n_r": 4,

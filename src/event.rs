@@ -7,6 +7,7 @@ use crate::lattice::Lattice;
 use crate::molecule::Mol::*;
 use crate::rates::Rates;
 use crate::cell::Cell;
+use crate::legal_states::LegalStates;
 
 #[derive(Debug, Copy, Clone)]
 pub enum Event {
@@ -26,7 +27,7 @@ impl Event {
         }
     }
 
-    pub fn occur(event_i: usize, lattice: &mut Lattice, cell_i: usize) -> Vec<usize> {
+    pub fn occur(event_i: usize, lattice: &mut Lattice, cell_i: usize, legal_states: &LegalStates) -> Vec<usize> {
         let cell = &mut lattice.cells[cell_i];
         let mols = &mut cell.molecules;
         let neighs = &lattice.neighborhoods[cell_i];
@@ -65,7 +66,7 @@ impl Event {
                     increment!(E);
                     current_cell!()
                 } else {
-                    if Cell::can_increase(E, mols) {
+                    if legal_states.can_increase(E, mols) {
                         increment!(E);
                         current_cell!()
                     } else {
@@ -78,7 +79,7 @@ impl Event {
             }
 
             Event::IIncr => {
-                if Cell::can_increase(I, mols) {
+                if legal_states.can_increase(I, mols) {
                     increment!(I);
                     current_cell!()
                 } else {
@@ -90,7 +91,7 @@ impl Event {
             }
 
             Event::RIncr => {
-                if Cell::can_increase(R, mols) {
+                if legal_states.can_increase(R, mols) {
                     increment!(R);
                 } else {
                     debug_assert!(Cell::is_zero(E, mols) && Cell::is_zero(I, mols));

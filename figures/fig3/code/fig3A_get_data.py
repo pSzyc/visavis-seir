@@ -7,7 +7,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order t
 from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
 from scripts.utils import compile_if_not_exists
-from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT
+from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
 
 
 def generate_data(channel_width, channel_length, interval, n_pulses, interval_after=None, duration=5, seed=0):
@@ -31,6 +31,7 @@ def generate_data(channel_width, channel_length, interval, n_pulses, interval_af
 
     result = client.run(
             parameters_json=PARAMETERS_DEFAULT,
+            mol_states_json=MOL_STATES_DEFAULT,
             protocol_file_path=protocol_file_path,
             verbose=False,
             activity=True,

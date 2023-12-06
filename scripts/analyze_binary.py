@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to i
 from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
 from scripts.utils import compile_if_not_exists, starmap
-from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT
+from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
 from scripts.binary import activity_to_arrival_times, arrival_times_to_dataset
 
 
@@ -40,6 +40,7 @@ def perform_single(interval, n_slots, duration, offset, n_margin, n_nearest, sim
 
     result = client.run(
             parameters_json=PARAMETERS_DEFAULT,
+            mol_states_json=MOL_STATES_DEFAULT,
             protocol_file_path=protocol_file_path,
             verbose=False,
             dir_name=f"sim-{simulation_id}/simulation",
@@ -75,11 +76,14 @@ def generate_dataset(
     duration=5,
     offset=None,
     v=1/3.6,
+    outdir=None,
     n_margin=1,
-    n_nearest=4, # how should this be determined?
+    n_nearest=4,
     processes=None,
 ):
     # TEMP_DIR = "/tmp"
+    if outdir:
+        outdir.mkdir(parents=True, exist_ok=True)
 
     sim_dir = Path(f"{TEMP_DIR}/visavis_seir/binary/" + _random_name(12))
     visavis_bin = compile_if_not_exists(channel_width, channel_length)
@@ -117,6 +121,9 @@ def generate_dataset(
     dataset['interval'] = interval
 
     rmtree(sim_dir)
+    dataset.index.name = 'pulse_id'
+    if outdir:
+        dataset.reset_index().set_index(['channel_width', 'channel_length', 'interval', 'simulation_id', 'pulse_id']).to_csv(outdir / 'dataset.csv')
 
     return dataset
 
@@ -129,53 +136,44 @@ def generate_dataset_batch(
         n_slots=100,
         n_simulations=15,
         duration=5,
-        outpath=None,
+        outdir=None,
         n_margin=5,
         n_nearest=1,
         append=False,
         flush_every_iteration=False,
+        use_cached=False,
         processes=None,
     ):
-    if append and Path(outpath).exists():
-        dataset_parts = [
-            dataset_part for _, dataset_part in pd.read_csv(outpath).groupby(['channel_length', 'channel_width', 'interval']) #data.drop(columns=[col for col in data.columns if col.startswith('Unnamed')]) for _, data in pd.read_csv(outpath).groupby(['channel_length', 'channel_width', 'interval'], group_keys=False)
-        ]
-        dataset = pd.concat(dataset_parts, ignore_index=True)
-        dataset = dataset.set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
-        # if outpath:
-        #     data_all.to_csv(outpath)
-    else:
-        dataset_parts = []
+
+    outpath = outdir / 'dataset.csv' if outdir else None
+
+    dataset_parts = []
 
     for channel_length, channel_width, interval in product(channel_lengths, channel_widths, intervals):
-        print(f"l={channel_length} w={channel_width} i={interval}", end='', flush=True)
-        data = generate_dataset(
-            interval=interval,
-            channel_width=channel_width,
-            channel_length=channel_length,
-            offset=channel_length / v,
-            n_slots=n_slots,
-            n_simulations=n_simulations,
-            duration=duration,
-            n_margin=n_margin,
-            n_nearest=n_nearest,
-            processes=processes,
-        )
-        data.index.name = 'pulse_id'
+        print(f"l={channel_length} w={channel_width} i={interval}", end='  ', flush=True)
+        if use_cached and outdir:
+            data = pd.read_csv(outdir / f"l-{channel_length}-w-{channel_width}-i-{interval}" / 'dataset.csv').set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
+        else:
+            data = generate_dataset(
+                interval=interval,
+                channel_width=channel_width,
+                channel_length=channel_length,
+                offset=channel_length / v,
+                n_slots=n_slots,
+                n_simulations=n_simulations,
+                duration=duration,
+                n_margin=n_margin,
+                n_nearest=n_nearest,
+                processes=processes,
+                outdir=outdir and outdir / f"l-{channel_length}-w-{channel_width}-i-{interval}"
+            )
         dataset_parts.append(data.reset_index())
-        if flush_every_iteration:
-            dataset = pd.concat(dataset_parts, ignore_index=True).set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
-            if outpath:
-                dataset.to_csv(outpath)
-    if not flush_every_iteration:
-        dataset = pd.concat(dataset_parts, ignore_index=True).set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
-        if outpath:
-            dataset.to_csv(outpath)
+    dataset = pd.concat(dataset_parts, ignore_index=True)
+    # if outpath:
+    #     dataset.to_csv(outpath)
     return dataset
 
 
-
-    # fig.savefig(outdir / 'bitrates.png')
 
 
 if __name__ == '__main__':

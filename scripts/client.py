@@ -43,6 +43,7 @@ class VisAVisClient:
     def run(
         self,
         parameters_json: Any,  # ...thing that serializes to json
+        mol_states_json: Any,  # ...thing that serializes to json
         protocol_file_path: Path,
         dir_name: Optional[str] = None,  # name the dir with results
         clean_up: bool = True,  # remove files?
@@ -52,6 +53,7 @@ class VisAVisClient:
         states: bool = False,  # save full state
         seed: Optional[int] = None,
     ) -> Optional[SimulationResult]:
+
         if isinstance(protocol_file_path, str):
             protocol_file_path = Path(protocol_file_path)
 
@@ -61,9 +63,13 @@ class VisAVisClient:
             simulation_dir = self._sim_root / dir_name
         simulation_dir.mkdir()
 
-        parameters = simulation_dir / "parameters.json"
-        with open(parameters, "w") as f:
+        parameters_file = simulation_dir / "parameters.json"
+        with open(parameters_file, "w") as f:
             json.dump(parameters_json, f)
+
+        mol_states_file = simulation_dir / "n_states.json"
+        with open(mol_states_file, "w") as f:
+            json.dump(mol_states_json, f)
 
         assert protocol_file_path.exists()
         protocol_file_src_path = protocol_file_path
@@ -80,7 +86,8 @@ class VisAVisClient:
         ret = subprocess.call(
             [
                 self._visavis_bin.absolute(),
-                parameters.absolute(),
+                parameters_file.absolute(),
+                mol_states_file.absolute(),
                 protocol_file_dst_path.absolute(),
                 *(["--images"] if images else []),
                 *(["--activity"] if activity else []),

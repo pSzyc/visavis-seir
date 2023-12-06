@@ -24,6 +24,7 @@ use nom::{
 use crate::commands::{initialize_epidemics, run_simulation, run_simulation_quietly};
 use crate::lattice::Lattice;
 use crate::rates::Rates;
+use crate::legal_states::LegalStates;
 use crate::units::{SEC, MIN, HOUR, DAY};
 
 pub struct Protocol {
@@ -46,6 +47,7 @@ impl Protocol {
         &self,
         lattice: &mut Lattice,
         rates: &Rates,
+        legal_states: &LegalStates,
         rng: &mut StdRng,
         out_images: bool,
         out_activity: bool,
@@ -92,10 +94,10 @@ impl Protocol {
         let mut out_init_frame = false; // whether initial frame in output
         for command in self.commands.iter() {
             if let Ok((_, (_, _, tspan, _, dt))) = cmd_run()(&command) {
-                run_simulation(lattice, rates, rng, tspan, out_images, out_states, dt, out_init_frame, activity_csv);
+                run_simulation(lattice, rates, legal_states, rng, tspan, out_images, out_states, dt, out_init_frame, activity_csv);
                 out_init_frame = false;
             } else if let Ok((_, (_, _, tspan, _, _))) = cmd_run_quiet()(&command) {
-                run_simulation_quietly(lattice, rates, rng, tspan, out_images, out_states, out_init_frame, activity_csv);
+                run_simulation_quietly(lattice, rates, legal_states, rng, tspan, out_images, out_states, out_init_frame, activity_csv);
                 out_init_frame = false;
             } else if let Ok((_, _)) = cmd_init_epidemics()(&command) {
                 initialize_epidemics(lattice);

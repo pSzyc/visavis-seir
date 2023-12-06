@@ -33,6 +33,7 @@ nearest_pulses = generate_dataset_batch(
     n_margin=4,
     n_nearest=4,
     append=False,
+    use_cached=True,
     processes=2,
 )
 
@@ -47,7 +48,9 @@ fields_letter_to_fields = {
 for fields in 'c', 'rl', 'cm', 'cp', 'cmp':
     for k_neighbors in (15, 25):
         for reconstruction in (True, False):
-            print(f"Estimating entropy ({fields}{k_neighbors}{'-reconstruction' if reconstruction else ''})")
+            suffix = f"-{fields}{k_neighbors}{'-reconstruction' if reconstruction else ''}"
+            print(f"Estimating entropy {suffix}")
+
             entropies = get_entropy(nearest_pulses.reset_index(), fields=fields_letter_to_fields[fields], reconstruction=reconstruction, k_neighbors=k_neighbors)
-            entropies.to_csv(data_dir / f"fig4A_entropies-{fields}{k_neighbors}{'-reconstruction' if reconstruction else ''}.csv")
+            entropies.to_csv(data_dir / f"fig4A_entropies{suffix}.csv")
 

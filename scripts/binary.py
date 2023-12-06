@@ -4,11 +4,12 @@ from scipy.signal import find_peaks
 from pathlib import Path
 from subplots_from_axsize import subplots_from_axsize
 from matplotlib.ticker import MultipleLocator
+from warnings import warn
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to import from scripts.py
 
-from scripts.entropy_utils import conditional_entropy_discrete, conditional_entropy_discrete_reconstruction
+from scripts.entropy_utils import conditional_entropy_discrete, conditional_entropy_discrete_reconstruction, conditional_entropy_discrete_bins_or_neighbors_pandas
 
 
 # def results_to_arrival_times(result):
@@ -99,10 +100,18 @@ def get_entropy(dataset: pd.DataFrame, fields=['c'], reconstruction=False, k_nei
     get_conditional_entropy = conditional_entropy_discrete_reconstruction if reconstruction else conditional_entropy_discrete
 
     for (channel_width, channel_length, interval), data in dataset.groupby(['channel_width', 'channel_length', 'interval']):
-        cond_entropy = get_conditional_entropy(
-                data['x'].to_numpy(),
-                data[fields].to_numpy().reshape(-1, len(fields)),
-                n_neighbors=k_neighbors,
+        # cond_entropy = get_conditional_entropy(
+        #         data['x'].to_numpy(),
+        #         data[fields].to_numpy().reshape(-1, len(fields)),
+        #         n_neighbors=k_neighbors,
+        #     )
+
+        cond_entropy = conditional_entropy_discrete_bins_or_neighbors_pandas(
+            data,
+            'x',
+            fields,
+            classes=[False, True],
+            n_neighbors=k_neighbors,
             )
         
         mi_slot = 1 - cond_entropy
@@ -115,11 +124,44 @@ def get_entropy(dataset: pd.DataFrame, fields=['c'], reconstruction=False, k_nei
             'interval': interval,
             'cond_entropy': cond_entropy,
             'efficiency': mi_slot,
+            'bitrate_per_min': bitrate_per_min,
             'bitrate_per_hour': bitrate_per_hour,
         })
         
     results = pd.DataFrame(results)
     return results
+
+
+def get_optimal_bitrate(entropies: pd.DataFrame, outdir=None):
+    result_parts = []
+
+    for it, ((channel_width, channel_length), data) in enumerate(entropies.groupby(['channel_width', 'channel_length'])):
+
+        smoothed_data = data['bitrate_per_hour'].rolling(3, center=True).mean()
+        optimal_interval_idx = smoothed_data.argmax()
+        if optimal_interval_idx <= 1 or optimal_interval_idx >= len(data['bitrate_per_hour']) - 2:
+            warn(f"Maximum on the edge of the scan range for {channel_width = }, {channel_length = }")
+        optimal_interval = data['interval'].iloc[optimal_interval_idx] 
+        max_bitrate = data['bitrate_per_hour'].iloc[optimal_interval_idx] / 60
+
+        result_part = {
+            'channel_width': channel_width,
+            'channel_length': channel_length,
+            'channel_length_sqrt': np.sqrt(channel_length),
+            'optimal_interval': optimal_interval,
+            'optimal_interval_sq': optimal_interval**2,
+            'max_bitrate': max_bitrate,
+            'max_bitrate_sq': max_bitrate**2,
+            'max_bitrate_log': np.log(max_bitrate),
+            'max_bitrate_inv': 1 / max_bitrate,
+        }
+        result_parts.append(result_part)
+
+    result = pd.DataFrame(result_parts).set_index(['channel_width', 'channel_length'])
+    if outdir:
+        result.to_csv(outdir / f'optimized_bitrate.csv')
+    return result
+
 
 
 def plot_scan(results, x_field, c_field, y_field='bitrate_per_hour', ax=None, fmt='-o', **kwargs):

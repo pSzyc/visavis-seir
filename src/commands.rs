@@ -7,6 +7,7 @@ use crate::config::THREAD_STACK_SIZE;
 use crate::lattice::Lattice;
 use crate::molecule::Mol;
 use crate::rates::Rates;
+use crate::legal_states::LegalStates;
 use crate::simulation::Simulation;
 use std::fs::{File};
 
@@ -30,6 +31,7 @@ pub fn initialize_epidemics(lattice: &mut Lattice) {
 pub fn run_simulation_quietly(
     lattice: &mut Lattice,
     rates: &Rates,
+    legal_states: &LegalStates,
     rng: &mut StdRng,
     tspan: (f64, f64),
     images_out: bool,
@@ -40,6 +42,7 @@ pub fn run_simulation_quietly(
     run_simulation_(
         lattice,
         rates,
+        legal_states,
         rng,
         tspan,
         /*files_out:*/ false,
@@ -54,6 +57,7 @@ pub fn run_simulation_quietly(
 pub fn run_simulation(
     lattice: &mut Lattice,
     rates: &Rates,
+    legal_states: &LegalStates,
     rng: &mut StdRng,
     tspan: (f64, f64),
     images_out: bool,
@@ -65,6 +69,7 @@ pub fn run_simulation(
     run_simulation_(
         lattice,
         rates,
+        legal_states,
         rng,
         tspan,
         /*files_out:*/ true,
@@ -79,6 +84,7 @@ pub fn run_simulation(
 fn run_simulation_(
     lattice: &mut Lattice,
     rates: &Rates,
+    legal_states: &LegalStates,
     rng: &mut StdRng,
     tspan: (f64, f64),
     files_out: bool,
@@ -97,6 +103,7 @@ fn run_simulation_(
     Simulation::simulate(
         lattice,
         rates,
+        legal_states,
         rng,
         tspan,
         files_out,

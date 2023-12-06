@@ -511,7 +511,7 @@ def plot_kymograph_from_file(outdir, indir=None):
 ## ---------
 
 def determine_fates(activity: pd.DataFrame = None, input_protocol: Iterable[float] = None, v=1/3.6, duration=5, channel_length=None, 
-    min_distance_between_peaks=6, smoothing_sigma_h=1.5, smoothing_sigma_frames=1.2, min_peak_height=0.002, # parameters for "get_pulse_positions"
+    min_distance_between_peaks=6, smoothing_sigma_h=1.5, smoothing_sigma_frames=1.2, min_peak_height=0.002, exp_mean=0.8, # parameters for "get_pulse_positions"
     laptrack_parameters={},
     front_direction_minimal_distance=5, min_track_length=5, min_significant_track_length=10, # parameters for "get_track_info"
     channel_end_tolerance=8, te_back=30, te_forward=5, te_space=6, ending_search_radius=15, # parameters for "get_front_fates" [channel_end_tolerance also used by "get_pulse_fates"]

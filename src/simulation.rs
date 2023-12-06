@@ -9,6 +9,7 @@ use crate::lattice::Lattice;
 use crate::molecule::Mol::{E, I, R};
 use crate::molecule::N_MOLECULE_SPECIES;
 use crate::rates::Rates;
+use crate::legal_states::LegalStates;
 use crate::units::MIN;
 
 use rand::{rngs::StdRng, Rng};
@@ -69,6 +70,7 @@ impl Simulation {
         propens: &mut Propensities,
         lattice: &Lattice,
         rates: &Rates,
+        legal_states: &LegalStates,
         cell_i: usize,
     ) {
         let &cell = &lattice.cells[cell_i];
@@ -105,7 +107,7 @@ impl Simulation {
         if is_susceptible {
             for neigh_cell_i in lattice.neighborhoods[cell_i].iter() {
                 let neigh_ms = lattice.cells[*neigh_cell_i].molecules;
-                let has_infectious_neigh = Cell::can_decrease(I, &neigh_ms);
+                let has_infectious_neigh = legal_states.can_decrease(I, &neigh_ms);
                 if has_infectious_neigh { set_ev_prop!(CRate); }
             }
         } else {
@@ -118,10 +120,11 @@ impl Simulation {
     fn compute_propensities(
         lattice: &Lattice,
         rates: &Rates,
+        legal_states: &LegalStates,
     ) -> Propensities {
         let mut propens: Propensities = [[0.; PROPENS_EVENTS_SIZE]; PROPENS_TREE_SIZE];
         for cell_i in 0..lattice.cells.len() {
-            Simulation::set_cell_events_props(&mut propens, lattice, rates, cell_i)
+            Simulation::set_cell_events_props(&mut propens, lattice, rates, legal_states, cell_i)
         }
         propens
     }
@@ -164,6 +167,7 @@ impl Simulation {
     pub fn simulate(
         lattice: &mut Lattice,
         rates: &Rates,
+        legal_states: &LegalStates,
         rng: &mut StdRng,
         tspan: (f64, f64),
         files_out: bool,
@@ -180,7 +184,8 @@ impl Simulation {
         debug_assert!(in_sep_thread == workers.is_none());
         debug_assert!(in_sep_thread == !ifni_secretion);
 
-        let mut propens = Simulation::compute_propensities(lattice, rates);
+
+        let mut propens = Simulation::compute_propensities(lattice, rates, legal_states);
         let (mut t, mut t_next_files_out) = (
             tspan.0,
             tspan.0 + (if init_frame_out { 0. } else { files_out_interval }),
@@ -190,6 +195,7 @@ impl Simulation {
             std::io::stdout().flush().unwrap()
         }
 
+ 
 
         loop {
             // check when next event occurs
@@ -229,12 +235,13 @@ impl Simulation {
             if sum_propens > 0. {
                 let (cell_i, event_i) =
                     Simulation::find_event(&propens, rng.gen_range(0.0..sum_propens));
-                for cell_j in Event::occur(event_i, lattice, cell_i).iter() {
+                for cell_j in Event::occur(event_i, lattice, cell_i, legal_states).iter() {
                     Simulation::unset_cell_events_props(&mut propens, *cell_j);
                     Simulation::set_cell_events_props(
                         &mut propens,
                         lattice,
                         rates,
+                        legal_states,
                         *cell_j,
                     );
                 }

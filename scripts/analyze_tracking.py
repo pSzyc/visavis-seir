@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
 from scripts.tracking import determine_fates
-from scripts.defaults import PARAMETERS_DEFAULT, TEMP_DIR
+from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT, TEMP_DIR
 from scripts.utils import simple_starmap, starmap, compile_if_not_exists
 
 
@@ -23,6 +23,7 @@ def run_single(
     pulse_intervals,
     simulation_id,
     parameters=PARAMETERS_DEFAULT,
+    mol_states=MOL_STATES_DEFAULT,
     channel_width=7,
     channel_length=300,
     duration=5,
@@ -45,6 +46,7 @@ def run_single(
 
         result = client.run(
             parameters_json=parameters,
+            mol_states_json=mol_states,
             protocol_file_path=protocol_file_path,
             verbose=False,
             dir_name=sim_dir_name + '/' +  _random_name(5),
@@ -88,6 +90,7 @@ def generate_dataset(
     input_protocol,
     n_simulations,
     parameters=PARAMETERS_DEFAULT,
+    mol_states=MOL_STATES_DEFAULT,
     channel_width=7,
     channel_length=300,
     duration=5,
@@ -125,6 +128,7 @@ def generate_dataset(
             pulse_intervals=pulse_intervals,
             simulation_id=simulation_id,
             parameters=parameters,
+            mol_states=mol_states,
             channel_width=channel_width,
             channel_length=channel_length,
             duration=duration,
@@ -173,6 +177,7 @@ def get_pulse_fate_counts(
         input_protocol,
         n_simulations,
         parameters=PARAMETERS_DEFAULT,
+        mol_states=MOL_STATES_DEFAULT,
         channel_width=7,
         channel_length=300,
         duration=5,
@@ -195,6 +200,7 @@ def get_pulse_fate_counts(
         input_protocol=input_protocol,
         n_simulations=n_simulations,
         parameters=parameters,
+        mol_states=mol_states,
         channel_width=channel_width,
         channel_length=channel_length,
         duration=duration,

@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 import numpy as np
-from scripts.defaults import PARAMETERS_DEFAULT
+from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
 from scripts.analyze_tracking import generate_dataset 
 from scripts.utils import simple_starmap
 import pandas as pd
@@ -11,6 +11,7 @@ def get_pulse_fate_counts(
         interval,
         n_simulations,
         parameters=PARAMETERS_DEFAULT,
+        mol_states=MOL_STATES_DEFAULT,
         channel_width=7,
         channel_length=300,
         duration=5,
@@ -38,6 +39,7 @@ def get_pulse_fate_counts(
             input_protocol=[interval],
             n_simulations=n_simulations,
             parameters=parameters,
+            mol_states=mol_states,
             channel_width=channel_width,
             channel_length=channel_length,
             duration=duration,

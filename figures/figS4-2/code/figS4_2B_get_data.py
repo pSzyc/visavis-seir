@@ -11,41 +11,43 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
 from scripts.propensities import simulate
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS4-2' / 'figS3' / 'approach5'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS4-2' / 'figS4-2B' / 'approach1'
 data_dir.mkdir(exist_ok=True, parents=True)
 
 channel_length = 300
-channel_widths = (list(range(1,10,1)) + list(range(10,21,2)))#[::-1]
 channel_widths = [1,4,5,6,10,16,20]#[::-1]
 
 
-
-fold_changes= [0.7, 0.9, 1.0, 1.1, 1.3]#, 1.5,]
-# altered_parameters = ['e_incr']
-altered_parameters = ['e_incr', 'i_incr', 'r_incr', 'c_rate']
+species = ['i', 'e', 'r']
+n_states_s = [1,2,6,10]
 
 result_parts = []
 
-for altered_parameter, fold_change in product(altered_parameters, fold_changes):
+for species, n_states in product(species, n_states_s):
 
-    (data_dir / altered_parameter / str(fold_change)).mkdir(exist_ok=True, parents=True)
+    altered_parameter = f"n_{species}"
+
+    (data_dir / altered_parameter / str(n_states)).mkdir(exist_ok=True, parents=True)
+
+
+    mol_states = MOL_STATES_DEFAULT.copy()
+    mol_states[f'n_{species}'] = n_states
 
     parameters = PARAMETERS_DEFAULT.copy()
-    parameters.update({
-        altered_parameter: fold_change * parameters[altered_parameter]
-    })
+    parameters[f'{species}_incr'] = n_states * PARAMETERS_DEFAULT[f'{species}_incr']  / MOL_STATES_DEFAULT[f'n_{species}']
 
-    v = 1.25  / (MOL_STATES_DEFAULT['n_e'] / parameters['e_incr'] + 0.5 / parameters['c_rate'])
+    v = 1.25  / (mol_states['n_e'] / parameters['e_incr'] + 0.5 / parameters['c_rate'])
 
 
     propensities = simulate(
         n_sim=30000,
         channel_widths=channel_widths,
-        results_file=data_dir / altered_parameter / str(fold_change) / 'fig2C--propensities.csv',
+        results_file=data_dir / altered_parameter / str(n_states) / 'fig2C--propensities.csv',
         channel_length=channel_length,
         n_workers=20,
         interval_after=int(2.5 * channel_length / v),
         parameters=parameters,
+        mol_states=mol_states,
         v=v,
         per_width_kwargs = {
             w: {
@@ -53,7 +55,7 @@ for altered_parameter, fold_change in product(altered_parameters, fold_changes):
                 'min_peak_height': 0.03 / w,
             } for w in channel_widths
         },
-        use_cached=True,
+        # use_cached=True,
         # plot_results=True,
         save_iterations=False,
         ).reset_index()
@@ -69,7 +71,7 @@ for altered_parameter, fold_change in product(altered_parameters, fold_changes):
 
     result_part = {
         'altered_parameter': altered_parameter,
-        'fold_change': fold_change,
+        'n_states': n_states,
         'a_spawning': a_sp,
         'b_spawning': b_sp,
         'a_failure': a_fail,
@@ -77,6 +79,6 @@ for altered_parameter, fold_change in product(altered_parameters, fold_changes):
     }
     result_parts.append(result_part)
 
-result = pd.DataFrame(result_parts).set_index(['altered_parameter', 'fold_change'])
+result = pd.DataFrame(result_parts).set_index(['altered_parameter', 'n_states'])
 result.to_csv(data_dir / 'fit_coefficients.csv')
 

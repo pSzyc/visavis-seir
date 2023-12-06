@@ -30,6 +30,8 @@ mod molecule;
 mod protocol;
 mod randomness;
 mod rates;
+mod states;
+mod legal_states;
 mod simulation;
 mod units;
 
@@ -38,6 +40,8 @@ use lattice::Lattice;
 use protocol::Protocol;
 use randomness::initialize_generator;
 use rates::Rates;
+use states::States;
+use legal_states::LegalStates;
 
 use clap::Parser;
 
@@ -46,6 +50,7 @@ use clap::Parser;
 #[command(version, about)]
 struct Args {
     parameters_json_file: String,
+    states_json_file: String,
     protocol_file: String,
     /// Generate png images for every frame
     #[clap(long = "images", short = 'I', action)]
@@ -66,11 +71,17 @@ fn execute_protocol() -> bool {
     
     let args = Args::parse();
     let rates = Rates::from_json_file(&args.parameters_json_file);
+    let states = States::from_json_file(&args.states_json_file);
+    let legal_states = LegalStates {
+        min: [0, 0, 0],
+        max: [states.n_e, states.n_i, states.n_r],  // (S_1) E_4 I_2 R_4 (when zero, not in the state)
+    };
     let protocol = Protocol::from_text_file(&args.protocol_file);
     let images_out = args.images;
     let activity_out = args.activity;
     let states_out = args.states;
     let seed = args.seed;
+
 
     std::thread::Builder::new()
         .name("protocol_execution".into())
@@ -78,7 +89,7 @@ fn execute_protocol() -> bool {
         .spawn(move || {
             let mut generator = initialize_generator(seed, false);
             let mut lattice = Lattice::new(&mut generator);
-            protocol.execute(&mut lattice, &rates, &mut generator, images_out, activity_out, states_out);
+            protocol.execute(&mut lattice, &rates, &legal_states, &mut generator, images_out, activity_out, states_out);
         })
         .expect("☠ @ protocol_execution thread")
         .join()
