@@ -26,6 +26,8 @@ from scripts.entropy_utils import conditional_entropy_discrete, conditional_entr
     
 #     return arrival_times
 
+
+
 def activity_to_arrival_times(activity):
    
     arrival_idxs, _ = find_peaks(activity[activity.columns[-1]].to_numpy(), distance=5)
@@ -42,11 +44,15 @@ def arrival_times_to_dataset(
     n_nearest,
     n_margin=0,
 ):
-    t0 = 0
+    if len(arrival_times) < 2 * n_margin + 1:
+        return pd.DataFrame([], columns=['x'] + [f'c{i:+d}' for i in range(-(n_nearest - 1), n_nearest)] + [f'l{i}' for i in reversed(range(n_nearest))] + [f'r{i}' for i in range(n_nearest)])
+
     is_pulse_s = []
     near_arrivals_s = []
-    while t0 <= max(departure_times):
-        t0 += interval
+    pulse_id_s = []
+    # while t0 <= max(departure_times):   
+    for pulse_id in range(0, len(departure_times)):
+        t0 = pulse_id * interval
         
         # was it a pulse?
         is_pulse = t0 in departure_times
@@ -58,7 +64,7 @@ def arrival_times_to_dataset(
         idx = np.searchsorted(arrival_times, t1)
 
         # if there is not enough pulses before/after don't add to dataset
-        if idx < n_nearest or idx > len(arrival_times) - n_nearest:
+        if not n_nearest <= idx <= len(arrival_times) - n_nearest:
             continue
 
         # subtract predicted arrival time!
@@ -66,18 +72,22 @@ def arrival_times_to_dataset(
 
         is_pulse_s.append(is_pulse)
         near_arrivals_s.append(near_arrivals)
+        pulse_id_s.append(pulse_id)
 
-        # drop margins to increase quality of samples
+
 
     if len(is_pulse_s) < 2 * n_margin + 1:
         return pd.DataFrame([], columns=['x'] + [f'c{i:+d}' for i in range(-(n_nearest - 1), n_nearest)] + [f'l{i}' for i in reversed(range(n_nearest))] + [f'r{i}' for i in range(n_nearest)])
-    is_pulse_s = np.array(is_pulse_s[n_margin:-n_margin])
-    near_arrivals_s = np.array(near_arrivals_s[n_margin:-n_margin])
+    # drop margins to increase quality of samples
+    is_pulse_s = np.array(is_pulse_s[n_margin:-n_margin] if n_margin else is_pulse_s)
+    near_arrivals_s = np.array(near_arrivals_s[n_margin:-n_margin] if n_margin else near_arrivals_s)
+    pulse_id_s = np.array(pulse_id_s[n_margin:-n_margin] if n_margin else pulse_id_s)
 
         # compute closest pulse
     nearest_arrival_idxs = np.argmin(np.abs(near_arrivals_s), axis=1, keepdims=True)
         
     dataset_part = pd.DataFrame({
+        'pulse_id': pulse_id_s,
         'x': is_pulse_s,
         **{
             f'c{i:+d}':  np.take_along_axis(near_arrivals_s, nearest_arrival_idxs + i, axis=1)[:, 0]
@@ -91,7 +101,7 @@ def arrival_times_to_dataset(
             f'r{i}': near_arrivals_s[:, n_nearest+i]
             for i in range(n_nearest)
         }
-    })
+    }).set_index('pulse_id')
     return dataset_part
 
 
@@ -177,9 +187,11 @@ def plot_scan(results, x_field, c_field, y_field='bitrate_per_hour', ax=None, fm
             results_h[x_field],
             results_h[y_field],
             fmt,
-            color=f"C{c_it}",
-            label=f'{c_val}',
-            **kwargs,
+            **{
+                'label': f'{c_val}',
+                'color': f"C{c_it}",
+                **kwargs,
+            }
         )
         
 

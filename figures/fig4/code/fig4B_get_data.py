@@ -24,7 +24,7 @@ def get_expected_maximum(channel_length):
     return 3.13 * np.sqrt(channel_length) + 81.7
 
 expected_maximums = get_expected_maximum(np.array(channel_lengths))# * 1.1
-interval_scan_steps = expected_maximums // 30
+interval_scan_steps = expec`ted_maximums // 30
 interval_scan_centers = expected_maximums // 1
 scan_points = 3
 scan_ranges = np.linspace(

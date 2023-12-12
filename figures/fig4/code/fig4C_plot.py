@@ -30,7 +30,8 @@ for fields in 'c', :
 
             entropies = pd.read_csv(data_dir / suffix / f'entropies.csv')
             result = pd.read_csv(data_dir / suffix / f'optimized_bitrate.csv')
-
+            result['max_bitrate_per_hour'] = 60 * result['max_bitrate']
+            
             fig, ax = subplots_from_axsize(1, 1, (10, 10))
 
             fig, ax = plot_scan(
@@ -40,12 +41,9 @@ for fields in 'c', :
                 y_field='bitrate_per_hour',
                 ms=2,
                 ax=ax,
-
             )
 
-   
-
-            plt.scatter(result['optimal_interval'], result['max_bitrate']*60, color='k', marker='o', s=20)
+            plt.scatter(result['optimal_interval'], result['max_bitrate_per_hour'], color='k', marker='o', s=20)
 
             plt.ylim(0,1)
 
@@ -58,13 +56,13 @@ for fields in 'c', :
             ls = np.linspace(result['channel_width'].min(), result['channel_width'].max())
 
             for ch_l_it, (channel_length, result_group) in enumerate(result.groupby('channel_length')):
-                result_group.plot.line('channel_width', 'max_bitrate_inv', marker='o', color=f'C{channel_length_colors[channel_length]}', #yerr='max_bitrate_err', capsize=4, 
+                result_group.plot.line('channel_width', 'max_bitrate_per_hour', marker='o', color=f'C{channel_length_colors[channel_length]}', #yerr='max_bitrate_err', capsize=4, 
                  ls='-', lw=1, ax=axs[0], label=f"{channel_length:.0f}")
 
-            axs[0].set_ylabel('(max bitrate)$^{-1}$ [min/bit]')
+            axs[0].set_ylabel('max bitrate [bit/h]')
             axs[0].set_xlabel('channel width')
             axs[0].set_xlim(left=0)
-            axs[0].set_ylim(bottom=0, top=600)
+            axs[0].set_ylim(bottom=0, top=1)
             axs[0].get_legend().set(visible=False)
             axs[0].grid(ls=':')
             

@@ -516,7 +516,8 @@ def determine_fates(activity: pd.DataFrame = None, input_protocol: Iterable[floa
     front_direction_minimal_distance=5, min_track_length=5, min_significant_track_length=10, # parameters for "get_track_info"
     channel_end_tolerance=8, te_back=30, te_forward=5, te_space=6, ending_search_radius=15, # parameters for "get_front_fates" [channel_end_tolerance also used by "get_pulse_fates"]
     outdir=None, indir=None,
-    plot_results=False, verbose=True, save_csv=True, use_cached=[]):
+    plot_results=False, verbose=True, save_csv=True, use_cached=[],
+    returns=['pulse_fates']):
 
     if outdir is not None and (save_csv or plot_results):
         outdir = Path(outdir)
@@ -566,7 +567,7 @@ def determine_fates(activity: pd.DataFrame = None, input_protocol: Iterable[floa
     input_pulse_to_tree_id = get_input_pulse_to_tree_id(tracks, pulse_times)
     if save_csv and outdir is not None:
         pd.Series(input_pulse_to_tree_id).to_csv(outdir / 'input_pulse_to_tree_id.csv')
-
+    
     if verbose: print('Determining pulse fates...')
     pulse_fates = get_pulse_fates(front_fates, input_pulse_to_tree_id, significant_splits, v, channel_length=channel_length, channel_end_tolerance=channel_end_tolerance)
     if save_csv and outdir is not None:
@@ -581,9 +582,27 @@ def determine_fates(activity: pd.DataFrame = None, input_protocol: Iterable[floa
         plot_kymograph_with_endings(activity, front_fates, duration, pulse_fates,  pulse_times, significant_splits=significant_splits, show=False, outpath=(outdir / 'out-kymo.png') if outdir else None, panel_size=panel_size)
         plt.close()
 
-
     if verbose: print('Done.')
-    return pulse_fates
+
+
+    if len(returns) == 0:
+        return None
+
+    ret_dict = {
+        'pulse_positions': pulse_positions,
+        'tracks': tracks,
+        'split_df': split_df,
+        'merge_df': merge_df,
+        'track_info': track_info,
+        'front_fates': front_fates,
+        'significant_splits': significant_splits,
+        'input_pulse_to_tree_id': input_pulse_to_tree_id,
+        'pulse_fates': pulse_fates,
+    }
+    ret_val = tuple(ret_dict[to_return] for to_return in returns)
+    if len(returns) == 1:
+        ret_val = ret_val[0]
+    return ret_val
 
 
 if __name__ == '__main__':

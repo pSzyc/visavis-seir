@@ -18,7 +18,7 @@ from scripts.binary import activity_to_arrival_times, arrival_times_to_dataset
 
 def make_binary_protocol(interval, n_slots, p=0.5, seed=0):
     random_generator = np.random.default_rng(seed)
-    pulse_bits = random_generator.choice(2, size=n_slots, p=[1-p, p])
+    pulse_bits = random_generator.choice(2, size=n_slots, p=[1.-p, p])
     pulse_bits[0] = 1
 
     locs_1, = np.nonzero(pulse_bits)
@@ -29,9 +29,9 @@ def make_binary_protocol(interval, n_slots, p=0.5, seed=0):
     return pulse_times, pulse_intervals
 
 
-def perform_single(interval, n_slots, duration, offset, n_margin, n_nearest, sim_dir, client, simulation_id):
-    departure_times, pulse_intervals = make_binary_protocol(interval, n_slots, p=0.5, seed=19+simulation_id)
-        
+def perform_single(interval, n_slots, duration, offset, n_margin, n_nearest, sim_dir, client, simulation_id, parameters=PARAMETERS_DEFAULT, p=0.5):
+    departure_times, pulse_intervals = make_binary_protocol(interval, n_slots, p=p, seed=19+simulation_id)
+
     protocol_file_path = make_protocol(
             pulse_intervals=list(pulse_intervals) + [1500],
             duration=duration,
@@ -39,7 +39,7 @@ def perform_single(interval, n_slots, duration, offset, n_margin, n_nearest, sim
         )
 
     result = client.run(
-            parameters_json=PARAMETERS_DEFAULT,
+            parameters_json=parameters,
             mol_states_json=MOL_STATES_DEFAULT,
             protocol_file_path=protocol_file_path,
             verbose=False,
@@ -73,9 +73,11 @@ def generate_dataset(
     n_simulations,
     channel_width=7,
     channel_length=300,
+    parameters=PARAMETERS_DEFAULT,
     duration=5,
     offset=None,
     v=1/3.6,
+    p=0.5,
     outdir=None,
     n_margin=1,
     n_nearest=4,
@@ -95,6 +97,7 @@ def generate_dataset(
 
     if offset is None:
         offset = channel_length / v
+
    
     dataset = pd.concat(starmap(
         perform_single,
@@ -104,6 +107,8 @@ def generate_dataset(
                 n_slots=n_slots,
                 duration=duration,
                 offset=offset,
+                parameters=parameters,
+                p=p,
                 n_margin=n_margin,
                 n_nearest=n_nearest,
                 sim_dir=sim_dir,
@@ -133,14 +138,14 @@ def generate_dataset_batch(
         channel_widths,
         intervals, 
         v=1/3.6,
+        parameters=PARAMETERS_DEFAULT,
         n_slots=100,
         n_simulations=15,
         duration=5,
+        p=0.5,
         outdir=None,
         n_margin=5,
         n_nearest=1,
-        append=False,
-        flush_every_iteration=False,
         use_cached=False,
         processes=None,
     ):
@@ -159,9 +164,11 @@ def generate_dataset_batch(
                 channel_width=channel_width,
                 channel_length=channel_length,
                 offset=channel_length / v,
+                parameters=parameters,
                 n_slots=n_slots,
                 n_simulations=n_simulations,
                 duration=duration,
+                p=p,
                 n_margin=n_margin,
                 n_nearest=n_nearest,
                 processes=processes,
