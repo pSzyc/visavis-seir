@@ -53,6 +53,7 @@ def compile_if_not_exists(
         subprocess.call(
             [str(path_to_compiling_script), '-l', str(channel_length), '-w', str(channel_width)],
             stdout=subprocess.DEVNULL,
+            cwd=path_to_compiling_script.parent.parent,
         )
     return visavis_bin
 
