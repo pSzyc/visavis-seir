@@ -10,7 +10,7 @@ from subplots_from_axsize import subplots_from_axsize
 import sys
 root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
-
+from scripts.style import *
 from scripts.binary import plot_scan
 
 LOG2 = np.log(2)
@@ -54,7 +54,7 @@ panels_dir.mkdir(parents=True, exist_ok=True)
 #             plt.close(fig)
 
 # fig, ax = subplots_from_axsize(1, 1, (3, 2.5), left=0.7)
-fig, axs = subplots_from_axsize(1, 2, (3, 2.5), left=0.7)
+fig, axs = subplots_from_axsize(1, 2, (2.75, 2), left=0.5, wspace=0.5)
  
 entropies = pd.read_csv(data_dir / f'fig4A_entropies-c25.csv')
 

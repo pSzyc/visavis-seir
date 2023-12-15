@@ -10,7 +10,7 @@ from pathlib import Path
 import sys
 root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
-
+from scripts.style import *
 from scripts.binary import plot_scan
 
 
@@ -23,7 +23,8 @@ data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4C
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 for fields in 'c', :
-    for k_neighbors in (12,18,25,):
+    for k_neighbors in (25,):
+    #for k_neighbors in (12,18,25,):
         for reconstruction in (False,):
             suffix = f"{fields}{k_neighbors}{'-reconstruction' if reconstruction else ''}"
             print(f"Drawing plots for suffix: {suffix}")
@@ -47,11 +48,12 @@ for fields in 'c', :
 
             plt.ylim(0,1)
 
-            plt.savefig(panels_dir / f'fig4C-{suffix}--aux1.svg')
-            plt.savefig(panels_dir / f'fig4C-{suffix}--aux1.png')
+            # old:
+            #plt.savefig(panels_dir / f'fig4C-{suffix}--aux1.svg')
+            #plt.savefig(panels_dir / f'fig4C-{suffix}--aux1.png')
 
 
-            fig, axs = subplots_from_axsize(1, 2, (4,3), top=0.2)
+            fig, axs = subplots_from_axsize(1, 2, (2.75, 1.5), left=0.5, wspace=0.5)
 
             ls = np.linspace(result['channel_width'].min(), result['channel_width'].max())
 
@@ -78,9 +80,11 @@ for fields in 'c', :
             axs[1].legend(title='channel length')
             axs[1].grid(ls=':')
 
-
-            plt.savefig(panels_dir / f'fig4C-{suffix}.svg')
-            plt.savefig(panels_dir / f'fig4C-{suffix}.png')
+            plt.savefig(panels_dir / f'fig4C.svg')
+            plt.savefig(panels_dir / f'fig4C.png')
+            # old:
+            # plt.savefig(panels_dir / f'fig4C-{suffix}.svg')
+            # plt.savefig(panels_dir / f'fig4C-{suffix}.png')
 
 # plt.show()
 

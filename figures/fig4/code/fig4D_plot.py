@@ -10,7 +10,7 @@ from pathlib import Path
 import sys
 root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
-
+from scripts.style import *
 from scripts.binary import plot_scan
 from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
 
@@ -35,6 +35,7 @@ full_parameter_names = {
 fold_changes = np.exp(np.linspace(-1, 1, 21))
 # fold_changes = np.exp([0])
 
+from scripts.style import *
 
 for altered_parameter in ['i_incr']:
     for fields in 'c', :
@@ -73,12 +74,12 @@ for altered_parameter in ['i_incr']:
                 plt.scatter(result['optimal_interval'], result['max_bitrate']*60, color='k', marker='o', s=20)
 
                 plt.ylim(0,1)
+                # old:
+                #plt.savefig(panels_dir / f'fig4D-{suffix}--aux1.svg')
+                #plt.savefig(panels_dir / f'fig4D-{suffix}--aux1.png')
 
-                plt.savefig(panels_dir / f'fig4D-{suffix}--aux1.svg')
-                plt.savefig(panels_dir / f'fig4D-{suffix}--aux1.png')
 
-
-                fig, axs = subplots_from_axsize(1, 2, (4,3), top=0.2)
+                fig, axs = subplots_from_axsize(1, 2, (2.75, 1.5), left=0.5, wspace=0.5)
 
                 ls = np.linspace(result['fold_change'].min(), result['fold_change'].max())
 
@@ -104,10 +105,11 @@ for altered_parameter in ['i_incr']:
                 axs[1].set_ylim(bottom=0, top=300)
                 axs[1].legend(title='channel length')
                 axs[1].grid(ls=':')
-
-
-                plt.savefig(panels_dir / f'fig4D--{altered_parameter}-{suffix}.svg')
-                plt.savefig(panels_dir / f'fig4D--{altered_parameter}-{suffix}.png')
+                plt.savefig(panels_dir / f'fig4D.svg')
+                plt.savefig(panels_dir / f'fig4D.png')
+                # old:
+                # plt.savefig(panels_dir / f'fig4D--{altered_parameter}-{suffix}.svg')
+                # plt.savefig(panels_dir / f'fig4D--{altered_parameter}-{suffix}.png')
 
 # plt.show()
 

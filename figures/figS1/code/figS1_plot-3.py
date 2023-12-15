@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order to be able to import from scripts.py
 from scripts.style import *
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "l-300"
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "fig-3"
 data = pd.read_csv(data_dir / 'pulse_fates.csv', usecols=['channel_width', 'track_end', 'fate'])
 data = data[data['fate'] == 'transmitted']
 plt.figure(figsize=(80 / 25.4, 80 / 25.4))

@@ -10,7 +10,8 @@ from pathlib import Path
 import sys
 root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
-
+plt.rcParams["font.sans-serif"] = ['Carlito']
+plt.rcParams['font.size'] = 8
 from scripts.binary import plot_scan
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4B' / 'approach1'
@@ -37,11 +38,10 @@ for fields in 'c', :
             )
             plt.scatter(result['optimal_interval'], 60*result['max_bitrate'], color='k', marker='o', s=20)
             plt.ylim(0,1)
-
-            plt.savefig(panels_dir / f'fig4B{suffix}--aux1.svg')
-            plt.savefig(panels_dir / f'fig4B{suffix}--aux1.png')
-
-
+            
+            # old:
+            # plt.savefig(panels_dir / f'fig4B{suffix}--aux1.svg')
+            # plt.savefig(panels_dir / f'fig4B{suffix}--aux1.png')
 
             fit_max_bitrate_sqrt_inv = LinearRegression().fit(result[['channel_length_sqrt']].to_numpy(), result[['max_bitrate_inv']].to_numpy())
             predict_max_bitrate_sqrt_inv = fit_max_bitrate_sqrt_inv.predict(result[['channel_length_sqrt']].to_numpy())
@@ -51,7 +51,7 @@ for fields in 'c', :
             predict_optimal_interval_sqrt = fit_optimal_interval_sqrt.predict(result[['channel_length_sqrt']].to_numpy())
             print(f"optimal_interval = {fit_optimal_interval_sqrt.coef_[0][0]:.2g}*sqrt(l) + {fit_optimal_interval_sqrt.intercept_[0]:.2g}")
 
-            fig, axs = subplots_from_axsize(1, 2, (4,3))
+            fig, axs = subplots_from_axsize(1, 2, (2.75, 1.5), left=0.5, wspace=0.5)
 
             result.plot.line('channel_length_sqrt', 'max_bitrate_inv', marker='o', color='k', ls='none', ax=axs[0])
             axs[0].plot(result['channel_length_sqrt'], predict_max_bitrate_sqrt_inv, alpha=0.4, color='k')
@@ -74,17 +74,23 @@ for fields in 'c', :
             axs[0].set_ylim(0,600)
             axs[1].set_ylim(0,300)
             axs[0].set_xticks(np.sqrt(np.array([30,100,300,1000])))
+            axs[0].set_yticks(np.arange(0, 600, 100))
             axs[0].set_xticklabels(map("$\sqrt{{{:d}}}$".format, [30,100,300,1000]))
             axs[0].grid(ls=':')
             axs[1].set_xticks(np.sqrt(np.array([30,100,300,1000])))
+            axs[1].set_yticks(np.arange(0, 300, 50))   
             axs[1].set_xticklabels(map("$\sqrt{{{:d}}}$".format, [30,100,300,1000]))
             axs[1].grid(ls=':')
 
+            
+            plt.savefig(panels_dir / f'fig4B.svg')
+            plt.savefig(panels_dir / f'fig4B.png')
 
-            plt.savefig(panels_dir / f'fig4B{suffix}.svg')
-            plt.savefig(panels_dir / f'fig4B{suffix}.png')
+            # old:
+            #plt.savefig(panels_dir / f'fig4B{suffix}.svg')
+            #plt.savefig(panels_dir / f'fig4B{suffix}.png')
 
-            fig, axs = subplots_from_axsize(1, 2, (4,3))
+            fig, axs = subplots_from_axsize(1, 2, (2.75, 2))
 
             axs[0].plot(result['channel_length_sqrt'], 1/result['max_bitrate'], marker='o', color='k', ls='none')
             axs[0].plot(result['channel_length_sqrt'], predict_max_bitrate_sqrt_inv)
@@ -95,11 +101,12 @@ for fields in 'c', :
             # axs[0].set_xlim(left=0)
             # axs[0].set_ylim(bottom=0)
 
-            plt.savefig(panels_dir / f'fig4B{suffix}--aux3.svg')
-            plt.savefig(panels_dir / f'fig4B{suffix}--aux3.png')
+            # old:
+            # plt.savefig(panels_dir / f'fig4B{suffix}--aux3.svg')
+            # plt.savefig(panels_dir / f'fig4B{suffix}--aux3.png')
 
 
-            fig, axs = subplots_from_axsize(1, 2, (4,3))
+            fig, axs = subplots_from_axsize(1, 2, (40 / 25.4, 30 / 25.4))
 
             ls = np.linspace(result['channel_length'].min(), result['channel_length'].max())
             result.plot.line('channel_length', 'max_bitrate', marker='o', color='k', ls='none', ax=axs[0])
@@ -123,7 +130,7 @@ for fields in 'c', :
             axs[1].set_ylim(bottom=0, top=200)
             axs[1].legend()
 
-
-            plt.savefig(panels_dir / f'fig4B{suffix}--aux4.svg')
-            plt.savefig(panels_dir / f'fig4B{suffix}--aux4.png')
+            # old:
+            # plt.savefig(panels_dir / f'fig4B{suffix}--aux4.svg')
+            # plt.savefig(panels_dir / f'fig4B{suffix}--aux4.png')
 

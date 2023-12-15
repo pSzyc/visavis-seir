@@ -7,7 +7,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order to be able to import from scripts.py
 from scripts.style import *
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / "figS1" / 'approach6'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / "figS1" / 'fig-2'
 data_list = []
 plt.figure(figsize=(80 / 25.4, 80 / 25.4))
 for path, dir, files in os.walk(data_dir):
