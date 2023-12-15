@@ -8,7 +8,7 @@ root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' /'approach8'
-out_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3-2' /'approach2'
+out_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3-2' /'approach2'
 out_dir.mkdir(exist_ok=True, parents=True)
 
 channel_widths = [6]#[::-1]

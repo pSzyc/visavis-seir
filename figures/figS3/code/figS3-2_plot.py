@@ -10,7 +10,7 @@ root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3-2' /'approach1'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3-2' /'approach1'
 out_dir = Path(__file__).parent.parent / 'panels'
 out_dir.mkdir(exist_ok=True, parents=True)
 
@@ -36,7 +36,7 @@ print(median_arrival_times)
 axs[1].set_xlim(left=0)
 axs[1].set_xlabel('interval [min]')
 axs[1].set_ylim(bottom=0, top=250)
-axs[1].set_ylabel('delay [min]')
+axs[1].set_ylabel('median delay [min]')
 axs[1].grid(which='both', ls=':')
 axs[1].legend(loc='upper left')
 axs[1].legend(handles=axs[1].get_legend().legend_handles[1:], title='spawned front id')

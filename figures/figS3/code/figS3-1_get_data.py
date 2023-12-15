@@ -9,7 +9,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.two_fronts import simulate
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' /'approach5'
-out_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' /'approach1'
+out_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3-1' / 'approach1'
 out_dir.mkdir(exist_ok=True, parents=True)
 
 channel_widths = [6]#[::-1]
@@ -30,7 +30,7 @@ pulse_fates = pd.concat(
 print(pulse_fates)
 
 selected_pulse_fates = pulse_fates[
-        pulse_fates['fate'].eq('transmitted') 
+        pulse_fates['fate'].eq('transmitted')
         & pulse_fates['track_end_position'].gt(pulse_fates.index.get_level_values('channel_length') - 10)
     ]['track_end'].unstack('pulse_id').dropna()
 print(selected_pulse_fates)

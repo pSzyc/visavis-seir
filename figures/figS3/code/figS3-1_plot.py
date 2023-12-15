@@ -10,7 +10,7 @@ root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' /'approach1'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3-1' / 'approach1'
 out_dir = Path(__file__).parent.parent / 'panels'
 out_dir.mkdir(exist_ok=True, parents=True)
 
