@@ -8,7 +8,7 @@ from matplotlib.ticker import MultipleLocator
 import sys
 root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
-
+from scripts.style import *
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3-2' /'approach1'
 out_dir = Path(__file__).parent.parent / 'panels'
@@ -16,7 +16,7 @@ out_dir.mkdir(exist_ok=True, parents=True)
 
 spawned_front_fates = pd.read_csv(data_dir / 'spawned_front_fates.csv').set_index(['channel_width', 'channel_length', 'interval', 'simulation_id'])
 
-fig, axs = subplots_from_axsize(1, 2, (4,3), left=.8)
+fig, axs = subplots_from_axsize(1, 2, (3.5, 2.2), left=.5)
 
 spawned_front_fates.diff(axis=1)[['0', '1', '2','3']].plot.hist(bins=range(0,500,10), alpha=0.3, ax=axs[0])
 
@@ -38,9 +38,12 @@ axs[1].set_xlabel('interval [min]')
 axs[1].set_ylim(bottom=0, top=250)
 axs[1].set_ylabel('median delay [min]')
 axs[1].grid(which='both', ls=':')
-axs[1].legend(loc='upper left')
-axs[1].legend(handles=axs[1].get_legend().legend_handles[1:], title='spawned front id')
-
+axs[1].axhline(y=125, color='b', linestyle=':', label = "median delay's average")
+plt.legend()
+handles = axs[1].get_legend().legend_handles
+legend_spawned = axs[1].legend(handles=handles[1:-1], title='spawned front id')
+axs[1].add_artist(legend_spawned)
+axs[1].legend(handles=[handles[-1]], loc = 'upper left')
 plt.savefig(out_dir / 'figS3-2.png')
 plt.savefig(out_dir / 'figS3-2.svg')
 

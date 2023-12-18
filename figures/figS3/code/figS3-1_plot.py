@@ -8,6 +8,7 @@ from matplotlib.ticker import MultipleLocator
 import sys
 root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
+from scripts.style import *
 
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3-1' / 'approach1'
@@ -19,17 +20,18 @@ out_dir.mkdir(exist_ok=True, parents=True)
 mean_arrival_times = pd.read_csv(data_dir / 'mean_arrival_times.csv')
 both_arrived_pulse_fates = pd.read_csv(data_dir / 'both_arrived_pulse_fates.csv').set_index(['channel_width', 'channel_length', 'interval', 'simulation_id'])
 
-fig, axs = subplots_from_axsize(1, 2, (4,3), left=.8)
+fig, axs = subplots_from_axsize(1, 2, (3.5, 2.2), left=.5)
 
+ax = axs[1]
 for it, (interval, data) in enumerate(both_arrived_pulse_fates.groupby('interval')):
-    data.diff(axis=1).plot.hist(bins=range(0,500,10), bottom=it*1000, ax=axs[0])
+    data.diff(axis=1).plot.hist(bins=range(0,500,10), bottom=it*1000, ax=ax)
 
-axs[0].set_xlabel('delay [min]')
-axs[0].xaxis.set_minor_locator(MultipleLocator(25))
-axs[0].grid(which='both', ls=':')
-axs[0].get_legend().set_visible(False)
+ax.set_xlabel('delay [min]')
+ax.xaxis.set_minor_locator(MultipleLocator(25))
+ax.grid(which='both', ls=':')
+ax.get_legend().set_visible(False)
 
-ax=axs[1]
+ax=axs[0]
 
 ax.plot(mean_arrival_times['interval'], mean_arrival_times['0'], '-o', label='first pulse')
 ax.plot(mean_arrival_times['interval'], mean_arrival_times['1'], '-o', label='second pulse')
@@ -47,8 +49,8 @@ eps=10
 ax.annotate("", xy=(75, 1225), xytext=(75, 1080),
             arrowprops=dict(arrowstyle="<->"))
 ax.annotate("145 min", xy=(75, 1152.5), xytext=(85, 1152.5))
-plt.savefig(out_dir / 'figS3.png')
-plt.savefig(out_dir / 'figS3.svg')
+plt.savefig(out_dir / 'figS3-1.png')
+plt.savefig(out_dir / 'figS3-1.svg')
 
 print(mean_arrival_times.set_index('interval').pipe(lambda df: df['1'] - df['0']))
 print(mean_arrival_times.set_index('interval').pipe(lambda df: df['1'] - df['0']))
