@@ -4,8 +4,11 @@ from pathlib import Path
 from matplotlib.ticker import MultipleLocator
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order to be able to import from scripts.py
+
 from scripts.style import *
+
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / 'fig-1'
+panels_dir = Path(__file__).parent.parent / 'panels'
 
 data = pd.read_csv(data_dir / 'pulse_fates.csv')
 data = data[data['fate'] == 'transmitted']
@@ -16,5 +19,5 @@ plt.legend()
 plt.ylabel(r'variance of propagation time [min$^{2}$]')
 plt.xlabel('channel length')
 plt.gca().yaxis.set_major_locator(MultipleLocator(200))
-plt.savefig(Path(__file__).parent.parent / 'panels' / 'figS1_plot-1.png')
-plt.savefig(Path(__file__).parent.parent / 'panels' / 'figS1_plot-1.svg')
+plt.savefig(panels_dir / 'figS1_plot-1.png')
+plt.savefig(panels_dir / 'figS1_plot-1.svg')

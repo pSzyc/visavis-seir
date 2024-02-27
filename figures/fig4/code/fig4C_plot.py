@@ -4,6 +4,7 @@ import numpy as np
 from subplots_from_axsize import subplots_from_axsize
 from sklearn.linear_model import LinearRegression
 from numpy.polynomial.polynomial import Polynomial
+from matplotlib.ticker import MultipleLocator
 
 from pathlib import Path
 
@@ -16,10 +17,12 @@ from scripts.binary import plot_scan
 
 channel_length_colors = {
     30: 0,
+    100: 1,
     300: 2,
+    1000: 3,
 }
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4C' / 'approach3'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4C' / 'approach4'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 for fields in 'c', :
@@ -49,11 +52,11 @@ for fields in 'c', :
             plt.ylim(0,1)
 
             # old:
-            #plt.savefig(panels_dir / f'fig4C-{suffix}--aux1.svg')
-            #plt.savefig(panels_dir / f'fig4C-{suffix}--aux1.png')
+            plt.savefig(panels_dir / f'fig4C-{suffix}--aux1.svg')
+            plt.savefig(panels_dir / f'fig4C-{suffix}--aux1.png')
 
 
-            fig, axs = subplots_from_axsize(1, 2, (2.75, 1.5), left=0.5, wspace=0.5)
+            fig, axs = subplots_from_axsize(1, 2, (1.68, 1.5), left=0.5, wspace=0.5, right=0.01)
 
             ls = np.linspace(result['channel_width'].min(), result['channel_width'].max())
 
@@ -63,8 +66,9 @@ for fields in 'c', :
 
             axs[0].set_ylabel('max bitrate [bit/h]')
             axs[0].set_xlabel('channel width')
-            axs[0].set_xlim(left=0)
+            axs[0].set_xlim(left=2, right=13)
             axs[0].set_ylim(bottom=0, top=1)
+            axs[0].xaxis.set_major_locator(MultipleLocator(5))
             axs[0].get_legend().set(visible=False)
             axs[0].grid(ls=':')
             
@@ -75,8 +79,9 @@ for fields in 'c', :
   
             axs[1].set_ylabel('optimal interval [min]')
             axs[1].set_xlabel('channel width')
-            axs[1].set_xlim(left=0)
+            axs[1].set_xlim(left=2, right=13)
             axs[1].set_ylim(bottom=0, top=300)
+            axs[1].xaxis.set_major_locator(MultipleLocator(5))
             axs[1].legend(title='channel length')
             axs[1].grid(ls=':')
 

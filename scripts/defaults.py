@@ -14,6 +14,6 @@ MOL_STATES_DEFAULT = {
   }
 
 # TEMP_DIR = f"/mnt/export/{os.environ['USER'] if 'USER' in os.environ else 'blabla'}/tmp" #f"/run/user/{os.environ['USER']}"
-# TEMP_DIR = f"/run/user/{os.environ['USER']if 'USER' in os.environ else 'blabla'}"
-TEMP_DIR = "/tmp"
+TEMP_DIR = f"/run/user/{os.environ['USER'] if 'USER' in os.environ else 'blabla'}"
+# TEMP_DIR = "/tmp"
 

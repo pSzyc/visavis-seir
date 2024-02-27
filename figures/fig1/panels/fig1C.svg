@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="59.624714mm"
-   height="34.385223mm"
-   viewBox="0 0 59.624714 34.385223"
+   width="60mm"
+   height="45mm"
+   viewBox="0 0 60 44.999999"
    version="1.1"
    id="svg1"
    inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
@@ -23,13 +23,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.0192238"
-     inkscape:cx="164.34075"
-     inkscape:cy="166.30303"
+     inkscape:zoom="2.8828002"
+     inkscape:cx="59.490768"
+     inkscape:cy="-12.6613"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="1912"
-     inkscape:window-y="-8"
+     inkscape:window-y="38"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -49,194 +49,191 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;text-align:center;text-anchor:middle;stroke:#000000;stroke-width:0.088;stroke-dasharray:none;stroke-opacity:1"
          x="65.01535"
          y="17.02232"
-         id="tspan10">reaction rates </tspan><tspan
+         id="tspan10">average time</tspan><tspan
          sodipodi:role="line"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;font-family:Carlito;-inkscape-font-specification:Carlito;text-align:center;text-anchor:middle;stroke:#000000;stroke-width:0.088;stroke-dasharray:none;stroke-opacity:1"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;text-align:center;text-anchor:middle;stroke:#000000;stroke-width:0.088;stroke-dasharray:none;stroke-opacity:1"
          x="65.01535"
          y="21.432045"
-         id="tspan18">[min<tspan
-   style="font-size:65%;baseline-shift:super"
-   id="tspan8">-1</tspan>]</tspan></text>
+         id="tspan18">spent in each state</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke:#000000;stroke-width:0.088;stroke-dasharray:none;stroke-opacity:1"
-       x="91.216705"
+       x="93.862541"
        y="12.62293"
        id="text1-7"><tspan
          sodipodi:role="line"
          id="tspan1-8"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;text-align:center;text-anchor:middle;stroke:#000000;stroke-width:0.088;stroke-dasharray:none;stroke-opacity:1"
-         x="91.216705"
+         x="93.862541"
          y="12.62293" /><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;text-align:center;text-anchor:middle;stroke:#000000;stroke-width:0.088;stroke-dasharray:none;stroke-opacity:1"
-         x="91.216705"
-         y="17.032656"
-         id="tspan2">intermediate states</tspan></text>
+         x="93.862541"
+         y="17.032654"
+         id="tspan2">number of</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;text-align:center;text-anchor:middle;stroke:#000000;stroke-width:0.088;stroke-dasharray:none;stroke-opacity:1"
+         x="93.862541"
+         y="21.442379"
+         id="tspan4">intermediate states</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="57.855202"
+       x="56.796867"
        y="26.999575"
        id="text3"><tspan
          sodipodi:role="line"
          id="tspan3"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="57.855202"
+         x="56.796867"
          y="26.999575"><tspan
            style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito"
-           id="tspan5">r</tspan><tspan
+           id="tspan5">𝜏</tspan><tspan
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:sub"
            id="tspan15">act</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="63.631794"
+       x="63.102623"
        y="27.026136"
        id="text6"><tspan
          sodipodi:role="line"
          id="tspan6"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="63.631794"
+         x="63.102623"
          y="27.026136">=</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="68.244583"
+       x="66.127914"
        y="26.999575"
        id="text7"><tspan
          sodipodi:role="line"
          id="tspan7"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="68.244583"
-         y="26.999575">1</tspan></text>
+         x="66.127914"
+         y="26.999575">1 min</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="57.855202"
+       x="56.796867"
        y="31.490129"
        id="text3-3"><tspan
          sodipodi:role="line"
          id="tspan3-3"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="57.855202"
+         x="56.796867"
          y="31.490129"><tspan
            style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito"
-           id="tspan5-7">r</tspan><tspan
+           id="tspan5-7">𝜏</tspan><tspan
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:sub"
            id="tspan16">E</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="63.631794"
+       x="63.102623"
        y="31.516691"
        id="text6-8"><tspan
          sodipodi:role="line"
          id="tspan6-8"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="63.631794"
+         x="63.102623"
          y="31.516691">=</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="68.244583"
+       x="66.127914"
        y="31.490129"
        id="text7-3"><tspan
          sodipodi:role="line"
          id="tspan7-0"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="68.244583"
-         y="31.490129">1<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:super"
-   id="tspan8-4" /></tspan></text>
+         x="66.127914"
+         y="31.490129">4 min</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="57.855202"
+       x="56.796867"
        y="35.966805"
        id="text3-3-2"><tspan
          sodipodi:role="line"
          id="tspan3-3-7"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="57.855202"
+         x="56.796867"
          y="35.966805"><tspan
            style="font-style:italic;font-size:3.52778px"
-           id="tspan25">r</tspan><tspan
+           id="tspan25">𝜏</tspan><tspan
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:sub"
            id="tspan13">I</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="63.631794"
+       x="63.102623"
        y="35.993366"
        id="text6-8-3"><tspan
          sodipodi:role="line"
          id="tspan6-8-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="63.631794"
+         x="63.102623"
          y="35.993366">=</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="68.244606"
+       x="66.127937"
        y="35.966805"
        id="text7-3-7"><tspan
          sodipodi:role="line"
          id="tspan7-0-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="68.244606"
-         y="35.966805">1<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:super"
-   id="tspan8-4-2" /></tspan></text>
+         x="66.127937"
+         y="35.966805">2 min</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="57.855202"
+       x="56.796867"
        y="40.486195"
        id="text3-3-0"><tspan
          sodipodi:role="line"
          id="tspan3-3-2"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="57.855202"
+         x="56.796867"
          y="40.486195"><tspan
            style="font-style:italic;font-size:3.52778px"
-           id="tspan26">r</tspan><tspan
+           id="tspan26">𝜏</tspan><tspan
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:sub"
            id="tspan12">R</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="63.631794"
+       x="63.102623"
        y="40.466591"
        id="text6-8-7"><tspan
          sodipodi:role="line"
          id="tspan6-8-9"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="63.631794"
+         x="63.102623"
          y="40.466591">=</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="68.244583"
+       x="66.127914"
        y="40.486195"
        id="text7-3-2"><tspan
          sodipodi:role="line"
          id="tspan7-0-6"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="68.244583"
-         y="40.486195">1/15<tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:super"
-   id="tspan8-4-5" /></tspan></text>
+         x="66.127914"
+         y="40.486195">60 min</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="84.842735"
+       x="88.546906"
        y="31.490129"
        id="text3-3-5"><tspan
          sodipodi:role="line"
          id="tspan3-3-5"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="84.842735"
+         x="88.546906"
          y="31.490129"><tspan
            style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito"
            id="tspan5-7-3">n</tspan><tspan
@@ -245,35 +242,35 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="90.090157"
+       x="92.735992"
        y="31.513247"
        id="text6-8-0"><tspan
          sodipodi:role="line"
          id="tspan6-8-7"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="90.090157"
+         x="92.735992"
          y="31.513247">=</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="94.70295"
+       x="95.761284"
        y="31.490129"
        id="text7-3-71"><tspan
          sodipodi:role="line"
          id="tspan7-0-9"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="94.70295"
+         x="95.761284"
          y="31.490129">4</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="84.842735"
+       x="88.546906"
        y="35.966805"
        id="text3-3-2-7"><tspan
          sodipodi:role="line"
          id="tspan3-3-7-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="84.842735"
+         x="88.546906"
          y="35.966805"><tspan
            style="font-style:italic;font-size:3.52778px"
            id="tspan27">n</tspan><tspan
@@ -282,35 +279,35 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="90.090157"
+       x="92.735992"
        y="36.01128"
        id="text6-8-3-7"><tspan
          sodipodi:role="line"
          id="tspan6-8-1-9"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="90.090157"
+         x="92.735992"
          y="36.01128">=</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="94.702965"
+       x="95.761299"
        y="35.966805"
        id="text7-3-7-5"><tspan
          sodipodi:role="line"
          id="tspan7-0-4-3"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="94.702965"
+         x="95.761299"
          y="35.966805">2</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="84.842735"
+       x="88.546906"
        y="40.486195"
        id="text3-3-0-2"><tspan
          sodipodi:role="line"
          id="tspan3-3-2-7"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:baseline;stroke-width:0.264583"
-         x="84.842735"
+         x="88.546906"
          y="40.486195"><tspan
            style="font-style:italic;font-size:3.52778px"
            id="tspan28">n</tspan><tspan
@@ -319,24 +316,61 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="90.090157"
+       x="92.735992"
        y="40.466591"
        id="text6-8-7-7"><tspan
          sodipodi:role="line"
          id="tspan6-8-9-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="90.090157"
+         x="92.735992"
          y="40.466591">=</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-       x="94.702942"
+       x="95.761276"
        y="40.636055"
        id="text7-3-2-9"><tspan
          sodipodi:role="line"
          id="tspan7-0-6-0"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
-         x="94.702942"
+         x="95.761276"
          y="40.636055">4</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke:#000000;stroke-width:0.088;stroke-dasharray:none;stroke-opacity:1"
+       x="81.925064"
+       y="46.418453"
+       id="text1-6"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;text-align:center;text-anchor:middle;stroke:#000000;stroke-width:0.088;stroke-dasharray:none;stroke-opacity:1"
+         x="81.925064"
+         y="46.418453"
+         id="tspan18-0">geometric parameters</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
+       x="51.507908"
+       y="51.780796"
+       id="text3-8"><tspan
+         sodipodi:role="line"
+         id="tspan3-7"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
+         x="51.507908"
+         y="51.780796"><tspan
+   style="font-style:italic"
+   id="tspan11">L - </tspan>channel length</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;line-height:1.25;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
+       x="81.745346"
+       y="51.780796"
+       id="text3-8-9"><tspan
+         sodipodi:role="line"
+         id="tspan3-7-4"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:Carlito;-inkscape-font-specification:Carlito;stroke-width:0.264583"
+         x="81.745346"
+         y="51.780796"><tspan
+   style="font-style:italic"
+   id="tspan11-2">W - </tspan>channel width</tspan></text>
   </g>
 </svg>

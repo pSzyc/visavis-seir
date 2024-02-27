@@ -12,22 +12,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to i
 from scripts.entropy_utils import conditional_entropy_discrete, conditional_entropy_discrete_reconstruction, conditional_entropy_discrete_bins_or_neighbors_pandas
 
 
-# def results_to_arrival_times(result):
-
-#     data = result.states
-#     h_max = data['h'].max()
-
-#     data['act'] = 1.0 * ((data['E'] > 0) | (data['I'] > 0))
-#     data_grouped = data.groupby(['seconds', 'h'])['act'].mean()
-    
-#     output_series = data_grouped[:, h_max]
-#     arrival_idxs, _ = find_peaks(output_series, distance=5)
-#     arrival_times = output_series.index[arrival_idxs]
-    
-#     return arrival_times
-
-
-
 def activity_to_arrival_times(activity):
    
     arrival_idxs, _ = find_peaks(activity[activity.columns[-1]].to_numpy(), distance=5)
@@ -142,15 +126,17 @@ def get_entropy(dataset: pd.DataFrame, fields=['c'], reconstruction=False, k_nei
     return results
 
 
-def get_optimal_bitrate(entropies: pd.DataFrame, outdir=None):
+def get_optimal_bitrate(entropies: pd.DataFrame, outdir=None, return_errors=False):
     result_parts = []
+    search_better_around = []
 
     for it, ((channel_width, channel_length), data) in enumerate(entropies.groupby(['channel_width', 'channel_length'])):
 
         smoothed_data = data['bitrate_per_hour'].rolling(3, center=True).mean()
         optimal_interval_idx = smoothed_data.argmax()
-        if optimal_interval_idx <= 1 or optimal_interval_idx >= len(data['bitrate_per_hour']) - 2:
+        if not 1 < optimal_interval_idx < len(data['bitrate_per_hour']) - 2:
             warn(f"Maximum on the edge of the scan range for {channel_width = }, {channel_length = }")
+            search_better_around.append(optimal_interval_idx)
         optimal_interval = data['interval'].iloc[optimal_interval_idx] 
         max_bitrate = data['bitrate_per_hour'].iloc[optimal_interval_idx] / 60
 
@@ -199,13 +185,19 @@ def plot_scan(results, x_field, c_field, y_field='bitrate_per_hour', ax=None, fm
         ax.plot(
             x_vals,
             60 / x_vals if y_field == 'bitrate_per_hour' else np.ones(len(x_vals)),
-            ':',
+            '-',
+            lw=1,
+            # alpha=0.3,
             color='grey',
             label=f'perfect',
         )
         
     ax.set_xlabel(x_field)
-    ax.set_ylabel('bitrate [bit/hour]')
+    ax.set_ylabel(
+        'bitrate [bit/hour]' if y_field == 'bitrate_per_hour' else
+        'transmission efficiency' if y_field == 'efficiency' else
+        y_field
+        )
     ax.set_xlim(left=0)
     ax.set_ylim(bottom=0)
 

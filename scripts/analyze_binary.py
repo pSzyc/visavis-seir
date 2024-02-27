@@ -29,7 +29,19 @@ def make_binary_protocol(interval, n_slots, p=0.5, seed=0):
     return pulse_times, pulse_intervals
 
 
-def perform_single(interval, n_slots, duration, offset, n_margin, n_nearest, sim_dir, client, simulation_id, parameters=PARAMETERS_DEFAULT, p=0.5):
+def perform_single(
+    interval, 
+    n_slots, 
+    duration, 
+    offset, 
+    n_margin, 
+    n_nearest, 
+    sim_dir, 
+    client, 
+    simulation_id, 
+    parameters=PARAMETERS_DEFAULT, 
+    mol_states=MOL_STATES_DEFAULT, 
+    p=0.5):
     departure_times, pulse_intervals = make_binary_protocol(interval, n_slots, p=p, seed=19+simulation_id)
 
     protocol_file_path = make_protocol(
@@ -40,7 +52,7 @@ def perform_single(interval, n_slots, duration, offset, n_margin, n_nearest, sim
 
     result = client.run(
             parameters_json=parameters,
-            mol_states_json=MOL_STATES_DEFAULT,
+            mol_states_json=mol_states,
             protocol_file_path=protocol_file_path,
             verbose=False,
             dir_name=f"sim-{simulation_id}/simulation",
@@ -74,6 +86,7 @@ def generate_dataset(
     channel_width=7,
     channel_length=300,
     parameters=PARAMETERS_DEFAULT,
+    mol_states=MOL_STATES_DEFAULT,
     duration=5,
     offset=None,
     v=1/3.6,
@@ -108,6 +121,7 @@ def generate_dataset(
                 duration=duration,
                 offset=offset,
                 parameters=parameters,
+                mol_states=mol_states,
                 p=p,
                 n_margin=n_margin,
                 n_nearest=n_nearest,
@@ -139,6 +153,7 @@ def generate_dataset_batch(
         intervals, 
         v=1/3.6,
         parameters=PARAMETERS_DEFAULT,
+        mol_states=MOL_STATES_DEFAULT,
         n_slots=100,
         n_simulations=15,
         duration=5,
@@ -156,7 +171,7 @@ def generate_dataset_batch(
 
     for channel_length, channel_width, interval in product(channel_lengths, channel_widths, intervals):
         print(f"l={channel_length} w={channel_width} i={interval}", end='  ', flush=True)
-        if use_cached and outdir:
+        if use_cached and outdir and (outdir / f"l-{channel_length}-w-{channel_width}-i-{interval}" / 'dataset.csv').exists():
             data = pd.read_csv(outdir / f"l-{channel_length}-w-{channel_width}-i-{interval}" / 'dataset.csv').set_index(['channel_length', 'channel_width', 'interval', 'simulation_id', 'pulse_id'])
         else:
             data = generate_dataset(
@@ -165,6 +180,7 @@ def generate_dataset_batch(
                 channel_length=channel_length,
                 offset=channel_length / v,
                 parameters=parameters,
+                mol_states=mol_states,
                 n_slots=n_slots,
                 n_simulations=n_simulations,
                 duration=duration,

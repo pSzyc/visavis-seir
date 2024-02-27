@@ -17,22 +17,31 @@ out_dir = Path(__file__).parent.parent / 'panels'
 propensities = pd.read_csv(data_dir / 'fig2C--propensities.csv')
 
 
-lreg = LinearRegression().fit(propensities[['channel_width']], propensities[['l_spawning']])
+lreg = LinearRegression().fit(propensities[['channel_width']].to_numpy(), propensities[['l_spawning']].to_numpy())
 a_sp, b_sp = lreg.coef_[0,0], lreg.intercept_[0]
 
 propensities_cropped = propensities[propensities['channel_width'] <= 6]
 propensities_cropped_for_plot = propensities[propensities['channel_width'] <= 7]
-lreg_failure = LinearRegression().fit(propensities_cropped[['channel_width']], np.log(propensities_cropped[['l_failure']]))
+lreg_failure = LinearRegression().fit(propensities_cropped[['channel_width']].to_numpy(), np.log(propensities_cropped[['l_failure']].to_numpy()))
 a_fail, b_fail = lreg_failure.coef_[0,0], lreg_failure.intercept_[0]
+
+pd.DataFrame({'spawning': {'a': a_sp, 'b': b_sp}, 'failure': {'a': a_fail, 'b': b_fail}}).to_csv(data_dir / 'coefs.csv')
 
 
 def make_plot(ax):
     xs = np.linspace(0,20,101)
     ax.plot(propensities_cropped_for_plot['channel_width'], propensities_cropped_for_plot['l_failure'], 's', color='olive', label='propagation failure')
     ax.plot(propensities['channel_width'], propensities['l_spawning'], '^', color='maroon',label='additional front spawning')
-    ax.plot(xs, np.exp(lreg_failure.predict(xs.reshape(-1,1))), color='olive', alpha=0.3, label=f"$\\lambda_f$ = {np.exp(b_fail):.2f} $\\times$ {np.exp(-a_fail):.2f}$^{{-w}}$")
-    ax.plot(xs, lreg.predict(xs.reshape(-1,1)), color='maroon', alpha=.4, label=f"$\\lambda_s$ = (w - {-b_sp/a_sp:.2f}) / {1/a_sp:.0f}")
-    ax.plot(xs, np.exp(lreg_failure.predict(xs.reshape(-1,1))) + lreg.predict(xs.reshape(-1,1)), color='navy', alpha=.4, label=f"$\\lambda_f$ + $\\lambda_s$")
+    ax.plot(xs, np.exp(lreg_failure.predict(xs.reshape(-1,1))), color='olive', alpha=0.3, 
+        # label=f"$\\lambda_f$ = {np.exp(b_fail):.2f} $\\times$ {np.exp(-a_fail):.2f}$^{{-w}}$"
+        label=r"$\lambda_f=\exp(\alpha W + \beta)$"
+        )
+    ax.plot(xs, lreg.predict(xs.reshape(-1,1)), color='maroon', alpha=.4, 
+        # label=f"$\\lambda_s$ = (w - {-b_sp/a_sp:.2f}) / {1/a_sp:.0f}"
+        label=r"$\lambda_s=a W + b$"
+        )
+    ax.plot(xs, np.exp(lreg_failure.predict(xs.reshape(-1,1))) + lreg.predict(xs.reshape(-1,1)), color='navy', alpha=.4, 
+        label=r"$\lambda_tot = \lambda_f + \lambda_s$")
     ax.set_xlabel('channel width')
     ax.set_xlim(left=0)
     ax.xaxis.set_major_locator(MultipleLocator(5))

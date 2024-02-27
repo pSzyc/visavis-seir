@@ -8,7 +8,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 
 from scripts.two_fronts import simulate
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' /'approach8'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' /'approach8'
 data_dir.mkdir(exist_ok=True, parents=True)
 
 channel_widths = [6]#[::-1]
@@ -22,7 +22,7 @@ data = simulate(
     channel_length=channel_length,
     intervals=intervals,
     n_workers=20,
-    interval_after=2660,
+    interval_after=int(7.2*channel_length + 500),
     plot_results=True,
     save_iterations=True,
     # use_cached=True,

@@ -3,10 +3,13 @@ Cargo.lock
 *.csv
 *.png
 *.svg
-*.mp4
 movies/**/snaps
 private
 __pycache__
 target
 .vscode
 **data
+**data2
+**.pkl
+**.gz
+

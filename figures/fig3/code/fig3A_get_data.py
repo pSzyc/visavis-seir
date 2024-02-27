@@ -47,7 +47,8 @@ data_dir.mkdir(exist_ok=True, parents=True)
 
 channel_widths = [6]
 channel_lengths = [300]
-intervals = [100, 150, 200]
+# intervals = [100, 150, 200]
+intervals = [180, 120, 60]
 duration = 5
 
 for channel_width in channel_widths:
@@ -60,7 +61,7 @@ for channel_width in channel_widths:
                 n_pulses=4200//interval,
                 interval_after=0,
                 duration=duration,
-                seed=1,
+                seed=2,
             )
             result.activity.to_csv(data_dir / f'fig3A_w-{channel_width}-l-{channel_length}-interval-{interval}--activity.csv')
 

@@ -7,14 +7,15 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order to be able to import from scripts.py
 from scripts.style import *
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'approach5'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' / 'approach5'
 out_dir = Path(__file__).parent.parent / 'panels'
 
 probabilities = pd.read_csv(data_dir / 'probabilities.csv').set_index('interval')
 propensities = pd.read_csv(data_dir / 'propensities.csv').set_index('interval')
 
-fig, ax = subplots_from_axsize(1, 1, (3.3, 2.6), left=.5)
+fig, ax = subplots_from_axsize(1, 1, (3, 2), left=.5)
 probabilities.plot(marker='o', ms=3, ax=ax)
+# ax.vlines([67.5, 97.6], 0,1)
 ax.set_ylabel('probability')
 ax.set_xlabel('interval [min]')
 
@@ -29,6 +30,7 @@ axs[0].set_xlabel('interval [min]')
 propensities.plot(marker='o', ms=3, ax=axs[1])
 axs[1].set_ylabel('propensity [steps$^{-1}$]')
 axs[1].set_xlabel('interval [min]')
+axs[1].set_xscale('log')
 
 plt.savefig(out_dir / 'fig3B--propensities.png')
 plt.savefig(out_dir / 'fig3B--propensities.svg')

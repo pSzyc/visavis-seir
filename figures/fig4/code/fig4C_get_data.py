@@ -11,7 +11,7 @@ from scripts.analyze_binary import generate_dataset_batch
 from scripts.binary import get_entropy, get_optimal_bitrate
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4C' / 'approach3'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4C' / 'approach4'
 data_dir.mkdir(parents=True, exist_ok=True)
     
 channel_widths = [3,4,5,6,7,8,9,10,11,12]
@@ -20,7 +20,8 @@ channel_widths = [3,4,5,6,7,8,9,10,11,12]
 # channel_widths = [3]
 # channel_widths = [9,11]
 
-channel_lengths = [30,300]
+channel_lengths = [100,300]
+channel_lengths = [1000]
 # channel_lengths = [1700]
 
 channel_wls = list(product(channel_widths, channel_lengths))
@@ -56,7 +57,6 @@ def find_optimal_bitrate(
             n_margin=4,
             n_nearest=4,
             duration=1,
-            append=True,
             processes=processes,
             use_cached=True,
         ) for (channel_width, channel_length), intervals in zip(channel_wls, scan_ranges)
@@ -91,10 +91,10 @@ expected_maximums = get_expected_maximum(*np.array(channel_wls).T)
 # interval_scan_centers = expected_maximums // 1
 # scan_points = 3
 
-result =  find_optimal_bitrate(expected_maximums, logstep=0.10, scan_points=11, outdir=data_dir / 'iteration1', k_neighbors=12, n_slots=200, n_simulations=20)
+result =  find_optimal_bitrate(expected_maximums, logstep=0.10, scan_points=11, outdir=data_dir / 'iteration1', k_neighbors=12, n_slots=200, n_simulations=20, processes=5) # was 20 for l=300
 expected_maximums = result['optimal_interval']
-result = find_optimal_bitrate(expected_maximums, logstep=0.06, scan_points=7, outdir=data_dir / 'iteration2', k_neighbors=18, n_slots=200, n_simulations=20)
+result = find_optimal_bitrate(expected_maximums, logstep=0.06, scan_points=7, outdir=data_dir / 'iteration2', k_neighbors=18, n_slots=200, n_simulations=20, processes=5) # was 20 for l=300
 expected_maximums = result['optimal_interval']
-result = find_optimal_bitrate(expected_maximums, logstep=0.04, scan_points=5, outdir=data_dir / 'iteration3', k_neighbors=25, n_slots=500, n_simulations=60, processes=10)
+result = find_optimal_bitrate(expected_maximums, logstep=0.04, scan_points=5, outdir=data_dir / 'iteration3', k_neighbors=25, n_slots=500, n_simulations=60, processes=2) # was 10 for l=300
 
 

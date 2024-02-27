@@ -79,11 +79,15 @@ def run_single(
             )
 
         # data_part = pd.read_csv(outdir / f"sim-{simulation_id}" / 'pulse_fates.csv')
-        selected_tracks = track_info[track_info['front_direction'].eq(1) & track_info['tracl_length'].gt(20)]
+        selected_tracks = track_info[track_info['front_direction'].eq(1) & track_info['track_length'].gt(20)]
         displacement = (selected_tracks['track_end_position'] - selected_tracks['track_start_position']).sum()
         time = (selected_tracks['track_end'] - selected_tracks['track_start']).sum()
 
-        return pd.DataFrame({'simulation_id': simulation_id, 'displacement': [displacement], 'time': [time]})
+        return pd.DataFrame({
+            'simulation_id': simulation_id, 
+            'displacement': [displacement], 
+            'time': [time],
+            })
 
 
 

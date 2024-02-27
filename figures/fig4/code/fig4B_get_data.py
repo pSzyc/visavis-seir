@@ -14,19 +14,21 @@ data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4B
 data_dir.mkdir(parents=True, exist_ok=True)
     
 channel_widths = [6]
-
 channel_lengths = [30,52,100,170,300,520,1000]
+# channel_lengths = [4,6,11,17] + [30,52,100,170,300,520,1000]
+# channel_lengths = [4,6,11,17]
 # channel_lengths = [1700]
 
 
 
 def get_expected_maximum(channel_length):
-    return 3.13 * np.sqrt(channel_length) + 81.7
+    return (3.13 * np.sqrt(channel_length) + 81.7) #* 1.2
 
 expected_maximums = get_expected_maximum(np.array(channel_lengths))# * 1.1
-interval_scan_steps = expec`ted_maximums // 30
+interval_scan_steps = expected_maximums // 30
+# interval_scan_steps = expected_maximums // 10
 interval_scan_centers = expected_maximums // 1
-scan_points = 3
+scan_points = 7
 scan_ranges = np.linspace(
         interval_scan_centers - scan_points * interval_scan_steps, 
         interval_scan_centers + scan_points * interval_scan_steps,
@@ -43,7 +45,6 @@ nearest_pulses = pd.concat([
         n_margin=4,
         n_nearest=4,
         duration=1,
-        append=True,
         processes=2,
         use_cached=True,
     ) for channel_length, intervals in zip(channel_lengths, scan_ranges)

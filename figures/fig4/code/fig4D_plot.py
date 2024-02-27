@@ -13,6 +13,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.style import *
 from scripts.binary import plot_scan
 from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
+from scripts.formula import get_time_var, predicted_optimal_interval_formula
 
 
 
@@ -37,13 +38,13 @@ fold_changes = np.exp(np.linspace(-1, 1, 21))
 
 from scripts.style import *
 
-for altered_parameter in ['i_incr']:
+for altered_parameter in ['r_incr']:
     for fields in 'c', :
         for k_neighbors in (25,):
             for reconstruction in (False,):
                 suffix = f"{fields}{k_neighbors}{'-reconstruction' if reconstruction else ''}"
                 corresponding_intermediate = f"n_{altered_parameter[0]}"
-                corresponding_time = f"{full_parameter_names[altered_parameter[0]]} time"
+                corresponding_time = f"{full_parameter_names[altered_parameter[0]]} time [min]"
                 print(f"Drawing plots for suffix: {suffix}")
 
                 entropies = pd.concat([
@@ -83,7 +84,7 @@ for altered_parameter in ['i_incr']:
 
                 ls = np.linspace(result['fold_change'].min(), result['fold_change'].max())
 
-                for ch_l_it, (channel_length, result_group) in enumerate(result.groupby('channel_length')):
+                for channel_length, result_group in result.groupby('channel_length'):
                     result_group.plot.line(corresponding_time, 'max_bitrate_per_hour', marker='o', color=f'C{channel_length_colors[channel_length]}', #yerr='max_bitrate_err', capsize=4, 
                     ls='-', lw=1, ax=axs[0], label=f"{channel_length:.0f}")
 
@@ -95,9 +96,20 @@ for altered_parameter in ['i_incr']:
                 axs[0].grid(ls=':')
                 
 
-                for ch_l_it, (channel_length, result_group) in enumerate(result.groupby('channel_length')):
+                for channel_length, result_group in result[result['max_bitrate_per_hour'] > 0.1].groupby('channel_length'):
                     result_group.plot.line(corresponding_time, 'optimal_interval', marker='o', color=f'C{channel_length_colors[channel_length]}', #yerr='optimal_interval_err', capsize=4, 
                     ls='-', lw=1, ax=axs[1], label=f"{channel_length:.0f}")
+                    axs[1].plot(
+                        result_group[corresponding_time], 
+                        [
+                            predicted_optimal_interval_formula(
+                                channel_width, 
+                                channel_length,
+                                parameters={**PARAMETERS_DEFAULT, altered_parameter: fold_change * PARAMETERS_DEFAULT[altered_parameter]})
+                            for channel_width, fold_change in zip(result_group['channel_width'],result_group['fold_change'])
+                        ],
+                        alpha=0.4, color='r')
+
 
                 axs[1].set_ylabel('optimal interval [min]')
                 axs[1].set_xlabel(corresponding_time)

@@ -24,9 +24,10 @@ def starmap(fn, kwarg_list, processes=None):
     print('|', end='', flush=True)
     with Pool(processes) as pool:
         result = pool.starmap(*_with_expanded_kwargs(fn, kwarg_list), chunksize=1)
+        processes = pool._processes
     end_time = time.time()
     elapsed = end_time - start_time
-    elapsed_per_it = elapsed / len(kwarg_list)
+    elapsed_per_it = elapsed / ((len(kwarg_list)+1) // processes)
     print(f'| Took {elapsed:.2f}s  ({elapsed_per_it:.2f}s/it)')
     return result
 

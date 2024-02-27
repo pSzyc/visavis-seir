@@ -30,7 +30,8 @@ def run_single(
     n_margin=0,
     outdir=None,
     plot_results=False,
-    save_states=True,
+    save_states=False,
+    save_activity=False,
     save_iterations=True,
     indir=None,
     **kwargs):
@@ -63,6 +64,11 @@ def run_single(
                 json.dump(pulse_intervals, file)
 
             result.states.to_csv(sim_out_dir / 'simulation_results.csv')     
+        if outdir and save_activity:
+            sim_out_dir = outdir / f'sim-{simulation_id}'
+            sim_out_dir.absolute().mkdir(parents=True, exist_ok=True)
+            result.activity.to_csv(sim_out_dir / 'activity.csv')     
+
 
         data_part = determine_fates(
             result.activity,
