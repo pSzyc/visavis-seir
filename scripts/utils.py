@@ -57,4 +57,3 @@ def compile_if_not_exists(
             cwd=path_to_compiling_script.parent.parent,
         )
     return visavis_bin
-

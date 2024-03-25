@@ -12,12 +12,11 @@ from scripts.utils import starmap
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
 
-channel_widths = list(range(1,10)) + list(range(10,21,2))
-channel_length = 300
-n_simulations = 30000
 
 
 def extract_single(channel_length, channel_width, simulation_id):
+    '''Groups significant splits into events. Uses existing 'track_info' and 'significant_splits' files.
+    '''
     outdir = data_dir / f'w-{channel_width}-l-{channel_length}' / f'sim-{simulation_id}'
 
     track_info = pd.read_csv(outdir / 'track_info.csv').set_index('track_id')
@@ -34,18 +33,27 @@ def extract_single(channel_length, channel_width, simulation_id):
 
     return split_events
 
+
+
+channel_widths = list(range(1,10)) + list(range(10,21,2))
+channel_length = 300
+n_simulations = 30000
+
+
 for channel_width in channel_widths:
+    print(channel_width)
 
     outdir = data_dir / f'w-{channel_width}-l-{channel_length}'
 
     split_events = pd.concat(list(starmap(
         extract_single,
-        [dict(
-            channel_length=channel_length,
-            channel_width=channel_width,
-            simulation_id=simulation_id,
-        )
-        for channel_length, channel_width, simulation_id in product([channel_length], [channel_width], range(n_simulations))
+        [
+            dict(
+                channel_length=channel_length,
+                channel_width=channel_width,
+                simulation_id=simulation_id,
+            )
+            for channel_length, channel_width, simulation_id in product([channel_length], [channel_width], range(n_simulations))
         ],
         processes=5,
     )),
@@ -55,7 +63,6 @@ for channel_width in channel_widths:
 
     first_split_events = split_events[split_events.index.get_level_values('event_id') == 0]
     first_split_events.to_csv(outdir / 'first_split_events.csv')
-    print(channel_width)
 
 
 

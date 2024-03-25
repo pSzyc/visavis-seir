@@ -14,24 +14,11 @@ panel_dir.mkdir(exist_ok=True, parents=True)
 data_dir.mkdir(exist_ok=True, parents=True)
 
 
-MM = 25.4
-
 channel_length = 300
 channel_widths = list(range(2,10)) + list(range(10,21,2))
 
-
-data = pd.concat([
-    pd.read_csv(fig2C_data_dir / f'w-{channel_width}-l-{channel_length}' / 'pulse_fates.csv', usecols=['channel_width', 'track_end', 'fate'])
-    for channel_width in channel_widths
-    ], ignore_index=True
-)
-data = data[data['fate'] == 'transmitted']
-# plt.figure(figsize=(80 / MM, 80 / MM))
 fig, ax = subplots_from_axsize(1, 1, (2.5, 2))
 
-variance_per_step = data.groupby('channel_width')['track_end'].var() / channel_length
-variance_per_step.name = 'variance_per_step'
-variance_per_step.to_csv(data_dir  / 'variance_per_step.csv')
 variance_per_step = pd.read_csv(data_dir  / 'variance_per_step.csv').
 variance_per_step.plot(style='o-')
 ax.set_xlim(left=0)

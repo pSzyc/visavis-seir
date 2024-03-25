@@ -8,7 +8,7 @@ from scripts.analyze_binary import generate_dataset_batch
 from scripts.binary import get_entropy
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4A' / 'approach3'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' / 'approach5'
 data_dir.mkdir(parents=True, exist_ok=True)
 
 channel_widths = [6]
@@ -24,7 +24,7 @@ nearest_pulses = generate_dataset_batch(
     channel_lengths=channel_lengths,
     channel_widths=channel_widths,
     intervals=intervals,#[60,70,80,90,100],#list(range(110, 181, 5)), #[60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 130, 150, 180, 220, 260, 300, 400], 
-    outpath=data_dir  / 'nearest_pulses.csv',
+    outdir=data_dir,#  / 'nearest_pulses.csv',
     # n_simulations=20,
     n_simulations=100,
     # n_slots=250,
@@ -32,9 +32,9 @@ nearest_pulses = generate_dataset_batch(
     duration=1,
     n_margin=4,
     n_nearest=4,
-    append=False,
+    min_distance_between_peaks=20,
     use_cached=True,
-    processes=2,
+    processes=10,
 )
 
 fields_letter_to_fields = {
@@ -52,5 +52,5 @@ for fields in 'c', 'rl', 'cm', 'cp', 'cmp':
             print(f"Estimating entropy {suffix}")
 
             entropies = get_entropy(nearest_pulses.reset_index(), fields=fields_letter_to_fields[fields], reconstruction=reconstruction, k_neighbors=k_neighbors)
-            entropies.to_csv(data_dir / f"fig4A_entropies{suffix}.csv")
+            entropies.to_csv(data_dir / f"fig4AB_entropies{suffix}.csv")
 

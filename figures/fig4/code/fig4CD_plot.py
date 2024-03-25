@@ -20,9 +20,9 @@ plt.rcParams['font.size'] = 8
 plt.rcParams['mathtext.fontset'] = 'custom'
 plt.rcParams['mathtext.rm'] = 'Carlito'
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4B' / 'approach1'
-# S1_data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4B' / 'approach2'
-panels_dir = Path(__file__).parent.parent / 'panels'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4CD' / 'approach4'
+# S1_data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4CD' / 'approach2'
+panels_dir = Path(__file__).parent.parent / 'panels' / 'trials'
 panels_dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -35,8 +35,8 @@ for fields in 'c', :
             suffix = f"-{fields}{k_neighbors}{'-reconstruction' if reconstruction else ''}"
             print(f"Drawing plots for suffix: {suffix}")
 
-            entropies = pd.read_csv(data_dir / f'entropies{suffix}.csv')
-            result = pd.read_csv(data_dir / f'optimized_bitrate.csv'
+            entropies = pd.read_csv(data_dir / f'entropies{suffix}.csv').sort_values(['channel_width', 'channel_length', 'interval'])
+            result = pd.read_csv(data_dir / f'optimized_bitrate{suffix}.csv'
                 ).assign(ratio=lambda df: 1/(df['max_bitrate_inv'] / df['optimal_interval'])
                 ).assign(max_bitrate_per_hour = lambda df: df['max_bitrate'] * 60
                 ).assign(optimal_interval_err = lambda df: df['optimal_interval'] / 15
@@ -54,8 +54,8 @@ for fields in 'c', :
             plt.ylim(0,1)
             
             # old:
-            plt.savefig(panels_dir / f'fig4B{suffix}--aux1.svg')
-            plt.savefig(panels_dir / f'fig4B{suffix}--aux1.png')
+            plt.savefig(panels_dir / f'fig4CD{suffix}--aux1.svg')
+            plt.savefig(panels_dir / f'fig4CD{suffix}--aux1.png')
 
             fit_max_bitrate_sqrt_inv = LinearRegression().fit(result[['channel_length_sqrt']].to_numpy()[:-1], result[['max_bitrate_inv']].to_numpy()[:-1])
             predict_max_bitrate_sqrt_inv = fit_max_bitrate_sqrt_inv.predict(result[['channel_length_sqrt']].to_numpy())
@@ -122,8 +122,8 @@ for fields in 'c', :
             axs[1].grid(ls=':')
 
             
-            plt.savefig(panels_dir / f'fig4B.svg')
-            plt.savefig(panels_dir / f'fig4B.png')
+            plt.savefig(panels_dir / f'fig4CD.svg')
+            plt.savefig(panels_dir / f'fig4CD.png')
 
 
             fig, axs = subplots_from_axsize(1, 2, (2.75, 2))

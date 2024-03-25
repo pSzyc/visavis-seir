@@ -277,7 +277,7 @@ def get_front_fates(tracks, track_info, channel_length, v, channel_end_tolerance
         ], index=fates.index)
 
         nbrs = NearestNeighbors(n_neighbors=3)
-        nbrs.fit(list(zip(fates['track_end'] * v, fates['track_end_position'])))
+        nbrs.fit(list(zip(fates['track_end'] * v, fates['track_end_position']))) 
         nearest_endings = nbrs.radius_neighbors(radius=ending_search_radius, return_distance=False)
         front_directions = fates['front_direction'].to_numpy()
         has_near_ending = pd.Series([
@@ -337,7 +337,11 @@ def get_input_pulse_to_tree_id(tracks, pulse_times):
 
 
 def get_pulse_fates(front_fates: pd.DataFrame, input_pulse_to_tree_id, significant_splits: pd.DataFrame, v, channel_length, channel_end_tolerance=8):
-    front_fates = front_fates.assign(timespace= lambda x: x['track_end'] - x['track_end_position'] / v).sort_values(['tree_id', 'timespace'])
+    front_fates = (
+        front_fates
+        .assign(timespace= lambda x: x['track_end'] - x['track_end_position'] / v)
+        .sort_values(['tree_id', 'timespace'])
+    )
 
     pulse_fates = pd.DataFrame(
         [

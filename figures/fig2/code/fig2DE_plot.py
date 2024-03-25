@@ -36,21 +36,18 @@ counts_selected_parts = {}
 
 for w in channel_widths:
 
-    # pulse_fates = pd.read_csv(data_dir / f'w-{w}-l-300/pulse_fates.csv')
-    # pulse_fates['reached_end'] = pulse_fates['reached_end'] - 1
-
-    first_split_events = pd.read_csv(data_dir / f'w-{w}-l-300/first_split_events.csv').set_index(['channel_width', 'channel_length', 'simulation_id'])
+    first_split_events = pd.read_csv(data_dir / f'w-{w}-l-{channel_length}/first_split_events.csv').set_index(['channel_width', 'channel_length', 'simulation_id'])
 
     counts = (
         first_split_events[[field_forward, field_backward]]
-        .reindex(list(product([w], [channel_length], range(n_simulations))), fill_value=0)
-        .value_counts([field_forward, field_backward])
-        .reset_index()
-        .assign(
-            all_spawned=lambda df: df[field_forward] + df[field_backward],
-            channel_width=w,
-        )
-        .rename(columns={0: 'count'})
+            .reindex(list(product([w], [channel_length], range(n_simulations))), fill_value=0)
+            .value_counts([field_forward, field_backward])
+            .reset_index()
+            .assign(
+                all_spawned=lambda df: df[field_forward] + df[field_backward],
+                channel_width=w,
+            )
+            .rename(columns={0: 'count'})
     )
     counts_selected_part = counts[counts[field_forward].gt(0) | counts[field_backward].gt(0)]
     counts_selected_parts.update({w: counts_selected_part})

@@ -13,7 +13,7 @@ from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
 from scripts.utils import compile_if_not_exists, starmap
 from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
-from scripts.binary import activity_to_arrival_times, arrival_times_to_dataset
+from scripts.binary import activity_to_arrival_times, arrival_times_to_dataset, get_entropy
 
 
 def make_binary_protocol(interval, n_slots, p=0.5, seed=0):
@@ -36,6 +36,7 @@ def perform_single(
     offset, 
     n_margin, 
     n_nearest, 
+    min_distance_between_peaks,
     sim_dir, 
     client, 
     simulation_id, 
@@ -61,7 +62,7 @@ def perform_single(
             activity=True,
         )
     # print('Result_loaded')
-    arrival_times = activity_to_arrival_times(result.activity)
+    arrival_times = activity_to_arrival_times(result.activity, min_distance_between_peaks=min_distance_between_peaks)
     # print('Arrivals_computed')
         
     dataset_part = arrival_times_to_dataset(
@@ -83,8 +84,8 @@ def generate_dataset(
     interval,
     n_slots,
     n_simulations,
-    channel_width=7,
-    channel_length=300,
+    channel_width,
+    channel_length,
     parameters=PARAMETERS_DEFAULT,
     mol_states=MOL_STATES_DEFAULT,
     duration=5,
@@ -92,10 +93,12 @@ def generate_dataset(
     v=1/3.6,
     p=0.5,
     outdir=None,
-    n_margin=1,
+    n_margin=4,
     n_nearest=4,
+    min_distance_between_peaks=5,
     processes=None,
 ):
+
     # TEMP_DIR = "/tmp"
     if outdir:
         outdir.mkdir(parents=True, exist_ok=True)
@@ -128,6 +131,7 @@ def generate_dataset(
                 sim_dir=sim_dir,
                 client=client,
                 simulation_id=simulation_id,
+                min_distance_between_peaks=min_distance_between_peaks,
                 )
             for simulation_id in range(n_simulations)
         ], processes=processes,
@@ -151,21 +155,14 @@ def generate_dataset_batch(
         channel_lengths,
         channel_widths,
         intervals, 
-        v=1/3.6,
-        parameters=PARAMETERS_DEFAULT,
-        mol_states=MOL_STATES_DEFAULT,
-        n_slots=100,
-        n_simulations=15,
-        duration=5,
-        p=0.5,
         outdir=None,
-        n_margin=5,
-        n_nearest=1,
+        v=1/3.6,
         use_cached=False,
         processes=None,
+        **kwargs
     ):
 
-    outpath = outdir / 'dataset.csv' if outdir else None
+    # outpath = outdir / 'dataset.csv' if outdir else None
 
     dataset_parts = []
 
@@ -179,16 +176,9 @@ def generate_dataset_batch(
                 channel_width=channel_width,
                 channel_length=channel_length,
                 offset=channel_length / v,
-                parameters=parameters,
-                mol_states=mol_states,
-                n_slots=n_slots,
-                n_simulations=n_simulations,
-                duration=duration,
-                p=p,
-                n_margin=n_margin,
-                n_nearest=n_nearest,
                 processes=processes,
-                outdir=outdir and outdir / f"l-{channel_length}-w-{channel_width}-i-{interval}"
+                outdir=outdir and outdir / f"l-{channel_length}-w-{channel_width}-i-{interval}",
+                **kwargs
             )
         dataset_parts.append(data.reset_index())
     dataset = pd.concat(dataset_parts, ignore_index=True)
@@ -198,15 +188,29 @@ def generate_dataset_batch(
 
 
 
+def evaluation_fn(log_interval, channel_width, channel_length, fields, k_neighbors, reconstruction, outdir=None, evaluation_logger=None, suffix='', **kwargs):
 
-if __name__ == '__main__':
-    nearest_pulses = pd.read_csv('../private/binary/approach2/data_all.csv')
-    results = get_entropy(nearest_pulses, fields=['c'])
-    plot_scan(
-        results, 
-        c_field='channel_width',
-        x_field='interval',
-        y_field='bitrate_per_hour',
+    interval = int(np.round(np.exp(log_interval)))
+
+    dataset = generate_dataset_batch(
+        channel_lengths=[channel_length],
+        channel_widths=[channel_width],
+        intervals=[interval],
+        outdir=outdir,
+
+        **kwargs
     )
-    plt.show()
+    entropy = get_entropy(
+        dataset.reset_index(),
+        fields=fields,
+        reconstruction=reconstruction,
+        k_neighbors=k_neighbors,
+        outpath=outdir / f"l-{channel_length}-w-{channel_width}-i-{interval}" / f"entropies{suffix}.csv")
+    
+    # plt.plot(interval, entropy.iloc[-1]['bitrate_per_hour'], marker='o', color=f"C{channel_lengths.index(channel_length)}")
+    assert len(entropy) == 1
+    if evaluation_logger is not None:
+        evaluation_logger.append(entropy)
+    return entropy.iloc[-1]['bitrate_per_min']
+
 

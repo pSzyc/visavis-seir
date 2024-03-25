@@ -12,9 +12,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to i
 from scripts.entropy_utils import conditional_entropy_discrete, conditional_entropy_discrete_reconstruction, conditional_entropy_discrete_bins_or_neighbors_pandas
 
 
-def activity_to_arrival_times(activity):
+def activity_to_arrival_times(activity, min_distance_between_peaks=6):
    
-    arrival_idxs, _ = find_peaks(activity[activity.columns[-1]].to_numpy(), distance=5)
+    arrival_idxs, _ = find_peaks(activity[activity.columns[-1]].to_numpy(), distance=min_distance_between_peaks)
     arrival_times = activity.index.get_level_values('seconds')[arrival_idxs]
     
     return arrival_times
@@ -89,7 +89,7 @@ def arrival_times_to_dataset(
     return dataset_part
 
 
-def get_entropy(dataset: pd.DataFrame, fields=['c'], reconstruction=False, k_neighbors=15):
+def get_entropy(dataset: pd.DataFrame, fields=['c'], reconstruction=False, k_neighbors=15, outpath=None):
     results = []
     get_conditional_entropy = conditional_entropy_discrete_reconstruction if reconstruction else conditional_entropy_discrete
 
@@ -123,6 +123,8 @@ def get_entropy(dataset: pd.DataFrame, fields=['c'], reconstruction=False, k_nei
         })
         
     results = pd.DataFrame(results)
+    if outpath:
+        results.to_csv(outpath)
     return results
 
 
@@ -213,25 +215,4 @@ def plot_scan(results, x_field, c_field, y_field='bitrate_per_hour', ax=None, fm
     ax.legend(title=c_field)
 
     return fig, ax
-
-
-if __name__ == '__main__':
-    outdir = Path('../private/binary/sample')
-    outdir.mkdir(parents=True, exist_ok=True)
-
-    # channel_widths = list(range(4,10)) + list(range(10,21,2))
-    channel_widths = [6]#list(range(3,10,2)) + list(range(10,21,3))
-    
-    generate_dataset_batch(
-        channel_lengths=[30, 100],
-        channel_widths=channel_widths,
-        intervals=[30,80,130],#[60,70,80,90,100],#list(range(110, 181, 5)), #[60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 130, 150, 180, 220, 260, 300, 400], 
-        outpath=outdir / 'nearest_pulses.csv',
-        n_simulations=2,
-        n_slots=500,
-        n_margin=4,
-        n_nearest=4,
-        append=True,
-        processes=20,
-    )
 
