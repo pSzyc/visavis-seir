@@ -1,10 +1,10 @@
-// VIS-A-VIS, a simulator of Viral Infection Spread And Viral Infection Self-containment.
+// QEIR, simulator of a monolayer of directly communicating cells which hold a simple internal state
 //
-// Copyright (2022) Marek Kochanczyk & Frederic Grabowski (IPPT PAN, Warsaw).
+// Copyright (2024) https://github.com/kochanczyk/qeir/CONTRIBUTORS.md.
 // Licensed under the 3-Clause BSD license (https://opensource.org/licenses/BSD-3-Clause).
 
-use std::fs::{OpenOptions, File};
-use std::io::{self, BufRead, Write};
+use std::fs::File;
+use std::io::{self, BufRead};
 use std::num::ParseFloatError;
 use std::path::Path;
 use std::str::FromStr;
@@ -21,11 +21,11 @@ use nom::{
     sequence::{delimited, pair, separated_pair, terminated, tuple},
 };
 
-use crate::commands::{initialize_epidemics, run_simulation, run_simulation_quietly};
+use crate::commands::{initialize_front, run_simulation, run_simulation_quietly};
 use crate::lattice::Lattice;
-use crate::rates::Rates;
-use crate::legal_states::LegalStates;
-use crate::units::{SEC, MIN, HOUR, DAY};
+use crate::output::Output;
+use crate::parameters::Parameters;
+use crate::units::{DAY, HOUR, MIN, SEC};
 
 pub struct Protocol {
     pub commands: Vec<String>,
@@ -46,21 +46,18 @@ impl Protocol {
     pub fn execute(
         &self,
         lattice: &mut Lattice,
-        rates: &Rates,
-        legal_states: &LegalStates,
+        parameters: &Parameters,
         rng: &mut StdRng,
-        out_images: bool,
-        out_activity: bool,
-        out_states: bool,
+        output: Output,
     ) {
         let factor = || double::<&str, (_, ErrorKind)>;
         let number = || pair::<_, _, _, (_, ErrorKind), _, _>(opt(char('-')), digit1);
 
         let in_unit_of = |u| move |s| -> Result<f64, ParseFloatError> { Ok(u * f64::from_str(s)?) };
-        let seconds = || map_res( terminated(recognize(number()), char('s')), in_unit_of(SEC));
-        let minutes = || map_res( terminated(recognize(number()), char('m')), in_unit_of(MIN));
-        let hours = || map_res( terminated(recognize(number()), char('h')), in_unit_of(HOUR));
-        let days = || map_res( terminated(recognize(number()), char('d')), in_unit_of(DAY));
+        let seconds = || map_res(terminated(recognize(number()), char('s')), in_unit_of(SEC));
+        let minutes = || map_res(terminated(recognize(number()), char('m')), in_unit_of(MIN));
+        let hours = || map_res(terminated(recognize(number()), char('h')), in_unit_of(HOUR));
+        let days = || map_res(terminated(recognize(number()), char('d')), in_unit_of(DAY));
 
         let time = || alt((seconds(), minutes(), hours(), days()));
         let timespan = || separated_pair(time(), tag("..."), time());
@@ -69,38 +66,34 @@ impl Protocol {
 
         let cmd_run = || tuple((tag("run"), multispace1, timespan(), multispace1, every()));
         let cmd_run_quiet = || tuple((tag("run"), multispace1, timespan(), multispace1, never()));
-        let cmd_init_epidemics = || tuple((tag("+batsoup"), multispace1, factor()));
-
-        let mut activity_csv: Option<&File> = None;
-        let mut csv: File;
-        if out_activity {
-            // create and open CSV file for writing
-            csv = OpenOptions::new()
-                .create(true)
-                .truncate(true)
-                .write(true)
-                .open("activity.csv")
-                .expect("☠ ☆ CSV");
-            // write out header
-            let mut hdr_s: Vec<String> = vec!["time".to_string()];
-            for h in 0..Lattice::HEIGHT {
-                hdr_s.push(h.to_string())
-            }
-            let hdr = hdr_s.join(",") + "\n";
-            csv.write_all(hdr.as_bytes()).expect("☠ ✏ CSV");
-            activity_csv = Some(&csv);
-        }
+        let cmd_init_front = || tuple((tag("+excitation"), multispace1, factor()));
 
         let mut out_init_frame = false; // whether initial frame in output
+
         for command in self.commands.iter() {
             if let Ok((_, (_, _, tspan, _, dt))) = cmd_run()(&command) {
-                run_simulation(lattice, rates, legal_states, rng, tspan, out_images, out_states, dt, out_init_frame, activity_csv);
+                run_simulation(
+                    lattice,
+                    parameters,
+                    rng,
+                    tspan,
+                    dt,
+                    output,
+                    out_init_frame,
+                );
                 out_init_frame = false;
             } else if let Ok((_, (_, _, tspan, _, _))) = cmd_run_quiet()(&command) {
-                run_simulation_quietly(lattice, rates, legal_states, rng, tspan, out_images, out_states, out_init_frame, activity_csv);
+                run_simulation_quietly(
+                    lattice,
+                    parameters,
+                    rng,
+                    tspan,
+                    output,
+                    out_init_frame,
+                );
                 out_init_frame = false;
-            } else if let Ok((_, _)) = cmd_init_epidemics()(&command) {
-                initialize_epidemics(lattice);
+            } else if let Ok((_, _)) = cmd_init_front()(&command) {
+                initialize_front(lattice);
                 out_init_frame = true;
             } else {
                 panic!("☠ @ command: {:?}", command);

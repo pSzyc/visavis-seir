@@ -1,120 +1,96 @@
-// VIS-A-VIS, a simulator of Viral Infection Spread And Viral Infection Self-containment.
+// QEIR, simulator of a monolayer of directly communicating cells which hold a simple internal state
 //
-// Copyright (2022) Marek Kochanczyk & Frederic Grabowski (IPPT PAN, Warsaw).
+// Copyright (2024) https://github.com/kochanczyk/qeir/CONTRIBUTORS.md.
 // Licensed under the 3-Clause BSD license (https://opensource.org/licenses/BSD-3-Clause).
 
-use crate::config::THREAD_STACK_SIZE;
+use crate::compartment::Compartment;
 use crate::lattice::Lattice;
-use crate::molecule::Mol;
-use crate::rates::Rates;
-use crate::legal_states::LegalStates;
+use crate::output::Output;
+use crate::parameters::Parameters;
 use crate::simulation::Simulation;
-use std::fs::{File};
 
 use rand::rngs::StdRng;
 
-pub fn initialize_epidemics(lattice: &mut Lattice) {
-    for w in 0..Lattice::WIDTH {
-
+pub fn initialize_front(lattice: &mut Lattice) {
+    for y in 0..lattice.height {
         // barrier
-        let ref mut c = lattice.cells[0*Lattice::WIDTH + w];
+        let ref mut c = lattice.cells[0 * lattice.height + y];
         c.alive = false;
 
         // I
-        let ref mut c = lattice.cells[1*Lattice::WIDTH + w];
-        c.molecules[Mol::I as usize] = 1;
-        c.molecules[Mol::E as usize] = 0;
-        c.molecules[Mol::R as usize] = 0;
+        let ref mut c = lattice.cells[1 * lattice.height + y];
+        c.compartments[Compartment::I as usize] = 1;
+        c.compartments[Compartment::E as usize] = 0;
+        c.compartments[Compartment::R as usize] = 0;
     }
+}
+
+fn run_simulation_(
+    lattice: &mut Lattice,
+    parameters: &Parameters,
+    rng: &mut StdRng,
+    tspan: (f64, f64),
+    files_out: bool,
+    output: Output,
+    files_out_interval: f64,
+    out_init_frame: bool,
+) {
+    let workers = Some(
+        threadpool::Builder::new()
+            .num_threads(num_cpus::get())
+            .build(),
+    );
+
+    Simulation::new(lattice).run(
+        parameters,
+        rng,
+        tspan,
+        files_out,
+        output,
+        files_out_interval,
+        out_init_frame,
+        &workers,
+    );
+    workers.unwrap().join()
 }
 
 pub fn run_simulation_quietly(
     lattice: &mut Lattice,
-    rates: &Rates,
-    legal_states: &LegalStates,
+    parameters: &Parameters,
     rng: &mut StdRng,
     tspan: (f64, f64),
-    images_out: bool,
-    states_out: bool,
-    init_frame_out: bool,
-    activity_csv: Option<&File>,
+    output: Output,
+    out_init_frame: bool,
 ) {
     run_simulation_(
         lattice,
-        rates,
-        legal_states,
+        parameters,
         rng,
         tspan,
         /*files_out:*/ false,
-        images_out,
-        states_out,
+        output,
         /*files_out_interval*/ -1.,
-        init_frame_out,
-        activity_csv,
+        out_init_frame,
     )
 }
 
 pub fn run_simulation(
     lattice: &mut Lattice,
-    rates: &Rates,
-    legal_states: &LegalStates,
+    parameters: &Parameters,
     rng: &mut StdRng,
     tspan: (f64, f64),
-    images_out: bool,
-    states_out: bool,
     files_out_interval: f64,
-    init_frame_out: bool,
-    activity_csv: Option<&File>,
+    output: Output,
+    out_init_frame: bool,
 ) {
     run_simulation_(
         lattice,
-        rates,
-        legal_states,
+        parameters,
         rng,
         tspan,
         /*files_out:*/ true,
-        images_out,
-        states_out,
+        output,
         files_out_interval,
-        init_frame_out,
-        activity_csv,
+        out_init_frame,
     )
-}
-
-fn run_simulation_(
-    lattice: &mut Lattice,
-    rates: &Rates,
-    legal_states: &LegalStates,
-    rng: &mut StdRng,
-    tspan: (f64, f64),
-    files_out: bool,
-    images_out: bool,
-    states_out: bool,
-    files_out_interval: f64,
-    init_frame_out: bool,
-    activity_csv: Option<&File>,
-) {
-    let workers = Some(
-        threadpool::Builder::new()
-            .num_threads(num_cpus::get())
-            .thread_stack_size(THREAD_STACK_SIZE)
-            .build(),
-    );
-    Simulation::simulate(
-        lattice,
-        rates,
-        legal_states,
-        rng,
-        tspan,
-        files_out,
-        images_out,
-        states_out,
-        files_out_interval,
-        /*ifni_secretion:*/ true,
-        /*in_sep_thread:*/ false,
-        init_frame_out,
-        activity_csv,
-        &workers,
-    );
-    workers.unwrap().join()
 }

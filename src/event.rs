@@ -1,13 +1,13 @@
-// VIS-A-VIS, a simulator of Viral Infection Spread And Viral Infection Self-containment.
+// QEIR, simulator of a monolayer of directly communicating cells which hold a simple internal state
 //
-// Copyright (2022) Marek Kochanczyk & Frederic Grabowski (IPPT PAN, Warsaw).
+// Copyright (2024) https://github.com/kochanczyk/qeir/CONTRIBUTORS.md.
 // Licensed under the 3-Clause BSD license (https://opensource.org/licenses/BSD-3-Clause).
 
-use crate::lattice::Lattice;
-use crate::molecule::Mol::*;
-use crate::rates::Rates;
 use crate::cell::Cell;
-use crate::legal_states::LegalStates;
+use crate::compartment::Compartment::*;
+use crate::lattice::Lattice;
+use crate::rates::Rates;
+use crate::subcompartments::Subcompartments;
 
 #[derive(Debug, Copy, Clone)]
 pub enum Event {
@@ -27,18 +27,23 @@ impl Event {
         }
     }
 
-    pub fn occur(event_i: usize, lattice: &mut Lattice, cell_i: usize, legal_states: &LegalStates) -> Vec<usize> {
+    pub fn occur(
+        event_i: usize,
+        lattice: &mut Lattice,
+        cell_i: usize,
+        substates: &Subcompartments,
+    ) -> Vec<usize> {
         let cell = &mut lattice.cells[cell_i];
-        let mols = &mut cell.molecules;
+        let compartments = &mut cell.compartments;
         let neighs = &lattice.neighborhoods[cell_i];
         macro_rules! increment {
-            ($m:ident) => {
-                mols[$m as usize] += 1;
+            ($c:ident) => {
+                compartments[$c as usize] += 1;
             };
         }
         macro_rules! set_zero {
-            ($m:ident) => {
-                mols[$m as usize] = 0;
+            ($c:ident) => {
+                compartments[$c as usize] = 0;
             };
         }
         macro_rules! current_cell {
@@ -48,29 +53,33 @@ impl Event {
         }
         macro_rules! current_cell_and_neighboring_cells {
             () => {
-                vec![cell_i, neighs[0], neighs[1], neighs[2], neighs[3], neighs[4], neighs[5]]
+                vec![
+                    cell_i, neighs[0], neighs[1], neighs[2], neighs[3], neighs[4], neighs[5],
+                ]
             };
         }
         let event = Event::from_index(event_i);
         match event {
             Event::CRate => {
-                debug_assert!(   Cell::is_zero(E, mols)
-                              && Cell::is_zero(I, mols)
-                              && Cell::is_zero(R, mols));
+                debug_assert!(
+                    Cell::is_zero(E, compartments)
+                        && Cell::is_zero(I, compartments)
+                        && Cell::is_zero(R, compartments)
+                );
                 increment!(E);
                 current_cell!()
             }
 
             Event::EIncr => {
-                if Cell::is_zero(E, mols) {
+                if Cell::is_zero(E, compartments) {
                     increment!(E);
                     current_cell!()
                 } else {
-                    if legal_states.can_increase(E, mols) {
+                    if substates.can_advance(E, compartments) {
                         increment!(E);
                         current_cell!()
                     } else {
-                        debug_assert!(Cell::is_zero(I, mols));
+                        debug_assert!(Cell::is_zero(I, compartments));
                         increment!(I);
                         set_zero!(E);
                         current_cell_and_neighboring_cells!()
@@ -79,11 +88,11 @@ impl Event {
             }
 
             Event::IIncr => {
-                if legal_states.can_increase(I, mols) {
+                if substates.can_advance(I, compartments) {
                     increment!(I);
                     current_cell!()
                 } else {
-                    debug_assert!(Cell::is_zero(R, mols));
+                    debug_assert!(Cell::is_zero(R, compartments));
                     increment!(R);
                     set_zero!(I);
                     current_cell_and_neighboring_cells!()
@@ -91,10 +100,10 @@ impl Event {
             }
 
             Event::RIncr => {
-                if legal_states.can_increase(R, mols) {
+                if substates.can_advance(R, compartments) {
                     increment!(R);
                 } else {
-                    debug_assert!(Cell::is_zero(E, mols) && Cell::is_zero(I, mols));
+                    debug_assert!(Cell::is_zero(E, compartments) && Cell::is_zero(I, compartments));
                     set_zero!(R);
                 }
                 current_cell!()

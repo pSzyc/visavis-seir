@@ -1,102 +1,93 @@
 // -------------------------------------------------------------------------------------------------
-// VIS-A-VIS, a simulator of Viral Infection Spread And Viral Infection Self-containment.
+// QEIR, simulator of a monolayer of directly communicating cells which hold a simple internal state
 //
 // This code features the research article:
 //
-//       "Antagonism between viral infection and innate immunity at the single-cell level"
+//               "Information transmission in a cell monolayer: a numerical study"
 //
-//                               by Frederic Grabowski et al.
+//                                 by Nałęcz-Jawecki et al.
 //                                [TODO:JOURNAL-NAME], 202X
-//
-// The simulation mimicks the innate immune response to an infection with an RNA virus.
-// The hard-coded and externally parametrized interactions between host cell and virus
-// are specific to the respiratory syncytial virus (RSV). Infected cells attempt to produce
-// and secrete interferon, which alerts the non-infected bystander cells about the nearby
-// threat. The simulator executes alternating phases of (deterministic) interferon diffusion
-// and (stochastic) chemical kinetics.
 //
 // For more info, see file ReadMe.md.
 //
-// Copyright (2022) Marek Kochanczyk & Frederic Grabowski (IPPT PAN, Warsaw).
+// Copyright (2024) https://github.com/kochanczyk/qeir/CONTRIBUTORS.md.
 // Licensed under the 3-Clause BSD license (https://opensource.org/licenses/BSD-3-Clause).
 // -------------------------------------------------------------------------------------------------
 
 mod cell;
 mod commands;
-mod config;
+mod compartment;
 mod event;
 mod lattice;
-mod molecule;
+mod output;
+mod parameters;
 mod protocol;
 mod randomness;
 mod rates;
-mod states;
-mod legal_states;
 mod simulation;
+mod subcompartments;
 mod units;
 
-use config::THREAD_STACK_SIZE;
 use lattice::Lattice;
+use output::Output;
+use parameters::Parameters;
 use protocol::Protocol;
 use randomness::initialize_generator;
-use rates::Rates;
-use states::States;
-use legal_states::LegalStates;
 
 use clap::Parser;
-
 
 #[derive(Parser)]
 #[command(version, about)]
 struct Args {
-    parameters_json_file: String,
-    states_json_file: String,
+    /// A JSON-formatted file with both the kinetic and the structural model parameters
+    parameters_file: String,
+
+    /// A file containing commands that may be used as external event triggers
     protocol_file: String,
-    /// Generate png images for every frame
-    #[clap(long = "images", short = 'I', action)]
-    images: bool,
-    /// Write number of active (E/I) cells in every row for every frame
-    #[clap(long = "activity", short = 'A', action)]
-    activity: bool,
-    /// Write full state for every frame
-    #[clap(long = "states", short = 'S', action)]
+
+    /// Lattice width
+    #[clap(long = "width", short = 'W', action)]
+    width: usize,
+
+    /// Lattice height
+    #[clap(long = "height", short = 'H', action)]
+    height: usize,
+
+    /// Write out the full state for every output time point
+    #[clap(long = "states-out", short = 'S', action)]
     states: bool,
+
+    /// Write the number of active (E or I) cells in every column for every output time point
+    #[clap(long = "activity-out", short = 'A', action)]
+    activity: bool,
+
+    /// Generate a PNG image for every output time point
+    #[clap(long = "images-out", short = 'I', action)]
+    images: bool,
+
     /// Random seed
     #[clap(long = "seed", short = 's', default_value_t = 123)]
     seed: u128,
 }
 
-
-fn execute_protocol() -> bool {
-    
+fn execute_protocol() {
     let args = Args::parse();
-    let rates = Rates::from_json_file(&args.parameters_json_file);
-    let states = States::from_json_file(&args.states_json_file);
-    let legal_states = LegalStates {
-        min: [0, 0, 0],
-        max: [states.n_e, states.n_i, states.n_r],  // (S_1) E_4 I_2 R_4 (when zero, not in the state)
-    };
+
     let protocol = Protocol::from_text_file(&args.protocol_file);
-    let images_out = args.images;
-    let activity_out = args.activity;
-    let states_out = args.states;
-    let seed = args.seed;
+    let parameters = Parameters::from_json_file(&args.parameters_file);
 
+    let mut generator = initialize_generator(args.seed, false);
+    let mut lattice = Lattice::new(args.width, args.height, &mut generator);
 
-    std::thread::Builder::new()
-        .name("protocol_execution".into())
-        .stack_size(THREAD_STACK_SIZE)
-        .spawn(move || {
-            let mut generator = initialize_generator(seed, false);
-            let mut lattice = Lattice::new(&mut generator);
-            protocol.execute(&mut lattice, &rates, &legal_states, &mut generator, images_out, activity_out, states_out);
-        })
-        .expect("☠ @ protocol_execution thread")
-        .join()
-        .expect("☠ @ threads join");
-    true
+    let output = Output {
+        all_states: args.states,
+        active_states: args.activity,
+        images: args.images,
+    };
+
+    protocol.execute(&mut lattice, &parameters, &mut generator, output);
 }
 
 fn main() {
-    let _ = execute_protocol();
+    execute_protocol();
 }

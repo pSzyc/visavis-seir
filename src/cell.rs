@@ -1,23 +1,24 @@
-// VIS-A-VIS, a simulator of Viral Infection Spread And Viral Infection Self-containment.
+// QEIR, simulator of a monolayer of directly communicating cells which hold a simple internal state
 //
-// Copyright (2022) Marek Kochanczyk & Frederic Grabowski (IPPT PAN, Warsaw).
+// Copyright (2024) https://github.com/kochanczyk/qeir/CONTRIBUTORS.md.
 // Licensed under the 3-Clause BSD license (https://opensource.org/licenses/BSD-3-Clause).
 
-use crate::molecule::Mol;
-use crate::molecule::N_MOLECULE_SPECIES;
+use crate::compartment::Compartment;
+use crate::compartment::NONQ_COMPARTMENTS_COUNT;
 
-pub type MolArray = [u8; N_MOLECULE_SPECIES];
+pub type Compartments = [u8; NONQ_COMPARTMENTS_COUNT];
+pub const QUIESCENT_CELL: Compartments = [0; NONQ_COMPARTMENTS_COUNT];
 
 #[derive(Clone, Copy)]
 pub struct Cell {
     pub alive: bool,
-    pub molecules: MolArray,
+    pub compartments: Compartments,
 }
 
 impl Cell {
     #[inline]
-    pub fn is_zero(m: Mol, ms: &MolArray) -> bool {
-        let i = m as usize;
-        ms[i] == 0
+    pub fn is_zero(c: Compartment, cs: &Compartments) -> bool {
+        let i = c as usize;
+        cs[i] == 0
     }
 }

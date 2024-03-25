@@ -1,25 +1,26 @@
 [package]
-name = "vis-a-vis"
-description = "A simulator of viral infection spread and viral infection self-containment"
-keywords = ["infection", "innate immunity", "interferon", "diffusion","cellular automaton", "kinetic Monte Carlo"]
+name = "qeir"
+description = "Simulator of a monolayer of directly communicating cells which hold a simple internal state"
+keywords = ["cellular automaton", "kinetic Monte Carlo", "cell signaling", "cell monolayer", "traveling wave"]
 categories = ["science", "systems biology"]
-repository = "https://github.com/grfrederic/visavis"
+repository = "https://github.com/kochanczyk/qeir"
 license = "BSD-3-clause"
 version = "1.0.0"
-authors = ["Marek Kochanczyk <mkochan@ippt.pan.pl>", "Frederic Grabowski <fgrabows@ippt.pan.pl>"]
+authors = ["Marek Kochanczyk <mkochan@ippt.pan.pl>", "Frederic Grabowski <fgrabows@ippt.pan.pl>", "Paweł Nałęcz-Jawecki <panaj@ippt.pan.pl>"]
 edition = "2021"
 
 [dependencies]
 rand = { version = "0.8" }
 rand_distr = { version = "0.4" }
-num_cpus = { version = "1.13" }
+num_cpus = { version = "1.16" }
 threadpool = {version = "1.8" }
 png = { version = "0.17" }
-cairo-rs = { version = "0.16", features = ["png"] }
+cairo-rs = { version = "0.19", features = ["png"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0" }
 nom = { version = "7" }
-clap = { version = "4.4.6", features = ["derive"] }
+clap = { version = "4", features = ["derive"] }
+bytes = { version = "1" }
 
 [profile.release]
 opt-level = 3

@@ -1,6 +1,9 @@
 {
   "c_rate": 1,
-  "e_incr": 1,
-  "i_incr": 1,
-  "r_incr": 0.0667
+  "e_forward_rate": 1,
+  "i_forward_rate": 1,
+  "r_forward_rate": 0.0667,
+  "e_subcompartments_count": 4,
+  "i_subcompartments_count": 2,
+  "r_subcompartments_count": 4
 }

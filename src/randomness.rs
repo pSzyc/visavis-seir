@@ -1,6 +1,6 @@
-// VIS-A-VIS, a simulator of Viral Infection Spread And Viral Infection Self-containment.
+// QEIR, simulator of a monolayer of directly communicating cells which hold a simple internal state
 //
-// Copyright (2022) Marek Kochanczyk & Frederic Grabowski (IPPT PAN, Warsaw).
+// Copyright (2024) https://github.com/kochanczyk/qeir/CONTRIBUTORS.md.
 // Licensed under the 3-Clause BSD license (https://opensource.org/licenses/BSD-3-Clause).
 
 use rand::{rngs::StdRng, SeedableRng};
@@ -22,12 +22,10 @@ fn gen_seed_from_time() -> [u8; 32] {
 }
 
 pub fn initialize_generator(seed: u128, use_time: bool) -> StdRng {
-    
     let mut s = [0u8; 32];
     if use_time {
         s = gen_seed_from_time();
-    }
-    else {
+    } else {
         s[..16].copy_from_slice(&seed.to_le_bytes());
         s[16..32].copy_from_slice(&seed.to_le_bytes());
     }
