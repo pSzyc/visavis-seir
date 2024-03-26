@@ -7,7 +7,7 @@ use crate::cell::Cell;
 use crate::compartment::{Compartment::{E, I, R}, NONQ_COMPARTMENTS_COUNT};
 use crate::event::Event;
 use crate::lattice::Lattice;
-use crate::output::{Output, ACTIVITY_HORIZONTAL_FILE_NAME};
+use crate::output::{Output, ACTIVITY_COLUMN_SUM_FILE_NAME};
 use crate::parameters::Parameters;
 use crate::rates::Rates;
 use crate::subcompartments::Subcompartments;
@@ -189,7 +189,7 @@ impl<'a> Simulation<'a> {
         parameters: &Parameters,
         rng: &mut StdRng,
         tspan: (f64, f64),
-        files_out: bool,
+        suppress_output: bool,
         output: Output,
         files_out_interval: f64,
         out_init_frame: bool,
@@ -219,19 +219,21 @@ impl<'a> Simulation<'a> {
         print!("{:.0}m:", t / MIN);
         std::io::stdout().flush().unwrap();
 
+        let mut activity_horizontal_csv: Option<&File> = None;
+        let mut csv: File;
         if output.active_states {
             let mut header_vs: Vec<String> = vec!["time".to_string()];
             header_vs.extend((0..self.lattice.width).map(|i| i.to_string()).collect::<Vec<_>>());
             let header = header_vs.join(",") + "\n";
 
-            let mut csv: File;
             csv = OpenOptions::new()
                 .create(true)
                 .truncate(true)
                 .write(true)
-                .open(ACTIVITY_HORIZONTAL_FILE_NAME)
+                .open(ACTIVITY_COLUMN_SUM_FILE_NAME)
                 .expect("☠ ☆ CSV");
             csv.write_all(header.as_bytes()).expect("☠ ✏ CSV");
+            activity_horizontal_csv = Some(&csv);
         }
         
         loop {
@@ -244,21 +246,22 @@ impl<'a> Simulation<'a> {
             }
 
             // generate output files
-            while files_out && t >= t_next_files_out && t_next_files_out <= tspan.1 {
+            while !suppress_output && t >= t_next_files_out && t_next_files_out <= tspan.1 {
                 print!(".");
                 std::io::stdout().flush().unwrap();
                 if output.any() {
-                    let la = self.lattice.clone();
+                    let lattice_snapshot = self.lattice.clone();
                     workers
                         .as_ref()
                         .unwrap()
-                        .execute(move || la.out(output, t_next_files_out));
+                        .execute(move || lattice_snapshot.out(output, t_next_files_out));
                 }
-/*
-                if let Some(file) = &activity_csv {
-                    self.lattice.save_activity_csv(t_next_files_out, file);
+
+                if let Some(csv_file) = activity_horizontal_csv {
+                    debug_assert!(output.active_states);
+                    self.lattice.save_activity_csv(t_next_files_out, csv_file);
                 }
-*/
+
                 t_next_files_out += files_out_interval;
             }
 

@@ -6,7 +6,6 @@
 use crate::compartment::Compartment;
 use crate::cell::{Cell, QUIESCENT_CELL};
 use crate::output::{
-    ACTIVITY_HORIZONTAL_FILE_NAME,
     LATTICE_IMAGE_FILE_NAME_PREFIX,
     STATE_FILE_NAME_PREFIX,
     Output
@@ -200,7 +199,7 @@ impl Lattice {
         } // for each cell/lattice node
     }
 
-    pub fn save_activity_csv(&self, time: f64) {
+    pub fn save_activity_csv(&self, time: f64, mut csv: &File) {
         macro_rules! in_compartment {
             ($c:expr, $ci:ident) => {
                 self.cells[$ci].compartments[$c as usize] > 0
@@ -221,13 +220,6 @@ impl Lattice {
         }
         let line = line_vs.join(",") + "\n";
 
-        let mut csv: File;
-        csv = OpenOptions::new()
-            .create(false)
-            .truncate(false)
-            .append(true)
-            .open(ACTIVITY_HORIZONTAL_FILE_NAME)
-            .expect("☠ ☆ CSV");
         csv.write_all(line.as_bytes()).expect("☠ ✏ CSV");
     }
 
@@ -236,9 +228,6 @@ impl Lattice {
         debug_assert!(output.any());
         if output.all_states {
             self.save_csv(time);
-        }
-        if output.active_states {
-            self.save_activity_csv(time);
         }
         if output.images {
             self.save_png(time);

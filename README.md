@@ -50,7 +50,8 @@ For an explanation of the command-line arguments, type:
 ````
 cargo run --release -- --help
 ````
-
+If libglib2.0-dev and libcairo2-dev are installed, all dependencies should be retrieved and compiled on the fly
+prior to simulator compilation and execution.
 
 Origin
 ------
