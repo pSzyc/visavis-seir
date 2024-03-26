@@ -3,6 +3,9 @@ QEIR
 A simulator of a confluent monolayer of cells that hold a simple internal
 state and may communicate when in contact.
 
+Model
+-----
+
 Allowed cell states and transitions between them are patterned after
 a multi-compartment epidemiological SEIR model (wherein S -- susceptible,
 E -- exposed, I -- infectious, R -- resistant/recovered).  As the simulator
@@ -10,14 +13,11 @@ is used primarily to investigate spatial stochastic kinetics of waves of
 activation, the 'susceptible' compartment has been renamed to the 'quiescent'
 compartment, which is more appropriate in the cellular context.
 
-The following transitions are assumed:
+The following **transitions** are assumed:
 ```
  Q -> E_1 -> ... -> E_{nE} -> I_1 -> ... -> I_{nI} -> R_1 -> ... -> R_{nR} -> Q
- -    ------"Exposed"-----    ---"Infectious"-----    ----"Recovering"----    -
+      ------"Exposed"-----    ---"Infectious"-----    ----"Recovering"----
 ```
-
-Model definition
-----------------
 
 The model is parametrized by specifying the numbers of the E, I, and R
 subcompartments and four kinetic rate constants for (forward-only) transitions.
