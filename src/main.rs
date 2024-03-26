@@ -1,5 +1,6 @@
 // -------------------------------------------------------------------------------------------------
-// QEIR, simulator of a monolayer of directly communicating cells which hold a simple internal state
+// QEIR -- a simulator of a monolayer of cells that hold a simple internal state and communicate
+// when in contact.
 //
 // This code features the research article:
 //
@@ -8,7 +9,7 @@
 //                                 by Nałęcz-Jawecki et al.
 //                                [TODO:JOURNAL-NAME], 202X
 //
-// For more info, see file ReadMe.md.
+// For more info, see file README.md.
 //
 // Copyright (2024) https://github.com/kochanczyk/qeir/CONTRIBUTORS.md.
 // Licensed under the 3-Clause BSD license (https://opensource.org/licenses/BSD-3-Clause).

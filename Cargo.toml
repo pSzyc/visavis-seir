@@ -1,6 +1,6 @@
 [package]
 name = "qeir"
-description = "Simulator of a monolayer of directly communicating cells which hold a simple internal state"
+description = "A simulator of a monolayer of cells that hold a simple internal state and communicate when in contact."
 keywords = ["cellular automaton", "kinetic Monte Carlo", "cell signaling", "cell monolayer", "traveling wave"]
 categories = ["science", "systems biology"]
 repository = "https://github.com/kochanczyk/qeir"
