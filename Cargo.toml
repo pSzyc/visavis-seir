@@ -6,7 +6,7 @@ categories = ["science", "systems biology"]
 repository = "https://github.com/kochanczyk/qeir"
 license = "BSD-3-clause"
 version = "1.0.0"
-authors = ["Marek Kochanczyk <mkochan@ippt.pan.pl>", "Frederic Grabowski <fgrabows@ippt.pan.pl>", "Paweł Nałęcz-Jawecki <panaj@ippt.pan.pl>"]
+authors = "https://github.com/kochanczyk/qeir/CONTRIBUTORS.md"
 edition = "2021"
 
 [dependencies]
