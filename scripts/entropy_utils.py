@@ -8,7 +8,7 @@ import sys
 root_repo_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
-from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
+from scripts.defaults import PARAMETERS_DEFAULT
 
 def xlog2x(x):
     return xlogy(x, x) / np.log(2)
@@ -140,19 +140,19 @@ def conditional_entropy_discrete_bins_or_neighbors_pandas(
 
 
 
-def get_cycle_time(parameters=PARAMETERS_DEFAULT, mol_states=MOL_STATES_DEFAULT):
+def get_cycle_time(parameters=PARAMETERS_DEFAULT):
     return (
-        mol_states['n_e'] / parameters['e_incr']
-        + mol_states['n_i'] / parameters['i_incr']
-        + mol_states['n_r'] / parameters['r_incr']
+        parameters['e_subcompartments_count'] / parameters['e_forward_rate']
+        + parameters['i_subcompartments_count'] / parameters['i_forward_rate']
+        + parameters['r_subcompartments_count'] / parameters['r_forward_rate']
         + 1/3 / parameters['c_rate']
     )
 
-def get_cycle_time_std(parameters=PARAMETERS_DEFAULT, mol_states=MOL_STATES_DEFAULT):
+def get_cycle_time_std(parameters=PARAMETERS_DEFAULT):
     return np.sqrt(
-        mol_states['n_e'] / parameters['e_incr']**2
-        + mol_states['n_i'] / parameters['i_incr']**2
-        + mol_states['n_r'] / parameters['r_incr']**2
+        parameters['e_subcompartments_count'] / parameters['e_forward_rate']**2
+        + parameters['i_subcompartments_count'] / parameters['i_forward_rate']**2
+        + parameters['r_subcompartments_count'] / parameters['r_forward_rate']**2
         + 1/3**2 / parameters['c_rate']**2
     )
 

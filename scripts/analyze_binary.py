@@ -11,8 +11,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to i
 
 from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
-from scripts.utils import compile_if_not_exists, starmap
-from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
+from scripts.utils import starmap
+from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT
 from scripts.binary import activity_to_arrival_times, arrival_times_to_dataset, get_entropy
 
 
@@ -41,7 +41,6 @@ def perform_single(
     client, 
     simulation_id, 
     parameters=PARAMETERS_DEFAULT, 
-    mol_states=MOL_STATES_DEFAULT, 
     p=0.5):
     departure_times, pulse_intervals = make_binary_protocol(interval, n_slots, p=p, seed=19+simulation_id)
 
@@ -53,7 +52,8 @@ def perform_single(
 
     result = client.run(
             parameters_json=parameters,
-            mol_states_json=mol_states,
+            width=channel_width,
+            length=channel_length,
             protocol_file_path=protocol_file_path,
             verbose=False,
             dir_name=f"sim-{simulation_id}/simulation",
@@ -87,7 +87,6 @@ def generate_dataset(
     channel_width,
     channel_length,
     parameters=PARAMETERS_DEFAULT,
-    mol_states=MOL_STATES_DEFAULT,
     duration=5,
     offset=None,
     v=1/3.6,
@@ -104,12 +103,8 @@ def generate_dataset(
         outdir.mkdir(parents=True, exist_ok=True)
 
     sim_dir = Path(f"{TEMP_DIR}/visavis_seir/binary/" + _random_name(12))
-    visavis_bin = compile_if_not_exists(channel_width, channel_length)
 
-    client = VisAVisClient(
-        visavis_bin=visavis_bin,
-        sim_root=sim_dir,
-    )
+    client = VisAVisClient(sim_root=sim_dir)
 
     if offset is None:
         offset = channel_length / v
@@ -124,7 +119,6 @@ def generate_dataset(
                 duration=duration,
                 offset=offset,
                 parameters=parameters,
-                mol_states=mol_states,
                 p=p,
                 n_margin=n_margin,
                 n_nearest=n_nearest,

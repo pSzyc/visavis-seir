@@ -10,7 +10,7 @@ root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
 from scripts.formula import get_factors, get_range, get_length_with_variance_equal_refractory, get_permament_spawning_site_lambda
-from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
+from scripts.defaults import PARAMETERS_DEFAULT
 from scripts.style import *
 
 panels_dir = Path(__file__).parent.parent / 'panels'
@@ -20,7 +20,6 @@ panels_dir.mkdir(parents=True, exist_ok=True)
 ww = np.linspace(1,20,101)
 ll = 10**np.linspace(0,5,51)
 
-n_r = 4
 N = 100
 
 ranges = get_range(ww)

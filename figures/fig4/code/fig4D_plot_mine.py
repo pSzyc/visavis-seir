@@ -12,7 +12,7 @@ root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
 from scripts.binary import plot_scan
-from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
+from scripts.defaults import PARAMETERS_DEFAULT
 
 
 
@@ -36,12 +36,12 @@ fold_changes = np.exp(np.linspace(-1, 1, 21))
 # fold_changes = np.exp([0])
 
 
-for altered_parameter in ['e_incr', 'i_incr', 'r_incr']:
+for altered_parameter in ['e_forward_rate', 'i_forward_rate', 'r_forward_rate']:
     for fields in 'c', :
         for k_neighbors in (25,):
             for reconstruction in (False,):
                 suffix = f"{fields}{k_neighbors}{'-reconstruction' if reconstruction else ''}"
-                corresponding_intermediate = f"n_{altered_parameter[0]}"
+                corresponding_intermediate = f"{altered_parameter[0]}_subcompartments_count"
                 corresponding_time = f"{full_parameter_names[altered_parameter[0]]} time"
                 print(f"Drawing plots for suffix: {suffix}")
 
@@ -54,7 +54,7 @@ for altered_parameter in ['e_incr', 'i_incr', 'r_incr']:
                     for fold_change in fold_changes
                 ], names=['fold_change'], keys=fold_changes).reset_index()
                 
-                result[corresponding_time] = 1 / result['fold_change'] * MOL_STATES_DEFAULT[corresponding_intermediate] / PARAMETERS_DEFAULT[altered_parameter]
+                result[corresponding_time] = 1 / result['fold_change'] * PARAMETERS_DEFAULT[corresponding_intermediate] / PARAMETERS_DEFAULT[altered_parameter]
                 result['max_bitrate_per_hour'] = 60 * result['max_bitrate']
                 print(result)
                 

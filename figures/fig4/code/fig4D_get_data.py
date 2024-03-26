@@ -9,7 +9,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 
 from scripts.analyze_binary import generate_dataset_batch
 from scripts.binary import get_entropy, get_optimal_bitrate
-from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
+from scripts.defaults import PARAMETERS_DEFAULT
 
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4D' / 'approach1'
@@ -87,14 +87,14 @@ expected_maximums = get_expected_maximum(*np.array(channel_wls).T)
 
 # print(expected_maximums)
 
-altered_parameter = 'i_incr'
+altered_parameter = 'i_forward_rate'
 for fold_change in fold_changes:
     
     parameters = PARAMETERS_DEFAULT.copy()
     parameters.update({
         altered_parameter: fold_change * parameters[altered_parameter]
     })
-    v = 1.25  / (MOL_STATES_DEFAULT['n_e'] / parameters['e_incr'] + 0.5 / parameters['c_rate'])
+    v = 1.25  / (PARAMETERS_DEFAULT['e_subcompartments_count'] / parameters['e_forward_rate'] + 0.5 / parameters['c_rate'])
 
     result = find_optimal_bitrate(
         expected_maximums, logstep=0.04, scan_points=5, 

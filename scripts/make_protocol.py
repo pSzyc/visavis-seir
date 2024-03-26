@@ -3,7 +3,7 @@ from jinja2 import Template
 from pathlib import Path
 
 TEMPLATE = Template(
-'''{% for t0, t1 in simulation_periods %}+batsoup 1
+'''{% for t0, t1 in simulation_periods %}[]!
 run  {{t0}}s...{{t1}}s  [{{duration}}s]
 {% endfor %}
 '''
@@ -20,4 +20,4 @@ def make_protocol(pulse_intervals, duration, out_folder):
         )
     return f'{out_folder}/out.protocol'
 
-make_protocol([100, 100], 2, '.')
+# make_protocol([100, 100], 2, '.')

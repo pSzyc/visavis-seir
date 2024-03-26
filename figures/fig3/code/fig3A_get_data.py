@@ -6,19 +6,14 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order t
 
 from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
-from scripts.utils import compile_if_not_exists
-from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
+from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT
 
 
 def generate_data(channel_width, channel_length, interval, n_pulses, interval_after=None, duration=5, seed=0):
     
     sim_dir = Path(f"{TEMP_DIR}/visavis_seir/periodic/" + _random_name(12))
-    visavis_bin = compile_if_not_exists(channel_width, channel_length)
 
-    client = VisAVisClient(
-        visavis_bin=visavis_bin,
-        sim_root=sim_dir,
-    )
+    client = VisAVisClient()
 
     pulse_intervals = n_pulses * [interval]
     if interval_after is None:
@@ -31,7 +26,8 @@ def generate_data(channel_width, channel_length, interval, n_pulses, interval_af
 
     result = client.run(
             parameters_json=PARAMETERS_DEFAULT,
-            mol_states_json=MOL_STATES_DEFAULT,
+            width=channel_width,
+            length=channel_length,
             protocol_file_path=protocol_file_path,
             verbose=False,
             activity=True,

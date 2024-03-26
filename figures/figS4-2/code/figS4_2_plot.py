@@ -16,8 +16,8 @@ coefficients = pd.read_csv(data_dir / 'fit_coefficients.csv').set_index(['altere
 
 
 fold_changes= [0.7, 0.9, 1., 1.1, 1.3]
-# altered_parameters = ['i_incr']
-altered_parameters = ['e_incr', 'i_incr', 'r_incr', 'c_rate']
+# altered_parameters = ['i_forward_rate']
+altered_parameters = ['e_forward_rate', 'i_forward_rate', 'r_forward_rate', 'c_rate']
 
 for altered_parameter, fold_change in product(altered_parameters, fold_changes):
 

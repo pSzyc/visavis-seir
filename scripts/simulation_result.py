@@ -26,7 +26,7 @@ class SimulationResult:
         else: self._states = None
 
         if has_activity:
-            self._activity = pd.read_csv(simulation_dir / 'activity.csv').drop_duplicates('time', keep='last').reset_index(drop=True).rename(columns={'time': 'seconds'})
+            self._activity = pd.read_csv(simulation_dir / 'activity_column_sum.csv').drop_duplicates('time', keep='last').reset_index(drop=True).rename(columns={'time': 'seconds'})
             self._activity.index.name = 'frame'
             self._activity = self._activity.set_index('seconds', append=True)
 

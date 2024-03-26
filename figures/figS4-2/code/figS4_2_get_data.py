@@ -8,7 +8,7 @@ import sys
 root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
-from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
+from scripts.defaults import PARAMETERS_DEFAULT
 from scripts.propensities import simulate
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS4-2' / 'figS3' / 'approach5'
@@ -21,8 +21,8 @@ channel_widths = [1,4,5,6,10,16,20]#[::-1]
 
 
 fold_changes= [0.7, 0.9, 1.0, 1.1, 1.3]#, 1.5,]
-# altered_parameters = ['e_incr']
-altered_parameters = ['e_incr', 'i_incr', 'r_incr', 'c_rate']
+# altered_parameters = ['e_forward_rate']
+altered_parameters = ['e_forward_rate', 'i_forward_rate', 'r_forward_rate', 'c_rate']
 
 result_parts = []
 
@@ -35,7 +35,7 @@ for altered_parameter, fold_change in product(altered_parameters, fold_changes):
         altered_parameter: fold_change * parameters[altered_parameter]
     })
 
-    v = 1.25  / (MOL_STATES_DEFAULT['n_e'] / parameters['e_incr'] + 0.5 / parameters['c_rate'])
+    v = 1.25  / (PARAMETERS_DEFAULT['e_subcompartments_count'] / parameters['e_forward_rate'] + 0.5 / parameters['c_rate'])
 
 
     propensities = simulate(

@@ -3,6 +3,7 @@ from pathlib import Path
 import random
 import subprocess
 import string
+from typing import Literal
 
 import termcolor
 import json
@@ -22,9 +23,12 @@ class VisAVisClient:
 
     def __init__(
         self,
-        visavis_bin: Path = Path("./vis-a-vis"),
+        visavis_bin: Path = Path("./target/release/qeir"),
+        path_to_compiling_script=Path(__file__).parent / 'compile_visavis.sh',
         sim_root: Path = Path("/tmp"),  # where simulation dirs go
+        build: Literal[True, False, 'if needed'] = True,#'if needed',
     ):
+
         if isinstance(visavis_bin, str):
             visavis_bin = Path(visavis_bin)
 
@@ -32,27 +36,52 @@ class VisAVisClient:
             sim_root = Path(sim_root)
 
         self._visavis_bin = visavis_bin
-        if not self._visavis_bin.is_file():
+        self._path_to_compiling_script = path_to_compiling_script
+
+        if not self._visavis_bin.is_file() and self._visavis_bin.with_suffix(".exe").is_file():
             self._visavis_bin = self._visavis_bin.with_suffix(".exe")
+
+        if build == True or (build == 'if_needed' and not self._visavis_bin.is_file()):
+            self.build()
+
+        if not self._visavis_bin.is_file() and self._visavis_bin.with_suffix(".exe").is_file():
+            self._visavis_bin = self._visavis_bin.with_suffix(".exe")
+
 
         assert self._visavis_bin.is_file()
 
         self._sim_root = sim_root
         self._sim_root.mkdir(parents=True, exist_ok=True)
 
+    
+    def build(self, path_to_compiling_script=None):
+        if path_to_compiling_script is None:
+            path_to_compiling_script = self._path_to_compiling_script
+        if Path(path_to_compiling_script).exists():
+            subprocess.call(
+                [str(path_to_compiling_script)],
+                stdout=subprocess.DEVNULL,
+                cwd=path_to_compiling_script.parent.parent,
+            )
+        else:
+            raise FileNotFoundError(f'Script for building vis-a-vis not found at {path_to_compiling_script}')
+
+
     def run(
         self,
         parameters_json: Any,  # ...thing that serializes to json
-        mol_states_json: Any,  # ...thing that serializes to json
+        width: int,
+        length: int,
         protocol_file_path: Path,
         dir_name: Optional[str] = None,  # name the dir with results
-        clean_up: bool = True,  # remove files?
+        clean_up: bool = False,  # remove files?
         verbose: bool = True,  # print information about progress
         images: bool = False,  # save output images
         activity: bool = True,  # save average activity (E+I) in every row
         states: bool = False,  # save full state
         seed: Optional[int] = None,
     ) -> Optional[SimulationResult]:
+
 
         if isinstance(protocol_file_path, str):
             protocol_file_path = Path(protocol_file_path)
@@ -66,10 +95,6 @@ class VisAVisClient:
         parameters_file = simulation_dir / "parameters.json"
         with open(parameters_file, "w") as f:
             json.dump(parameters_json, f)
-
-        mol_states_file = simulation_dir / "n_states.json"
-        with open(mol_states_file, "w") as f:
-            json.dump(mol_states_json, f)
 
         assert protocol_file_path.exists()
         protocol_file_src_path = protocol_file_path
@@ -87,10 +112,12 @@ class VisAVisClient:
             [
                 self._visavis_bin.absolute(),
                 parameters_file.absolute(),
-                mol_states_file.absolute(),
                 protocol_file_dst_path.absolute(),
-                *(["--images"] if images else []),
-                *(["--activity"] if activity else []),
+                '--width', str(length),
+                '--height', str(width),
+                *(["--images-out"] if images else []),
+                *(["--states-out"] if states else []),
+                *(["--activity-out"] if activity else []),
                 *(["--seed", f"{seed}"] if seed is not None else []),
             ],
             cwd=simulation_dir,

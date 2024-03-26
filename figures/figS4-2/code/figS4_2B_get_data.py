@@ -8,7 +8,7 @@ import sys
 root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
-from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
+from scripts.defaults import PARAMETERS_DEFAULT
 from scripts.propensities import simulate
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS4-2' / 'figS4-2B' / 'approach1'
@@ -25,18 +25,16 @@ result_parts = []
 
 for species, n_states in product(species, n_states_s):
 
-    altered_parameter = f"n_{species}"
+    altered_parameter = f"{species}_subcompartments_count"
 
     (data_dir / altered_parameter / str(n_states)).mkdir(exist_ok=True, parents=True)
 
 
-    mol_states = MOL_STATES_DEFAULT.copy()
-    mol_states[f'n_{species}'] = n_states
-
     parameters = PARAMETERS_DEFAULT.copy()
-    parameters[f'{species}_incr'] = n_states * PARAMETERS_DEFAULT[f'{species}_incr']  / MOL_STATES_DEFAULT[f'n_{species}']
+    parameters[f'{species}_subcompartments_count'] = n_states
+    parameters[f'{species}_forward_rate'] = n_states * PARAMETERS_DEFAULT[f'{species}_forward_rate']  / PARAMETERS_DEFAULT[f'{species}_subcompartments_count']
 
-    v = 1.25  / (mol_states['n_e'] / parameters['e_incr'] + 0.5 / parameters['c_rate'])
+    v = 1.25  / (parameters['e_subcompartments_count'] / parameters['e_forward_rate'] + 0.5 / parameters['c_rate'])
 
 
     propensities = simulate(
@@ -47,7 +45,6 @@ for species, n_states in product(species, n_states_s):
         n_workers=20,
         interval_after=int(2.5 * channel_length / v),
         parameters=parameters,
-        mol_states=mol_states,
         v=v,
         per_width_kwargs = {
             w: {

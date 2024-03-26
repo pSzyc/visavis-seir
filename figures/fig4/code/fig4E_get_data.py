@@ -9,7 +9,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 
 from scripts.analyze_binary import generate_dataset_batch
 from scripts.binary import get_entropy, get_optimal_bitrate
-from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT
+from scripts.defaults import PARAMETERS_DEFAULT
 
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4E' / 'approach1'
@@ -92,25 +92,20 @@ expected_maximums = get_expected_maximum(*np.array(channel_wls).T)
 
 if __name__ == '__main__':
 
-    altered_parameter = 'n_r'
+    altered_parameter = 'r_subcompartments_count'
     for param_value in param_values:
         
-        corresponding_rate = f"{altered_parameter[2]}_incr"
-
-        mol_states = MOL_STATES_DEFAULT.copy()
-        mol_states.update({
-            altered_parameter: param_value,
-        })
+        corresponding_rate = f"{altered_parameter[0]}_forward_rate"
 
         parameters = PARAMETERS_DEFAULT.copy()
         parameters.update({
-            corresponding_rate: PARAMETERS_DEFAULT[corresponding_rate] * param_value / MOL_STATES_DEFAULT[altered_parameter]
+            altered_parameter: param_value,
+            corresponding_rate: PARAMETERS_DEFAULT[corresponding_rate] * param_value / PARAMETERS_DEFAULT[altered_parameter]
         })
-        v = 1.25  / (mol_states['n_e'] / parameters['e_incr'] + 0.5 / parameters['c_rate'])
+        v = 1.25  / (parameters['e_subcompartments_count'] / parameters['e_forward_rate'] + 0.5 / parameters['c_rate'])
 
         result = find_optimal_bitrate(
             expected_maximums, logstep=0.04, scan_points=10, 
-            mol_states=mol_states,
             parameters=parameters,
             v=v,
             outdir=data_dir / altered_parameter / f'{param_value:.3f}', 

@@ -10,8 +10,8 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
 from scripts.tracking import determine_fates
-from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT, TEMP_DIR
-from scripts.utils import simple_starmap, starmap, compile_if_not_exists
+from scripts.defaults import PARAMETERS_DEFAULT, TEMP_DIR
+from scripts.utils import simple_starmap, starmap
 
 
 
@@ -26,7 +26,6 @@ def run_single(
     pulse_intervals,
     simulation_id,
     parameters=PARAMETERS_DEFAULT,
-    mol_states=MOL_STATES_DEFAULT,
     channel_width=7,
     channel_length=300,
     duration=5,
@@ -50,7 +49,8 @@ def run_single(
 
         result = client.run(
             parameters_json=parameters,
-            mol_states_json=mol_states,
+            width=channel_width,
+            length=channel_length,
             protocol_file_path=protocol_file_path,
             verbose=False,
             dir_name=sim_dir_name + '/' +  _random_name(5),
@@ -147,7 +147,6 @@ def generate_dataset(
     interval,
     n_simulations,
     parameters=PARAMETERS_DEFAULT,
-    mol_states=MOL_STATES_DEFAULT,
     channel_width=7,
     channel_length=300,
     duration=5,
@@ -168,15 +167,11 @@ def generate_dataset(
         second_trajectories = pd.read_csv(outdir / 'second_trajectories.csv').set_index(['channel_width', 'channel_length', 'interval', 'simulation_id', 'significant_split_id'])
         return first_trajectories, second_trajectories
 
-    visavis_bin = compile_if_not_exists(channel_width, channel_length)
     if outdir:
         outdir.mkdir(exist_ok=True, parents=True)
     
     sim_root = Path(TEMP_DIR) / 'tracking' 
-    client = VisAVisClient(
-        visavis_bin=visavis_bin,
-        sim_root=sim_root,
-    )
+    client = VisAVisClient(sim_root=sim_root)
 
     pulse_intervals = [interval, interval_after]
 
@@ -188,7 +183,6 @@ def generate_dataset(
             pulse_intervals=pulse_intervals,
             simulation_id=simulation_id,
             parameters=parameters,
-            mol_states=mol_states,
             channel_width=channel_width,
             channel_length=channel_length,
             duration=duration,
