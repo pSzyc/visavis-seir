@@ -13,8 +13,7 @@ compartment, which is more appropriate in the cellular context.
 The following transitions are assumed:
 ```
  Q -> E_1 -> ... -> E_{nE} -> I_1 -> ... -> I_{nI} -> R_1 -> ... -> R_{nR} -> Q
----  `----- exposed -----'    `--- infectious ---'    `--- recovering ---'   ---
-
+ -    ------"Exposed"-----    ---"Infectious"-----    ----"Recovering"----    -
 ```
 
 Model definition
@@ -22,18 +21,22 @@ Model definition
 
 The model is parametrized by specifying the numbers of the E, I, and R
 subcompartments and four kinetic rate constants for (forward-only) transitions.
-The respective **parameters** are
-`e_subcompartments_count`,
-`i_subcompartments_count`,
-`r_subcompartments_count`,
-`c_rate`,
-`e_forward_rate`,
-`i_forward_rate`,
-`r_forward_rate`.
+The respective **parameters** are:
+* `e_subcompartments_count` (`nE` in the scheme above),
+* `i_subcompartments_count` (`nI` in the scheme above),
+* `r_subcompartments_count` (`nR` in the scheme above),
+* `c_rate` (receiving activation from a Q neighbor to become E_1),
+* `e_forward_rate` (progression within and out of the "Exposed" states),
+* `i_forward_rate` (progression within and out of the "Infectious" states),
+* `r_forward_rate` (progression within and out of the "Recovering" states).
 
 The simulation **protocol** is specified by a sequence of the two commands:
-* `[]!` -- triggers a new front,
-* `run` -- runs a simulation in a specified time span with the output time interval specified in square brackets (e.g., `run 0h...30m [5s]`).
+* `[]!` -- triggers a new vertical front of activity,
+* `run` -- runs a simulation in a specified time span with the output time 
+interval specified in square brackets (e.g., `run 0h...30m [5s]`).
+
+The reactor geometry is set upon launching the simulator with command-line
+arguments. 
 
 
 Running
