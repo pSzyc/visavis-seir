@@ -6,7 +6,7 @@ categories = ["science", "systems biology"]
 repository = "https://github.com/kochanczyk/qeir"
 license = "BSD-3-clause"
 version = "1.0.0"
-authors = "https://github.com/kochanczyk/qeir/CONTRIBUTORS.md"
+authors = ["https://github.com/kochanczyk/qeir/CONTRIBUTORS.md"]
 edition = "2021"
 
 [dependencies]

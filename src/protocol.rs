@@ -17,7 +17,7 @@ use nom::{
     character::complete::{char, digit1, multispace1},
     combinator::{map_res, opt, recognize},
     error::ErrorKind,
-    number::complete::double,
+//  number::complete::double,
     sequence::{delimited, pair, separated_pair, terminated, tuple},
 };
 
@@ -50,7 +50,7 @@ impl Protocol {
         rng: &mut StdRng,
         output: Output,
     ) {
-        let factor = || double::<&str, (_, ErrorKind)>;
+     // let factor = || double::<&str, (_, ErrorKind)>;
         let number = || pair::<_, _, _, (_, ErrorKind), _, _>(opt(char('-')), digit1);
 
         let in_unit_of = |u| move |s| -> Result<f64, ParseFloatError> { Ok(u * f64::from_str(s)?) };
@@ -62,11 +62,11 @@ impl Protocol {
         let time = || alt((seconds(), minutes(), hours(), days()));
         let timespan = || separated_pair(time(), tag("..."), time());
         let every = || delimited(char('['), time(), char(']'));
-        let never = || tag("[]");
+        let square = || tag("[]");
 
         let cmd_run = || tuple((tag("run"), multispace1, timespan(), multispace1, every()));
-        let cmd_run_quiet = || tuple((tag("run"), multispace1, timespan(), multispace1, never()));
-        let cmd_init_front = || tuple((tag("+excitation"), multispace1, factor()));
+        let cmd_run_quiet = || tuple((tag("run"), multispace1, timespan(), multispace1, square()));
+        let cmd_init_front = || tuple((square(), char('!')));
 
         let mut out_init_frame = false; // whether initial frame in output
 
