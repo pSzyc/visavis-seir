@@ -70,31 +70,31 @@ impl Protocol {
 
         let mut out_init_frame = true; // whether initial frame in output
 
-        let mut activity_column_sum: Option<File> = None;
-        if output.active_states {
-            let mut header_vs: Vec<String> = vec!["time".to_string()];
-            header_vs.extend(
-                (0..lattice.width)
-                    .map(|i| i.to_string())
-                    .collect::<Vec<_>>(),
-            );
-            let header = header_vs.join(",") + "\n";
-
-            activity_column_sum = Some(
+        let mut activity_column_sum: Option<File> = if output.active_states {
+            Some(
                 OpenOptions::new()
                     .create(true)
                     .truncate(true)
                     .write(true)
                     .open(ACTIVITY_COLUMN_SUM_FILE_NAME)
                     .expect("☠ ☆ CSV[activity]"),
-            );
+            )
+        } else {
+            None
+        };
 
-            match activity_column_sum {
-                Some(ref mut csv_file) => {
-                    csv_file.write_all(header.as_bytes()).expect("☠ ✏ CSV[activity]");
-                }
-                _ => {}
+        match activity_column_sum {
+            Some(ref mut csv_file) => {
+                let mut header_vs: Vec<String> = vec!["time".to_string()];
+                header_vs.extend(
+                    (0..lattice.width)
+                        .map(|i| i.to_string())
+                        .collect::<Vec<_>>(),
+                );
+                let header = header_vs.join(",") + "\n";
+                csv_file.write_all(header.as_bytes()).expect("☠ ✏ CSV[activity]");
             }
+            None => {}
         }
 
         for command in self.commands.iter() {
