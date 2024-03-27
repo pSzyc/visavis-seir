@@ -223,7 +223,7 @@ impl<'a> Simulation<'a> {
             // check when next event occurs
             let sum_propens: f64 = self.propensities[0].iter().sum();
             if sum_propens > 0. {
-                t += -rng.gen_range(0.0..1.0).ln() / sum_propens; // exponential variate
+                t += -(rng.gen_range(0.0..1.0) as f64).ln() / sum_propens; // exponential variate
             } else {
                 t = tspan.1;
             }
