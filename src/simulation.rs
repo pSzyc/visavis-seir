@@ -237,7 +237,7 @@ impl<'a> Simulation<'a> {
                             let lattice_snapshot = self.lattice.clone();
                             let output_clone = output.clone();
                             output_workers.execute(
-                                move || lattice_snapshot.out(&output_clone, t_next_files_out)
+                                move || lattice_snapshot.save_output_files(&output_clone, t_next_files_out)
                             );
                         }
 

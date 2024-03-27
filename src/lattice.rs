@@ -35,8 +35,8 @@ impl Lattice {
                                               // is right-to-left wrapped to form a rectangle
     pub fn new(width: usize, height: usize, rng: &mut StdRng) -> Self {
         Lattice {
-            cells: Lattice::populate_cells(rng, width * height, 1.),
-            neighborhoods: Lattice::generate_neighborhoods(width, height),
+            cells: Self::populate_cells(rng, width * height, 1.),
+            neighborhoods: Self::generate_neighborhoods(width, height),
             width: width,
             height: height,
             capacity: width * height,
@@ -104,7 +104,7 @@ impl Lattice {
                 continue;
             }
 
-            // cell index --> its (x, y) coordinates
+            // cell index --> cell (x, y) coordinates
             let (mut i, j) = (cell_i % self.height, cell_i / self.height);
             if Lattice::IMAGE_RECTANGULAR {
                 i = (i + j / 2) % self.height
@@ -116,9 +116,7 @@ impl Lattice {
                 Y0 + 1.5 * (j as f64) * R,
             );
 
-            // -- hexagon
-
-            // contour
+            // hexagon's contour
             cx.move_to(x, y + R * 0.99);
             for a in 2..=6 {
                 let z = f64::from(a) * PI / 3.;
@@ -128,7 +126,7 @@ impl Lattice {
             cx.set_source_rgb(0.1, 0.1, 0.1);
             cx.stroke_preserve().unwrap_or_else(|err| println!("☠ ✏ lattice: {:?}", err));
 
-            // fill
+            // hexagon's fill
             let (e, i, r) = (
                 self.cells[cell_i].compartments[Compartment::E as usize],
                 self.cells[cell_i].compartments[Compartment::I as usize],
@@ -205,6 +203,7 @@ impl Lattice {
                 self.cells[$ci].compartments[$c as usize] > 0
             };
         }
+
         let is_active = |x, y| -> bool {
             let cell_index: usize = x*self.height + y;
             in_compartment!(Compartment::E, cell_index) || in_compartment!(Compartment::I, cell_index)
@@ -212,19 +211,18 @@ impl Lattice {
 
         let mut line_vs: Vec<String> = vec![time.to_string()];
         for x in 0..self.width {
-            let mut act_vert_sum: i32 = 0;
+            let mut activity_vert_sum: i32 = 0;
             for y in 0..self.height {
-                act_vert_sum += is_active(x, y) as i32
+                activity_vert_sum += is_active(x, y) as i32
             }
-            line_vs.push(act_vert_sum.to_string())
+            line_vs.push(activity_vert_sum.to_string())
         }
         let line = line_vs.join(",") + "\n";
 
         csv.write_all(line.as_bytes()).expect("☠ ✏ CSV");
     }
 
-    // save output file(s)
-    pub fn out(&self, output: &Output, time: f64) {
+    pub fn save_output_files(&self, output: &Output, time: f64) {
         if output.all_states {
             self.save_csv(time);
         }

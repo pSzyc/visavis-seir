@@ -17,7 +17,6 @@ use nom::{
     character::complete::{char, digit1, multispace1},
     combinator::{map_res, opt, recognize},
     error::ErrorKind,
-    //  number::complete::double,
     sequence::{delimited, pair, separated_pair, terminated, tuple},
 };
 
@@ -107,7 +106,7 @@ impl Protocol {
 
         let output_workers = threadpool::Builder::new().num_threads(num_cpus::get()).build();
 
-        let mut initial_frame_in_output_files = true; // whether initial frame in output
+        let mut initial_frame_in_output_files = true;
 
         for command in self.commands.iter() {
             if let Ok((_, (_, _, tspan, _, dt))) = cmd_run()(&command) {

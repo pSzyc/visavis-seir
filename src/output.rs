@@ -7,7 +7,6 @@ pub const STATE_FILE_NAME_PREFIX: &'static str = "state_";
 pub const LATTICE_IMAGE_FILE_NAME_PREFIX: &'static str = "lattice_";
 pub const ACTIVITY_COLUMN_SUM_FILE_NAME: &'static str = "activity_column_sum.csv";
 
-
 #[derive(Clone, Copy)]
 pub struct Output {
     pub all_states: bool,    // one text file per output time point
