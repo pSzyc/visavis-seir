@@ -5,7 +5,6 @@ state and may communicate when in contact.
 
 Model
 -----
-
 Allowed cell states and transitions between them are patterned after
 a multi-compartment epidemiological SEIR model (wherein S -- susceptible,
 E -- exposed, I -- infectious, R -- resistant/recovered).  As the simulator
@@ -16,7 +15,7 @@ compartment, which is more appropriate in the cellular context.
 The following **transitions** are assumed:
 ```
  Q -> E_1 -> ... -> E_{nE} -> I_1 -> ... -> I_{nI} -> R_1 -> ... -> R_{nR} -> Q
-      ------"Exposed"-----    ---"Infectious"-----    ----"Recovering"----
+      ------"Exposed"-----    ----"Infectious"----    ----"Recovering"----
 ```
 
 The model is parametrized by specifying the numbers of the E, I, and R
@@ -31,13 +30,14 @@ The respective **parameters** are:
 * `r_forward_rate` (progression within and out of the "Recovering" states).
 
 The simulation **protocol** is specified by a sequence of the two commands:
-* `[]!` -- triggers a new vertical front of activity,
-* `run` -- runs a simulation in a specified time span with the output time 
-interval specified in square brackets (e.g., `run 0h...30m [5s]`; when the
-output time interval is empty, i.e. `[]`, then no output files are produced).
+* `+front at column 0` -- triggers a new vertical front of activity,
+* `run` -- runs a simulation in a specified time span with the output time
+interval specified in square brackets (e.g., `run 0h...30m [5s]`); when the
+output time interval is not specified (as in, e.g., `run 0h...30m []`, then
+no output files are produced.
 
 The reactor geometry is set upon launching the simulator with command-line
-arguments. 
+arguments.
 
 
 Running
@@ -51,8 +51,9 @@ For an explanation of the command-line arguments, type:
 ````
 cargo run --release -- --help
 ````
-If libglib2.0-dev and libcairo2-dev are installed, all dependencies should be retrieved and compiled on the fly
-prior to simulator compilation and execution.
+If libglib2.0-dev and libcairo2-dev are installed, all dependencies should
+be retrieved and compiled on the fly prior to simulator compilation and execution.
+
 
 Origin
 ------

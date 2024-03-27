@@ -12,17 +12,20 @@ use crate::simulation::Simulation;
 
 use rand::rngs::StdRng;
 
-pub fn initialize_front(lattice: &mut Lattice) {
+pub fn initialize_front(lattice: &mut Lattice, column: usize) {
     for y in 0..lattice.height {
-        // barrier
-        let ref mut c = lattice.cells[0 * lattice.height + y];
-        c.alive = false;
-
-        // I
-        let ref mut c = lattice.cells[1 * lattice.height + y];
-        c.compartments[Compartment::I as usize] = 1;
-        c.compartments[Compartment::E as usize] = 0;
-        c.compartments[Compartment::R as usize] = 0;
+        {
+            // barrier
+            let cell = &mut lattice.cells[column * lattice.height + y];
+            cell.alive = false;
+        }{
+            // active ~ "infectious"
+            debug_assert!(column + 1 < lattice.width);
+            let cell = &mut lattice.cells[(column + 1) * lattice.height + y];
+            cell.compartments[Compartment::I as usize] = 1;
+            cell.compartments[Compartment::E as usize] = 0;
+            cell.compartments[Compartment::R as usize] = 0;
+        }
     }
 }
 
@@ -31,18 +34,18 @@ pub fn run_simulation(
     parameters: &Parameters,
     rng: &mut StdRng,
     tspan: (f64, f64),
-    files_out_interval: f64,
     maybe_output: &Option<Output>,
-    out_init_frame: bool,
-    maybe_activity_horizontal_csv: &Option<File>
+    maybe_activity_horizontal_csv: &Option<File>,
+    files_out_interval: f64,
+    initial_frame_in_output_files: bool
 ) {
     Simulation::new(lattice).run(
         parameters,
         rng,
         tspan,
         maybe_output,
+        maybe_activity_horizontal_csv,
         files_out_interval,
-        out_init_frame,
-        maybe_activity_horizontal_csv
+        initial_frame_in_output_files,
     );
 }

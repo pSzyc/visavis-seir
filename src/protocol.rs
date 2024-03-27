@@ -43,6 +43,42 @@ impl Protocol {
         Protocol { commands: lines }
     }
 
+    fn open_activity_file(output: &Output) -> Option<File> {
+        if output.active_states {
+            Some(
+                OpenOptions::new()
+                    .create(true)
+                    .truncate(true)
+                    .write(true)
+                    .open(ACTIVITY_COLUMN_SUM_FILE_NAME)
+                    .expect("☠ ☆ CSV[activity]"),
+            )
+        } else {
+            None
+        }
+    }
+
+    fn write_activity_file_header(
+        activity_column_sum_file: &mut Option<File>,
+        lattice: &Lattice,
+    ) {
+        match activity_column_sum_file {
+            Some(ref mut csv_file) => {
+                let mut header_vs: Vec<String> = vec!["time".to_string()];
+                header_vs.extend(
+                    (0..lattice.width)
+                        .map(|i| i.to_string())
+                        .collect::<Vec<_>>(),
+                );
+                let header = header_vs.join(",") + "\n";
+                csv_file
+                    .write_all(header.as_bytes())
+                    .expect("☠ ✏ CSV[activity]");
+            }
+            None => {}
+        }
+    }
+
     pub fn execute(
         &self,
         lattice: &mut Lattice,
@@ -50,7 +86,6 @@ impl Protocol {
         rng: &mut StdRng,
         output: Output,
     ) {
-        // let factor = || double::<&str, (_, ErrorKind)>;
         let number = || pair::<_, _, _, (_, ErrorKind), _, _>(opt(char('-')), digit1);
 
         let in_unit_of = |u| move |s| -> Result<f64, ParseFloatError> { Ok(u * f64::from_str(s)?) };
@@ -62,40 +97,18 @@ impl Protocol {
         let time = || alt((seconds(), minutes(), hours(), days()));
         let timespan = || separated_pair(time(), tag("..."), time());
         let every = || delimited(char('['), time(), char(']'));
-        let square = || tag("[]");
+        let never = || tag("[]");
+        let column = || map_res(recognize(number()), |s| usize::from_str(s));
 
-        let cmd_run = || tuple((tag("run"), multispace1, timespan(), multispace1, every()));
-        let cmd_run_quiet = || tuple((tag("run"), multispace1, timespan(), multispace1, square()));
-        let cmd_init_front = || tuple((square(), char('!')));
+        let s = multispace1;
+        let cmd_run = || tuple((tag("run"), s, timespan(), s, every()));
+        let cmd_run_quiet = || tuple((tag("run"), s, timespan(), s, never()));
+        let cmd_init_front = || tuple((tag("+front"), s, tag("at"), s, tag("column"), s, column()));
 
-        let mut out_init_frame = true; // whether initial frame in output
+        let mut initial_frame_in_output_files = true; // whether initial frame in output
 
-        let mut activity_column_sum: Option<File> = if output.active_states {
-            Some(
-                OpenOptions::new()
-                    .create(true)
-                    .truncate(true)
-                    .write(true)
-                    .open(ACTIVITY_COLUMN_SUM_FILE_NAME)
-                    .expect("☠ ☆ CSV[activity]"),
-            )
-        } else {
-            None
-        };
-
-        match activity_column_sum {
-            Some(ref mut csv_file) => {
-                let mut header_vs: Vec<String> = vec!["time".to_string()];
-                header_vs.extend(
-                    (0..lattice.width)
-                        .map(|i| i.to_string())
-                        .collect::<Vec<_>>(),
-                );
-                let header = header_vs.join(",") + "\n";
-                csv_file.write_all(header.as_bytes()).expect("☠ ✏ CSV[activity]");
-            }
-            None => {}
-        }
+        let mut activity_file = Self::open_activity_file(&output);
+        Self::write_activity_file_header(&mut activity_file, &lattice);
 
         for command in self.commands.iter() {
             if let Ok((_, (_, _, tspan, _, dt))) = cmd_run()(&command) {
@@ -104,27 +117,27 @@ impl Protocol {
                     parameters,
                     rng,
                     tspan,
-                    dt,
                     &Some(output),
-                    out_init_frame,
-                    &activity_column_sum,
+                    &activity_file,
+                    dt,
+                    initial_frame_in_output_files,
                 );
-                out_init_frame = false;
+                initial_frame_in_output_files = false;
             } else if let Ok((_, (_, _, tspan, _, _))) = cmd_run_quiet()(&command) {
                 run_simulation(
                     lattice,
                     parameters,
                     rng,
                     tspan,
-                    -1.,
                     &None,
-                    out_init_frame,
-                    &activity_column_sum,
+                    &activity_file,
+                    -1.,
+                    initial_frame_in_output_files,
                 );
-                out_init_frame = false;
-            } else if let Ok((_, _)) = cmd_init_front()(&command) {
-                initialize_front(lattice);
-                out_init_frame = true;
+                initial_frame_in_output_files = false;
+            } else if let Ok((_, (_, _, _, _, _, _, column))) = cmd_init_front()(&command) {
+                initialize_front(lattice, column);
+                initial_frame_in_output_files = true;
             } else {
                 panic!("☠ @ command: {:?}", command);
             }

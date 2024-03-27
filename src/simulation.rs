@@ -189,9 +189,9 @@ impl<'a> Simulation<'a> {
         rng: &mut StdRng,
         tspan: (f64, f64),
         maybe_output: &Option<Output>,
+        activity_horizontal_csv: &Option<File>,
         files_out_interval: f64,
-        out_init_frame: bool,
-        activity_horizontal_csv: &Option<File>
+        initial_frame_in_output_files: bool
     ) {
         let subcompartments = &Subcompartments {
             count: [
@@ -211,7 +211,7 @@ impl<'a> Simulation<'a> {
         self.compute_propensities(rates);
         let (mut t, mut t_next_files_out) = (
             tspan.0,
-            tspan.0 + (if out_init_frame {0.} else {files_out_interval}),
+            tspan.0 + (if initial_frame_in_output_files {0.} else {files_out_interval}),
         );
 
         print!("{:.0}m:", t / MIN);
