@@ -11,6 +11,7 @@ use crate::parameters::Parameters;
 use crate::simulation::Simulation;
 
 use rand::rngs::StdRng;
+use threadpool::ThreadPool;
 
 pub fn initialize_front(lattice: &mut Lattice, column: usize) {
     for y in 0..lattice.height {
@@ -37,7 +38,8 @@ pub fn run_simulation(
     maybe_output: &Option<Output>,
     maybe_activity_horizontal_csv: &Option<File>,
     files_out_interval: f64,
-    initial_frame_in_output_files: bool
+    initial_frame_in_output_files: bool,
+    output_workers: &ThreadPool,
 ) {
     Simulation::new(lattice).run(
         parameters,
@@ -47,5 +49,6 @@ pub fn run_simulation(
         maybe_activity_horizontal_csv,
         files_out_interval,
         initial_frame_in_output_files,
+        output_workers
     );
 }

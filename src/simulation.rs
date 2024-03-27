@@ -16,6 +16,7 @@ use crate::units::MIN;
 use rand::{rngs::StdRng, Rng};
 use std::fs::File;
 use std::io::Write; // for .flush()
+use threadpool::ThreadPool;
 
 #[inline]
 const fn ceil_pow2(i: u32) -> u32 {
@@ -191,7 +192,8 @@ impl<'a> Simulation<'a> {
         maybe_output: &Option<Output>,
         activity_horizontal_csv: &Option<File>,
         files_out_interval: f64,
-        initial_frame_in_output_files: bool
+        initial_frame_in_output_files: bool,
+        output_workers: &ThreadPool,
     ) {
         let subcompartments = &Subcompartments {
             count: [
@@ -217,10 +219,6 @@ impl<'a> Simulation<'a> {
         print!("{:.0}m:", t / MIN);
         std::io::stdout().flush().unwrap();
 
-        let output_workers = threadpool::Builder::new()
-            .num_threads(num_cpus::get())
-            .build();
-        
         loop {
             // check when next event occurs
             let sum_propens: f64 = self.propensities[0].iter().sum();

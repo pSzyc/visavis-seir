@@ -58,10 +58,7 @@ impl Protocol {
         }
     }
 
-    fn write_activity_file_header(
-        activity_column_sum_file: &mut Option<File>,
-        lattice: &Lattice,
-    ) {
+    fn write_activity_file_header(activity_column_sum_file: &mut Option<File>, lattice: &Lattice) {
         match activity_column_sum_file {
             Some(ref mut csv_file) => {
                 let mut header_vs: Vec<String> = vec!["time".to_string()];
@@ -105,10 +102,12 @@ impl Protocol {
         let cmd_run_quiet = || tuple((tag("run"), s, timespan(), s, never()));
         let cmd_init_front = || tuple((tag("+front"), s, tag("at"), s, tag("column"), s, column()));
 
-        let mut initial_frame_in_output_files = true; // whether initial frame in output
-
         let mut activity_file = Self::open_activity_file(&output);
         Self::write_activity_file_header(&mut activity_file, &lattice);
+
+        let output_workers = threadpool::Builder::new().num_threads(num_cpus::get()).build();
+
+        let mut initial_frame_in_output_files = true; // whether initial frame in output
 
         for command in self.commands.iter() {
             if let Ok((_, (_, _, tspan, _, dt))) = cmd_run()(&command) {
@@ -121,6 +120,7 @@ impl Protocol {
                     &activity_file,
                     dt,
                     initial_frame_in_output_files,
+                    &output_workers,
                 );
                 initial_frame_in_output_files = false;
             } else if let Ok((_, (_, _, tspan, _, _))) = cmd_run_quiet()(&command) {
@@ -133,6 +133,7 @@ impl Protocol {
                     &activity_file,
                     -1.,
                     initial_frame_in_output_files,
+                    &output_workers,
                 );
                 initial_frame_in_output_files = false;
             } else if let Ok((_, (_, _, _, _, _, _, column))) = cmd_init_front()(&command) {
