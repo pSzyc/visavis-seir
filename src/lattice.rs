@@ -224,8 +224,7 @@ impl Lattice {
     }
 
     // save output file(s)
-    pub fn out(&self, output: Output, time: f64) {
-        debug_assert!(output.any());
+    pub fn out(&self, output: &Output, time: f64) {
         if output.all_states {
             self.save_csv(time);
         }

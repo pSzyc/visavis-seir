@@ -3,6 +3,7 @@
 // Copyright (2024) https://github.com/kochanczyk/qeir/CONTRIBUTORS.md.
 // Licensed under the 3-Clause BSD license (https://opensource.org/licenses/BSD-3-Clause).
 
+use std::fs::File;
 use crate::compartment::Compartment;
 use crate::lattice::Lattice;
 use crate::output::Output;
@@ -25,72 +26,23 @@ pub fn initialize_front(lattice: &mut Lattice) {
     }
 }
 
-fn run_simulation_(
-    lattice: &mut Lattice,
-    parameters: &Parameters,
-    rng: &mut StdRng,
-    tspan: (f64, f64),
-    suppress_output: bool,
-    output: Output,
-    files_out_interval: f64,
-    out_init_frame: bool,
-) {
-    let workers = Some(
-        threadpool::Builder::new()
-            .num_threads(num_cpus::get())
-            .build(),
-    );
-
-    Simulation::new(lattice).run(
-        parameters,
-        rng,
-        tspan,
-        suppress_output,
-        output,
-        files_out_interval,
-        out_init_frame,
-        &workers,
-    );
-    workers.unwrap().join()
-}
-
-pub fn run_simulation_quietly(
-    lattice: &mut Lattice,
-    parameters: &Parameters,
-    rng: &mut StdRng,
-    tspan: (f64, f64),
-    output: Output,
-    out_init_frame: bool,
-) {
-    run_simulation_(
-        lattice,
-        parameters,
-        rng,
-        tspan,
-        /*suppress_output:*/ true,
-        output,
-        /*files_out_interval*/ -1.,
-        out_init_frame,
-    )
-}
-
 pub fn run_simulation(
     lattice: &mut Lattice,
     parameters: &Parameters,
     rng: &mut StdRng,
     tspan: (f64, f64),
     files_out_interval: f64,
-    output: Output,
+    maybe_output: &Option<Output>,
     out_init_frame: bool,
+    maybe_activity_horizontal_csv: &Option<File>
 ) {
-    run_simulation_(
-        lattice,
+    Simulation::new(lattice).run(
         parameters,
         rng,
         tspan,
-        /*suppress_output:*/ false,
-        output,
+        maybe_output,
         files_out_interval,
         out_init_frame,
-    )
+        maybe_activity_horizontal_csv
+    );
 }

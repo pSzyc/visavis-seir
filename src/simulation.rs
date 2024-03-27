@@ -7,16 +7,15 @@ use crate::cell::Cell;
 use crate::compartment::{Compartment::{E, I, R}, NONQ_COMPARTMENTS_COUNT};
 use crate::event::Event;
 use crate::lattice::Lattice;
-use crate::output::{Output, ACTIVITY_COLUMN_SUM_FILE_NAME};
+use crate::output::Output;
 use crate::parameters::Parameters;
 use crate::rates::Rates;
 use crate::subcompartments::Subcompartments;
 use crate::units::MIN;
 
 use rand::{rngs::StdRng, Rng};
-use std::fs::{File, OpenOptions};
+use std::fs::File;
 use std::io::Write; // for .flush()
-use threadpool::ThreadPool;
 
 #[inline]
 const fn ceil_pow2(i: u32) -> u32 {
@@ -189,11 +188,10 @@ impl<'a> Simulation<'a> {
         parameters: &Parameters,
         rng: &mut StdRng,
         tspan: (f64, f64),
-        suppress_output: bool,
-        output: Output,
+        maybe_output: &Option<Output>,
         files_out_interval: f64,
         out_init_frame: bool,
-        workers: &Option<ThreadPool>,
+        activity_horizontal_csv: &Option<File>
     ) {
         let subcompartments = &Subcompartments {
             count: [
@@ -219,22 +217,9 @@ impl<'a> Simulation<'a> {
         print!("{:.0}m:", t / MIN);
         std::io::stdout().flush().unwrap();
 
-        let mut activity_horizontal_csv: Option<&File> = None;
-        let mut csv: File;
-        if output.active_states {
-            let mut header_vs: Vec<String> = vec!["time".to_string()];
-            header_vs.extend((0..self.lattice.width).map(|i| i.to_string()).collect::<Vec<_>>());
-            let header = header_vs.join(",") + "\n";
-
-            csv = OpenOptions::new()
-                .create(true)
-                .truncate(true)
-                .write(true)
-                .open(ACTIVITY_COLUMN_SUM_FILE_NAME)
-                .expect("☠ ☆ CSV");
-            csv.write_all(header.as_bytes()).expect("☠ ✏ CSV");
-            activity_horizontal_csv = Some(&csv);
-        }
+        let output_workers = threadpool::Builder::new()
+            .num_threads(num_cpus::get())
+            .build();
         
         loop {
             // check when next event occurs
@@ -245,24 +230,31 @@ impl<'a> Simulation<'a> {
                 t = tspan.1;
             }
 
-            // generate output files
-            while !suppress_output && t >= t_next_files_out && t_next_files_out <= tspan.1 {
-                print!(".");
-                std::io::stdout().flush().unwrap();
-                if output.any() {
-                    let lattice_snapshot = self.lattice.clone();
-                    workers
-                        .as_ref()
-                        .unwrap()
-                        .execute(move || lattice_snapshot.out(output, t_next_files_out));
-                }
+            match maybe_output {
+                Some(output) => {
+                    while t >= t_next_files_out && t_next_files_out <= tspan.1 {
+                        print!(".");
+                        std::io::stdout().flush().unwrap();
+                        if output.any_of_lattice() {
+                            let lattice_snapshot = self.lattice.clone();
+                            let output_clone = output.clone();
+                            output_workers.execute(
+                                move || lattice_snapshot.out(&output_clone, t_next_files_out)
+                            );
+                        }
 
-                if let Some(csv_file) = activity_horizontal_csv {
-                    debug_assert!(output.active_states);
-                    self.lattice.save_activity_csv(t_next_files_out, csv_file);
-                }
+                        match activity_horizontal_csv {
+                            Some(csv_file) => {
+                                debug_assert!(output.active_states);
+                                self.lattice.save_activity_csv(t_next_files_out, csv_file);
+                            }
+                            None => {}
+                        }
 
-                t_next_files_out += files_out_interval;
+                        t_next_files_out += files_out_interval;
+                    }
+                }
+                None => {}
             }
 
             // reached simulation end

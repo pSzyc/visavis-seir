@@ -17,7 +17,5 @@ pub struct Output {
 
 impl Output {
     #[inline]
-    pub fn any(&self) -> bool {
-        self.all_states || self.active_states || self.images
-    }
+    pub fn any_of_lattice(&self) -> bool { self.all_states || self.images }
 }
