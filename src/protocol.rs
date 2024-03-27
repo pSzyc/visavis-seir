@@ -104,7 +104,8 @@ impl Protocol {
         let mut activity_file = Self::open_activity_file(&output);
         Self::write_activity_file_header(&mut activity_file, &lattice);
 
-        let output_workers = threadpool::Builder::new().num_threads(num_cpus::get()).build();
+        let n_threads = 1.max(num_cpus::get() - 1);  // leave one for the simulation
+        let output_workers = threadpool::Builder::new().num_threads(n_threads).build();
 
         let mut initial_frame_in_output_files = true;
 
@@ -142,6 +143,7 @@ impl Protocol {
                 panic!("☠ @ command: {:?}", command);
             }
         }
+        output_workers.join();
         println!();
     }
 }
