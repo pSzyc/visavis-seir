@@ -33,7 +33,7 @@ The simulation **protocol** is specified by a sequence of the two commands:
 * `+front at column 0` -- triggers a new vertical front of activity,
 * `run` -- runs a simulation in a specified time span with the output time
 interval specified in square brackets (e.g., `run 0h...30m [5s]`); when the
-output time interval is not specified (as in, e.g., `run 0h...30m []`, then
+output time interval is not specified (as in, e.g., `run 0h...30m []`), then
 no output files are produced.
 
 The reactor geometry is set upon launching the simulator with command-line

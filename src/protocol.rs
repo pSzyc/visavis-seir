@@ -36,7 +36,7 @@ impl Protocol {
         let protocol_file_path = Path::new(protocol_file_path);
         let file = File::open(protocol_file_path).expect("☠ 🕮 Protocol");
         let reader = io::BufReader::new(file);
-        for line in reader.lines().flatten() {
+        for line in reader.lines().map_while(Result::ok) {
             lines.push(line)
         }
         Protocol { commands: lines }
@@ -94,7 +94,7 @@ impl Protocol {
         let timespan = || separated_pair(time(), tag("..."), time());
         let every = || delimited(char('['), time(), char(']'));
         let never = || tag("[]");
-        let column = || map_res(recognize(number()), |s| usize::from_str(s));
+        let column = || map_res(recognize(number()), usize::from_str);
 
         let s = multispace1;
         let cmd_run = || tuple((tag("run"), s, timespan(), s, every()));
@@ -102,7 +102,7 @@ impl Protocol {
         let cmd_init_front = || tuple((tag("+front"), s, tag("at"), s, tag("column"), s, column()));
 
         let mut activity_file = Self::open_activity_file(&output);
-        Self::write_activity_file_header(&mut activity_file, &lattice);
+        Self::write_activity_file_header(&mut activity_file, lattice);
 
         let n_threads = 1.max(num_cpus::get() - 1);  // leave one for the simulation
         let output_workers = threadpool::Builder::new().num_threads(n_threads).build();
@@ -110,7 +110,7 @@ impl Protocol {
         let mut initial_frame_in_output_files = true;
 
         for command in self.commands.iter() {
-            if let Ok((_, (_, _, tspan, _, dt))) = cmd_run()(&command) {
+            if let Ok((_, (_, _, tspan, _, dt))) = cmd_run()(command) {
                 run_simulation(
                     lattice,
                     parameters,
@@ -123,7 +123,7 @@ impl Protocol {
                     &output_workers,
                 );
                 initial_frame_in_output_files = false;
-            } else if let Ok((_, (_, _, tspan, _, _))) = cmd_run_quiet()(&command) {
+            } else if let Ok((_, (_, _, tspan, _, _))) = cmd_run_quiet()(command) {
                 run_simulation(
                     lattice,
                     parameters,
@@ -136,7 +136,7 @@ impl Protocol {
                     &output_workers,
                 );
                 initial_frame_in_output_files = false;
-            } else if let Ok((_, (_, _, _, _, _, _, column))) = cmd_init_front()(&command) {
+            } else if let Ok((_, (_, _, _, _, _, _, column))) = cmd_init_front()(command) {
                 initialize_front(lattice, column);
                 initial_frame_in_output_files = true;
             } else {
