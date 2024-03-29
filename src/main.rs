@@ -46,11 +46,11 @@ struct Args {
     /// A file containing commands that may be used as external event triggers
     protocol_file: String,
 
-    /// Lattice width
+    /// Reactor width
     #[clap(long = "width", short = 'W', action)]
     width: usize,
 
-    /// Lattice height
+    /// Reactor height
     #[clap(long = "height", short = 'H', action)]
     height: usize,
 
