@@ -54,15 +54,15 @@ struct Args {
     #[clap(long = "height", short = 'H', action)]
     height: usize,
 
-    /// Write out the full state for every output time point
+    /// Write out the full reactor state (file per every output time point)
     #[clap(long = "states-out", short = 'S', action)]
     states: bool,
 
-    /// Write the number of active (E or I) cells in every column for every output time point
+    /// Write out the number of E+I cells in every reactor column (single file)
     #[clap(long = "activity-out", short = 'A', action)]
     activity: bool,
 
-    /// Generate a PNG image for every output time point
+    /// Generate a PNG image of the reactor (file per every output time point)
     #[clap(long = "images-out", short = 'I', action)]
     images: bool,
 
