@@ -37,8 +37,8 @@ impl Lattice {
         Lattice {
             cells: Self::populate_cells(rng, width * height, 1.),
             neighborhoods: Self::generate_neighborhoods(width, height),
-            width: width,
-            height: height,
+            width,
+            height,
             capacity: width * height,
         }
     }
@@ -62,7 +62,7 @@ impl Lattice {
     fn generate_neighborhoods(width: usize, height: usize) -> Neighborhoods {
         let mut nbhoods = Neighborhoods::with_capacity(width * height);
         for i in 0..width * height {
-            let (x, y) = ((i % height) as usize, (i / height) as usize);
+            let (x, y) = (i % height, i / height);
             let (east, west) = ((x + 1) % height, (x + height - 1) % height);
             let (south, north) = ((y + 1) % width, (y + width - 1) % width);
             let as_index = |x: usize, y: usize| x + y * height;
@@ -187,7 +187,7 @@ impl Lattice {
                     self.cells[cell_i].compartments[$c as usize].to_string()
                 };
             }
-            for c in vec![Compartment::E, Compartment::I, Compartment::R] {
+            for c in [Compartment::E, Compartment::I, Compartment::R] {
                 line.push(count_s!(c))
             }
 

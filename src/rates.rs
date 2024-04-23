@@ -14,10 +14,10 @@ pub struct Rates {
 impl Rates {
     pub fn new(c_rate: f64, e_incr: f64, i_incr: f64, r_incr: f64) -> Self {
         Rates {
-            c_rate: c_rate,
-            e_incr: e_incr,
-            i_incr: i_incr,
-            r_incr: r_incr,
+            c_rate,
+            e_incr,
+            i_incr,
+            r_incr,
         }
     }
 }

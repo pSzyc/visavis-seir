@@ -71,19 +71,14 @@ impl Event {
             }
 
             Event::EIncr => {
-                if Cell::is_zero(E, compartments) {
+                if  substates.can_advance(E, compartments)  {
                     increment!(E);
                     current_cell!()
                 } else {
-                    if substates.can_advance(E, compartments) {
-                        increment!(E);
-                        current_cell!()
-                    } else {
-                        debug_assert!(Cell::is_zero(I, compartments));
-                        increment!(I);
-                        set_zero!(E);
-                        current_cell_and_neighboring_cells!()
-                    }
+                    debug_assert!(Cell::is_zero(I, compartments));
+                    increment!(I);
+                    set_zero!(E);
+                    current_cell_and_neighboring_cells!()
                 }
             }
 

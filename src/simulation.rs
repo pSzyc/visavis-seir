@@ -235,7 +235,7 @@ impl<'a> Simulation<'a> {
                         std::io::stdout().flush().unwrap();
                         if output.any_of_lattice() {
                             let lattice_snapshot = self.lattice.clone();
-                            let output_clone = output.clone();
+                            let output_clone = *output;
                             output_workers.execute(
                                 move || lattice_snapshot.save_output_files(&output_clone, t_next_files_out)
                             );
