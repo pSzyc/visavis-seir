@@ -5,18 +5,21 @@ state and may communicate when in contact.
 
 Model
 -----
-Allowed cell states and transitions between them are patterned after
-a multi-compartment epidemiological SEIR model (wherein S -- susceptible,
-E -- exposed, I -- infectious, R -- resistant/recovered).  As the simulator
-is used primarily to investigate spatial stochastic kinetics of waves of
-activation, the 'susceptible' compartment has been renamed to the 'quiescent'
-compartment, which is more appropriate in the cellular context.
+Cell states patterned after a multi-compartment epidemiological SEIR model
+were renamed to match the cellular signaling context: 
+* Q - quiescent,
+* E - excited,
+* I - inducing
+* R - refracory.
 
 The following **transitions** are assumed:
 ```
  Q -> E_1 -> ... -> E_{nE} -> I_1 -> ... -> I_{nI} -> R_1 -> ... -> R_{nR} -> Q
-      ------"Exposed"-----    ----"Infectious"----    ----"Recovering"----
+      ------"Excited"-----    -----"Inducing"-----    ----"Refractory"----
 ```
+
+The transition Q -> E_1 is induced by a neighboring cell in one of 
+the "Inducing" states.
 
 The model is parametrized by specifying the numbers of the E, I, and R
 subcompartments and four kinetic rate constants for (forward-only) transitions.
@@ -25,15 +28,15 @@ The respective **parameters** are:
 * `i_subcompartments_count` (`nI` in the scheme above),
 * `r_subcompartments_count` (`nR` in the scheme above),
 * `c_rate` (receiving activation from a Q neighbor to become E_1),
-* `e_forward_rate` (progression within and out of the "Exposed" states),
-* `i_forward_rate` (progression within and out of the "Infectious" states),
-* `r_forward_rate` (progression within and out of the "Recovering" states).
+* `e_forward_rate` (progression within and out of the "Excited" states),
+* `i_forward_rate` (progression within and out of the "Inducing" states),
+* `r_forward_rate` (progression within and out of the "Refractory" states).
 
 The simulation **protocol** is specified by a sequence of the two commands:
-* `+front at column 0` -- triggers a new vertical front of activity,
+* `+front at column 0` -- triggers a new front of activity by turning cells in column 0 to state I_1,
 * `run` -- runs a simulation in a specified time span with the output time
 interval specified in square brackets (e.g., `run 0h...30m [5s]`); when the
-output time interval is not specified (as in, e.g., `run 0h...30m []`, then
+output time interval is not specified (as in, e.g., `run 0h...30m []`), then
 no output files are produced.
 
 The reactor geometry is set upon launching the simulator with command-line
@@ -42,7 +45,7 @@ arguments.
 
 Running
 -------
-The simulator is implemented in Rust.  To compile and run the executable
+The simulator is implemented in Rust. To compile and run the executable
 binary, in terminal type:
 ````
 cargo run --release -- --height 7 --width 100 --states-out --activity-out --images-out input/parameters.json input/one_initial_front.proto
