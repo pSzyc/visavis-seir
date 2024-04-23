@@ -19,18 +19,18 @@ def gaussian_cdf(x):
     return (erf(x/np.sqrt(2)) + 1) / 2
 
 
-figS1_1_data_dir = Path(__file__).parent.parent / 'data' / 'figS1' / 'approach5'
-velocities = pd.read_csv(figS1_1_data_dir / 'velocities.csv')
+figS1_1_data_dir = Path(__file__).parent.parent / 'data' / 'figS1' / 'approach6'
+velocities = pd.read_csv(figS1_1_data_dir / 'velocity.csv')
 
-figS1_3_data_dir = Path(__file__).parent.parent / 'data' / 'figS1' / 'figS1-3' / "approach1"
+figS1_3_data_dir = Path(__file__).parent.parent / 'data' /  'figS1' / 'approach6'
 variance_data = pd.read_csv(figS1_3_data_dir / 'variance_per_step.csv')
 
 fig2C_data_dir = Path(__file__).parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
-coefs = pd.read_csv(fig2C_data_dir / 'coefs.csv').set_index('Unnamed: 0')
+coefs = pd.read_csv(fig2C_data_dir / 'coefs--l-300.csv').set_index('coeficient')
 
 fig2E_data_dir = Path(__file__).parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
 specific = pd.read_csv(fig2C_data_dir / 'specific.csv').set_index('channel_width').fillna(0)
-permanent_share = specific['total with > 6 spawned fronts'] / specific.sum(axis=1)
+permanent_share = specific['events with > 6 \n spawned fronts'] / specific.sum(axis=1)
 
 
 
@@ -48,9 +48,9 @@ def get_permament_spawning_site_lambda(channel_width):
 def get_time_var(channel_width):
     return np.interp(channel_width, variance_data['channel_width'], variance_data['variance_per_step'])
 
-def get_velocity(channel_width):
+def get_velocity_formula(parameters=PARAMETERS_DEFAULT):
     # return np.interp(channel_width, velocities['channel_width'], velocities['velocity'])
-    return channel_width * 0 + 1/3.6
+    return 1.25 / (parameters['e_subcompartments_count'] / parameters['e_forward_rate'] + 2 / parameters['c_rate'])
 
 def predicted_optimal_interval_formula(channel_width, channel_length, parameters=PARAMETERS_DEFAULT):
     return (get_cycle_time(parameters) + get_cycle_time_std(parameters) + np.e/1.5 * np.sqrt(get_time_var(channel_width) * channel_length))
@@ -60,6 +60,11 @@ def predicted_optimal_interval_formula(channel_width, channel_length, parameters
         + (np.log(channel_length) - .3)/3 * get_cycle_time_std(parameters) # np.log(np.sqrt(channel_length)/2)
         + (np.log(channel_length) - .3)/3/2 * np.sqrt(get_time_var(channel_width) * channel_length)) #* get_cycle_time_std(parameters)
     )
+
+
+def get_expected_maximum_for_defaults(channel_length):
+    return 3.13 * np.sqrt(channel_length) + 81.7  
+
 
 
 def predicted_bitrate_formula(channel_width, channel_length, parameters=PARAMETERS_DEFAULT):

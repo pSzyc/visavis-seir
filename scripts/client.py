@@ -1,8 +1,6 @@
 from typing import Any, Optional
 from pathlib import Path
-import random
 import subprocess
-import string
 from typing import Literal
 
 import termcolor
@@ -10,10 +8,7 @@ import json
 import shutil
 
 from .simulation_result import SimulationResult
-
-
-def _random_name(k: int) -> str:
-    return "".join(random.choices(string.ascii_uppercase, k=k))
+from .utils import random_name
 
 
 class VisAVisClient:
@@ -26,8 +21,10 @@ class VisAVisClient:
         visavis_bin: Path = Path("./target/release/qeir"),
         path_to_compiling_script=Path(__file__).parent / 'compile_visavis.sh',
         sim_root: Path = Path("/tmp"),  # where simulation dirs go
-        build: Literal[True, False, 'if needed'] = True,#'if needed',
+        build: Literal[True, False, 'if needed'] = 'if needed',
     ):
+
+        assert build in [True, False, 'if needed'], build
 
         if isinstance(visavis_bin, str):
             visavis_bin = Path(visavis_bin)
@@ -41,7 +38,7 @@ class VisAVisClient:
         if not self._visavis_bin.is_file() and self._visavis_bin.with_suffix(".exe").is_file():
             self._visavis_bin = self._visavis_bin.with_suffix(".exe")
 
-        if build == True or (build == 'if_needed' and not self._visavis_bin.is_file()):
+        if build == True or (build == 'if needed' and not self._visavis_bin.is_file()):
             self.build()
 
         if not self._visavis_bin.is_file() and self._visavis_bin.with_suffix(".exe").is_file():
@@ -87,7 +84,7 @@ class VisAVisClient:
             protocol_file_path = Path(protocol_file_path)
 
         if dir_name is None:
-            simulation_dir = self._sim_root / f"sim_{_random_name(16)}"
+            simulation_dir = self._sim_root / f"sim_{random_name(16)}"
         else:
             simulation_dir = self._sim_root / dir_name
         simulation_dir.mkdir()

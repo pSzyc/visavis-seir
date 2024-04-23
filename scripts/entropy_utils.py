@@ -116,6 +116,9 @@ def conditional_entropy_discrete_bins_or_neighbors_pandas(
     cond_entropy_for_multiple_duplicates = (-xlog2x(multiple_duplicates).sum(axis=1) + xlog2x(multiple_duplicates.sum(axis=1))).sum() + correction_for_multiple_duplicates
 
     # For ys with less than n_neighbors samples with equal y, estimate conditional entropy based on neighbors
+    if len(data) < n_neighbors:
+        warn(f"Number of data points {len(data)} < n_neighbors {n_neighbors})")
+        n_neighbors = len(data)
     nn = NearestNeighbors(n_neighbors=n_neighbors).fit(data[yfields].to_numpy())
     neighs = nn.kneighbors(data[~is_multiple_duplicate][yfields].to_numpy(), return_distance=False)
 
@@ -133,27 +136,51 @@ def conditional_entropy_discrete_bins_or_neighbors_pandas(
     cond_entropies = cond_entropies_naive + corr
     cond_entropy_for_nonduplicates = cond_entropies.sum()
 
-    print(cond_entropy_for_multiple_duplicates/n_samples, cond_entropy_for_nonduplicates/n_samples)
     conditional_entropy = (cond_entropy_for_multiple_duplicates + cond_entropy_for_nonduplicates) / n_samples
 
     return conditional_entropy
 
 
+def get_progression_time(parameters=PARAMETERS_DEFAULT, n_neighbors=3):
 
-def get_cycle_time(parameters=PARAMETERS_DEFAULT):
+    return (
+        parameters['e_subcompartments_count'] / parameters['e_forward_rate'] 
+        + n_neighbors / parameters['c_rate']
+        )
+
+
+def get_progression_var(parameters=PARAMETERS_DEFAULT, n_neighbors=3):
+
+    n_i = parameters['i_subcompartments_count']
+    r_i = parameters['i_forward_rate']
+    r_act = parameters['c_rate']
+    r_tot = r_i + n_neighbors * r_act
+    r_i_to_r_tot = r_i / r_tot
+
+    ps = r_i_to_r_tot ** np.arange(n_i) * (1 - r_i_to_r_tot) / (1 - r_i_to_r_tot ** n_i)
+    sigma2s = 1 / r_tot**2 * (1 + np.arange(n_i))
+    mus = 1 / r_tot * (1 + np.arange(n_i))
+
+    return (
+        parameters['e_subcompartments_count'] / parameters['e_forward_rate']**2 
+        + (ps * sigma2s).sum() + (ps * mus**2).sum() - (ps * mus).sum()**2
+        )
+
+
+def get_cycle_time(parameters=PARAMETERS_DEFAULT, n_neighbors=3):
     return (
         parameters['e_subcompartments_count'] / parameters['e_forward_rate']
         + parameters['i_subcompartments_count'] / parameters['i_forward_rate']
         + parameters['r_subcompartments_count'] / parameters['r_forward_rate']
-        + 1/3 / parameters['c_rate']
+        + 1 / (n_neighbors * parameters['c_rate'])
     )
 
-def get_cycle_time_std(parameters=PARAMETERS_DEFAULT):
+def get_cycle_time_std(parameters=PARAMETERS_DEFAULT, n_neighbors=3):
     return np.sqrt(
         parameters['e_subcompartments_count'] / parameters['e_forward_rate']**2
         + parameters['i_subcompartments_count'] / parameters['i_forward_rate']**2
         + parameters['r_subcompartments_count'] / parameters['r_forward_rate']**2
-        + 1/3**2 / parameters['c_rate']**2
+        + 1 / (n_neighbors * parameters['c_rate'])**2
     )
 
 def get_efficiency_from_extinction_probab(p):

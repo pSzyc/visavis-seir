@@ -8,20 +8,16 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 
 from scripts.analyze_binary import evaluation_fn
 from scripts.optimizer import find_maximum
+from scripts.formula import get_expected_maximum_for_defaults
 
 # from matplotlib import pyplot as plt
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4CD' / 'approach4'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4CD' / 'approach5'
 data_dir.mkdir(parents=True, exist_ok=True)
     
 channel_widths = [6]
 channel_lengths = [30,52,100,170,300,520,1000]
-
-
-def get_expected_maximum(channel_length):
-    return (3.13 * np.sqrt(channel_length) + 81.7) #* 1.2
-
 
 
 
@@ -49,7 +45,7 @@ for channel_width in channel_widths:
         # wrapped_eval_fn = store_results(evaluation_fn, results)
         log_opt_interval, max_bitrate = find_maximum(
             evaluation_fn, 
-            x0=np.log(get_expected_maximum(channel_length)),
+            x0=np.log(get_expected_maximum_for_defaults(channel_length)),
             xmin=np.log(30),
             xmax=np.log(400),
             x_tol=.4,

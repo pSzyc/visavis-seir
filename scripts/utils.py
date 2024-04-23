@@ -3,6 +3,12 @@ from pathlib import Path
 import subprocess
 from multiprocessing import Pool
 import time
+import string
+import random
+
+
+def random_name(k: int) -> str:
+    return "".join(random.choices(string.ascii_uppercase, k=k))
 
 
 def _with_expanded(fn, kwargs):
@@ -27,7 +33,7 @@ def starmap(fn, kwarg_list, processes=None):
         processes = pool._processes
     end_time = time.time()
     elapsed = end_time - start_time
-    elapsed_per_it = elapsed / ((len(kwarg_list)+1) // processes)
+    elapsed_per_it = elapsed / ((len(kwarg_list)-1) // processes + 1)
     print(f'| Took {elapsed:.2f}s  ({elapsed_per_it:.2f}s/it)')
     return result
 
@@ -41,19 +47,3 @@ def simple_starmap(fn, kwarg_list, processes=None):
     print(f'| Took {elapsed:.2f}s  ({elapsed_per_it:.2f}s/it)')
     return result
 
-
-
-def compile_if_not_exists(
-    channel_width,
-    channel_length,
-    path_to_compiling_script=Path(__file__).parent / 'compile_visavis.sh',
-    visavis_bin_root=Path(__file__).parent.parent / 'target/bins'
-):
-    visavis_bin = visavis_bin_root / f'vis-a-vis-{channel_width}-{channel_length}'
-    if not Path(visavis_bin).exists() and Path(path_to_compiling_script).exists():
-        subprocess.call(
-            [str(path_to_compiling_script), '-l', str(channel_length), '-w', str(channel_width)],
-            stdout=subprocess.DEVNULL,
-            cwd=path_to_compiling_script.parent.parent,
-        )
-    return visavis_bin

@@ -4,6 +4,7 @@ from scipy.signal import find_peaks
 from pathlib import Path
 from subplots_from_axsize import subplots_from_axsize
 from matplotlib.ticker import MultipleLocator
+from matplotlib import pyplot as plt
 from warnings import warn
 
 import sys
@@ -12,12 +13,41 @@ sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to i
 from scripts.entropy_utils import conditional_entropy_discrete, conditional_entropy_discrete_reconstruction, conditional_entropy_discrete_bins_or_neighbors_pandas
 
 
-def activity_to_arrival_times(activity, min_distance_between_peaks=6):
+def activity_to_arrival_times(activity, min_distance_between_peaks=6, end=-1):
    
-    arrival_idxs, _ = find_peaks(activity[activity.columns[-1]].to_numpy(), distance=min_distance_between_peaks)
+    arrival_idxs, _ = find_peaks(activity[activity.columns[end]].to_numpy(), distance=min_distance_between_peaks)
     arrival_times = activity.index.get_level_values('seconds')[arrival_idxs]
     
     return arrival_times
+
+
+def determine_offset(departure_times, arrival_times, interval, interval_after, n_slots, channel_length, v_approx=1/3.6, approximation_error=.3, fine_parameter=5):
+
+    dt = interval / fine_parameter
+
+    arrival_times_fft = np.exp(1j * arrival_times * (2 * np.pi / dt)).sum()
+    departure_times_fft = np.exp(1j * departure_times * (2 * np.pi / dt)).sum()
+
+    microoffset = (np.imag(np.log(arrival_times_fft / np.abs(arrival_times_fft))) / (2 * np.pi) * dt  + dt) % dt
+
+    arrivals_binned = (arrival_times - microoffset + dt / 2) // dt
+
+    slot_ids = pd.Series(np.arange((n_slots * interval + interval_after) // dt))
+    timeline_departures = slot_ids.isin(departure_times // dt)
+    timeline_arrivals = slot_ids.isin(arrivals_binned)
+
+    approx_time = channel_length / v_approx
+
+    scan_min = int((1 - approximation_error) * approx_time // dt)
+    scan_max = int((1 +  approximation_error) * approx_time // dt) + 2
+    cross_correlation = [(timeline_departures.shift(n) * timeline_arrivals).sum() for n in range(scan_min, scan_max)]
+    plt.plot((np.arange(len(cross_correlation)) + scan_min) * interval / fine_parameter + microoffset, cross_correlation)
+
+    offset = (np.argmax(cross_correlation) + scan_min) * interval / fine_parameter + microoffset
+
+    return offset
+
+
 
 
 def arrival_times_to_dataset(
@@ -122,43 +152,13 @@ def get_entropy(dataset: pd.DataFrame, fields=['c'], reconstruction=False, k_nei
             'bitrate_per_hour': bitrate_per_hour,
         })
         
-    results = pd.DataFrame(results)
+    results = pd.DataFrame(
+        results, 
+        columns=['channel_width', 'channel_length', 'interval', 'cond_entropy', 'efficiency', 'bitrate_per_min', 'bitrate_per_hour'],
+    )
     if outpath:
         results.to_csv(outpath)
     return results
-
-
-def get_optimal_bitrate(entropies: pd.DataFrame, outdir=None, return_errors=False):
-    result_parts = []
-    search_better_around = []
-
-    for it, ((channel_width, channel_length), data) in enumerate(entropies.groupby(['channel_width', 'channel_length'])):
-
-        smoothed_data = data['bitrate_per_hour'].rolling(3, center=True).mean()
-        optimal_interval_idx = smoothed_data.argmax()
-        if not 1 < optimal_interval_idx < len(data['bitrate_per_hour']) - 2:
-            warn(f"Maximum on the edge of the scan range for {channel_width = }, {channel_length = }")
-            search_better_around.append(optimal_interval_idx)
-        optimal_interval = data['interval'].iloc[optimal_interval_idx] 
-        max_bitrate = data['bitrate_per_hour'].iloc[optimal_interval_idx] / 60
-
-        result_part = {
-            'channel_width': channel_width,
-            'channel_length': channel_length,
-            'channel_length_sqrt': np.sqrt(channel_length),
-            'optimal_interval': optimal_interval,
-            'optimal_interval_sq': optimal_interval**2,
-            'max_bitrate': max_bitrate,
-            'max_bitrate_sq': max_bitrate**2,
-            'max_bitrate_log': np.log(max_bitrate),
-            'max_bitrate_inv': 1 / max_bitrate,
-        }
-        result_parts.append(result_part)
-
-    result = pd.DataFrame(result_parts).set_index(['channel_width', 'channel_length'])
-    if outdir:
-        result.to_csv(outdir / f'optimized_bitrate.csv')
-    return result
 
 
 

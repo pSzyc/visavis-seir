@@ -8,8 +8,11 @@ from scripts.analyze_binary import generate_dataset_batch
 from scripts.binary import get_entropy
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' / 'approach5'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' / 'approach6'# approach5
 data_dir.mkdir(parents=True, exist_ok=True)
+velocity_cache_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'velocity'
+
+
 
 channel_widths = [6]
 channel_lengths = [30, 100, 300, 1000]
@@ -25,6 +28,7 @@ nearest_pulses = generate_dataset_batch(
     channel_widths=channel_widths,
     intervals=intervals,#[60,70,80,90,100],#list(range(110, 181, 5)), #[60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 130, 150, 180, 220, 260, 300, 400], 
     outdir=data_dir,#  / 'nearest_pulses.csv',
+    velocity_cache_dir=velocity_cache_dir,
     # n_simulations=20,
     n_simulations=100,
     # n_slots=250,

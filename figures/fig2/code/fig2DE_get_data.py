@@ -10,7 +10,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.significant_splits import get_effective_front_directions, get_hierarchy, get_split_events
 from scripts.utils import starmap
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach10'
 
 
 
@@ -37,29 +37,21 @@ def extract_single(channel_length, channel_width, simulation_id):
 
 channel_widths = list(range(1,10)) + list(range(10,21,2))
 channel_length = 300
-n_simulations = 30000
+n_simulations = 30
 
 
 for channel_width in channel_widths:
-    print(channel_width)
 
     outdir = data_dir / f'w-{channel_width}-l-{channel_length}'
 
-    split_events = pd.concat(list(starmap(
-        extract_single,
-        [
-            dict(
-                channel_length=channel_length,
-                channel_width=channel_width,
-                simulation_id=simulation_id,
-            )
-            for channel_length, channel_width, simulation_id in product([channel_length], [channel_width], range(n_simulations))
+    split_events = pd.concat([
+            pd.read_csv(outdir / f'sim-{simulation_id}' / 'split_events.csv').set_index('event_id') 
+            for simulation_id in range(n_simulations) 
         ],
-        processes=5,
-    )),
         names=['channel_length', 'channel_width', 'simulation_id'],
         keys=list(product([channel_length], [channel_width], range(n_simulations))),
     )
+
 
     first_split_events = split_events[split_events.index.get_level_values('event_id') == 0]
     first_split_events.to_csv(outdir / 'first_split_events.csv')

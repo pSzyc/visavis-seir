@@ -24,8 +24,8 @@ channel_length = 300
 n_simulations = 30000
 
 #fig, axs = subplots_from_axsize((len(chosen_channel_widths)-1) // 4 + 1, 4, ( 28/25.4, 28/25.4), wspace=.45)
-fig_scatter, axs_scatter = subplots_from_axsize(2, 2, (1.2, 1.2), wspace=0.3, hspace= 0.3, left=0.4, top=0.2)
-fig_shares, ax_shares = subplots_from_axsize(1, 1, (2.4, 2.7), left=.75, right=0.1)
+fig_scatter, axs_scatter = subplots_from_axsize(2, 2, (1.2, 1.2), wspace=0.3, hspace= 0.3, left=0.4, top=0.2, right=0.02)
+fig_shares, ax_shares = subplots_from_axsize(1, 1, (2.3, 2.7), left=.75, right=0.1)
 fig_hist, ax_hist = subplots_from_axsize(1, 1, (2,6))
 
 field_forward = 'forward'
@@ -54,14 +54,14 @@ for w in channel_widths:
 
 for it, (ax, w) in enumerate(zip(axs_scatter.flatten(), chosen_channel_widths)):
     counts_selected = counts_selected_parts[w]
-    ax.scatter(counts_selected[field_forward], counts_selected[field_backward], s=counts_selected['count']/4, alpha=0.4, c='red' )
+    ax.scatter(counts_selected[field_forward], counts_selected[field_backward], s=7500.*counts_selected['count']/n_simulations, alpha=0.4, c='red' )
     ax.set_xlabel('# forward fronts' if it in [2, 3] else '')
     ax.set_ylabel('# backward fronts' if it in [0, 2] else '')
-    ax.set_xlim(0 - .5, 13 + .5)
-    ax.set_ylim(0 - .5, 18 + .5)
-    ax.set_title(f"$W$ = {w}", loc='left', pad=-40, fontweight='bold') #, y=.8
+    ax.set_xlim(0 - .5, 15 + .5)
+    ax.set_ylim(0 - .5, 15 + .5)
+    ax.set_title(f"$W$ = {w}", loc='center', pad=-40, fontweight='bold') #, y=.8
     # ax.set_title(f"$L$ = {channel_length}", loc='left', pad=-20, fontweight='bold')
-    ax.plot([0,13], [0,13], color='grey', alpha=.2)
+    ax.plot([0,15], [0,15], color='grey', alpha=.2)
     ax.xaxis.set_major_locator(MultipleLocator(5))
     ax.xaxis.set_minor_locator(MultipleLocator(1))
     ax.yaxis.set_major_locator(MultipleLocator(5))
@@ -78,18 +78,18 @@ specific = pd.DataFrame({
         '1 backward':          counts_selected_all[counts_selected_all[field_forward].eq(0) & counts_selected_all[field_backward].eq(1)].groupby('channel_width')['count'].sum(),
         '1 forward, 1 backward':          counts_selected_all[counts_selected_all[field_forward].eq(1) & counts_selected_all[field_backward].eq(1)].groupby('channel_width')['count'].sum(),
         '1 forward':          counts_selected_all[counts_selected_all[field_forward].eq(1) & counts_selected_all[field_backward].eq(0)].groupby('channel_width')['count'].sum(),
-        'other with $\\leq$ 6 spawned fronts':   counts_selected_all[counts_selected_all['all_spawned'].le(6) & (counts_selected_all[field_forward].gt(1) | counts_selected_all[field_backward].gt(1))].groupby('channel_width')['count'].sum(),
-        'total with > 6 spawned fronts':          counts_selected_all[counts_selected_all['all_spawned'].gt(6)].groupby('channel_width')['count'].sum(),
+        'other events with $\\leq$ 6 \n spawned fronts':   counts_selected_all[counts_selected_all['all_spawned'].le(6) & (counts_selected_all[field_forward].gt(1) | counts_selected_all[field_backward].gt(1))].groupby('channel_width')['count'].sum(),
+        'events with > 6 \n spawned fronts':          counts_selected_all[counts_selected_all['all_spawned'].gt(6)].groupby('channel_width')['count'].sum(),
     })
 
-(specific / n_simulations / channel_length).plot(marker='^', ax=ax_shares)
+(specific / n_simulations / channel_length).plot(marker='^', ms=4.5, ax=ax_shares, clip_on=False)
 (specific / n_simulations / channel_length).to_csv(data_dir / 'specific.csv')
 ax_shares.set_ylim(0,2e-4)
-ax_shares.yaxis.set_major_locator(MultipleLocator(.5e-4))
-ax_shares.yaxis.set_major_formatter(lambda x,_: f"{x*10000:.1f}×10$^{{-4}}$")
+ax_shares.yaxis.set_major_locator(MultipleLocator(1e-4))
+ax_shares.yaxis.set_major_formatter(lambda x,_: f"{x*10000:.0f}×10$^{{-4}}$")
 ax_shares.set_ylabel('propensity [step$^{-1}$]')
 ax_shares.set_xlim(0, 21)
-ax_shares.set_xlabel('channel width')
+ax_shares.set_xlabel('channel width $W$')
 ax_shares.xaxis.set_major_locator(MultipleLocator(5))
 ax_shares.legend()
 
@@ -100,7 +100,7 @@ for w, counts_selected in counts_selected_parts.items():
     if len(counts_selected):
         ax_hist.bar(*list(zip(*list(counts_selected.groupby('all_spawned')['count'].sum().items()))), bottom=800*w, color='maroon')
 
-ax_hist.set_ylabel('channel width')
+ax_hist.set_ylabel('channel width $W$')
 ax_hist.set_yticks([800 * w for w in channel_widths], channel_widths)
 ax_hist.set_xlim(0,25)
 ax_hist.set_xlabel('total spawned fronts')

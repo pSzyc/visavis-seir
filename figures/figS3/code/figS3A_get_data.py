@@ -7,26 +7,24 @@ import sys
 root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
-from scripts.client import VisAVisClient, _random_name
 from scripts.make_protocol import make_protocol
 from scripts.tracking import determine_fates
-from scripts.defaults import PARAMETERS_DEFAULT, MOL_STATES_DEFAULT, TEMP_DIR
-from scripts.utils import simple_starmap, starmap, compile_if_not_exists
+from scripts.tracked_results import TrackedResults
+from scripts.defaults import PARAMETERS_DEFAULT, TEMP_DIR
+from scripts.utils import simple_starmap, starmap, random_name
+from scripts.simulation import run_simulation
 
 
-
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3A' / 'approach1'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3A' / 'approach10'
 data_dir.mkdir(exist_ok=True, parents=True)
 
 
 
 def run_single(
-    client,
     sim_root,
     pulse_intervals,
     simulation_id,
     parameters=PARAMETERS_DEFAULT,
-    mol_states=MOL_STATES_DEFAULT,
     channel_width=7,
     channel_length=300,
     duration=5,
@@ -34,56 +32,50 @@ def run_single(
     n_margin=0,
     outdir=None,
     plot_results=False,
-    save_states=True,
+    save_states=False,
     save_iterations=True,
     indir=None,
+    verbose=False,
+    use_cached=False,
     **kwargs):
 
-        sim_dir_name = f'w-{channel_width}--l-{channel_length}--sim-{simulation_id}' +  _random_name(5)
-        (sim_root / sim_dir_name).mkdir(exist_ok=True, parents=True)
 
-        protocol_file_path = make_protocol(
-            pulse_intervals=pulse_intervals,
-            duration=duration,
-            out_folder=sim_root / sim_dir_name,
-        )
-
-        result = client.run(
-            parameters_json=parameters,
-            mol_states_json=mol_states,
-            protocol_file_path=protocol_file_path,
-            verbose=False,
-            dir_name=sim_dir_name + '/' +  _random_name(5),
-            seed=19 + simulation_id,
-            states=save_states,
-            activity=True,
-        )
-        rmtree(str(sim_root /sim_dir_name))
-
-        if outdir and save_states:
+        if outdir:
             sim_out_dir = outdir / f'sim-{simulation_id}'
             sim_out_dir.absolute().mkdir(parents=True, exist_ok=True)
-            with open (sim_out_dir / 'input_protocol.json', 'w') as file:
-                json.dump(pulse_intervals, file)
 
-            result.states.to_csv(sim_out_dir / 'simulation_results.csv')     
+        result = run_simulation(
+            parameters=parameters,
+            width=channel_width,
+            length=channel_length,
+            pulse_intervals=pulse_intervals,
+            duration=duration,
 
-        tracks, input_pulse_to_tree_id = determine_fates(
+            seed=19 + simulation_id,
+            verbose=False,
+            states=save_states,
+            activity=True,
+            save_states=save_states,
+            sim_root= sim_root / f'w-{channel_width}--l-{channel_length}/sim-{simulation_id}',
+            outdir=outdir and sim_out_dir,
+        )
+
+        tracked_results = TrackedResults(
             result.activity,
             input_protocol=pulse_intervals,
             duration=duration,
             channel_length=channel_length,
             outdir=outdir and outdir / f'sim-{simulation_id}',
-            verbose=False,
+            verbose=verbose,
             plot_results=plot_results,
             save_csv=save_iterations,
             indir=indir and indir / f'sim-{simulation_id}',
-            returns=['tracks', 'input_pulse_to_tree_id'],
+            use_cached=use_cached,
             **kwargs,
             )
 
-        # first_pulse_position = tracks[tracks['tree_id'].eq(input_pulse_to_tree_id[0])].groupby('seconds')['h'].max().reindex(range(0,sum(pulse_intervals), duration))
-        # second_pulse_position = tracks[tracks['tree_id'].eq(input_pulse_to_tree_id[1])].groupby('seconds')['h'].max().reindex(range(0,sum(pulse_intervals), duration))
+        tracks = tracked_results.tracks
+        input_pulse_to_tree_id = tracked_results.input_pulse_to_tree_id['tree_id'].tolist()
 
         first_pulse_track = tracks[tracks['tree_id'].eq(input_pulse_to_tree_id[0])]
         second_pulse_track = tracks[tracks['tree_id'].eq(input_pulse_to_tree_id[1])]
@@ -92,7 +84,6 @@ def run_single(
 
         first_time_of_reaching.index.name = 'h'
         second_time_of_reaching.index.name = 'h'
-        # common_track_frames = int(common_track_length / duration)
 
 
         return first_time_of_reaching, second_time_of_reaching
@@ -104,7 +95,6 @@ def generate_dataset(
     interval,
     n_simulations,
     parameters=PARAMETERS_DEFAULT,
-    mol_states=MOL_STATES_DEFAULT,
     channel_width=7,
     channel_length=300,
     duration=5,
@@ -120,33 +110,27 @@ def generate_dataset(
     **kwargs
 ):
 
-    if use_cached:
+    if use_cached and (outdir / 'reaching_times.csv').exists():
         reaching_times = pd.read_csv(outdir / 'reaching_times.csv').set_index(['channel_width', 'channel_length', 'interval', 'simulation_id', 'h'])
         # first_time_of_reaching = pd.read_csv(outdir / 'first_time_of_reaching.csv').set_index(['channel_width', 'channel_length', 'interval', 'simulation_id', 'h'])['seconds']
         # second_time_of_reaching = pd.read_csv(outdir / 'second_time_of_reaching.csv').set_index(['channel_width', 'channel_length', 'interval', 'simulation_id', 'h'])['seconds']
         return reaching_times
 
-    visavis_bin = compile_if_not_exists(channel_width, channel_length)
     if outdir:
         outdir.mkdir(exist_ok=True, parents=True)
     
-    sim_root = Path(TEMP_DIR) / 'tracking' 
-    client = VisAVisClient(
-        visavis_bin=visavis_bin,
-        sim_root=sim_root,
-    )
+    sim_root = Path(TEMP_DIR) / 'qeir' /  'tracking' 
 
     pulse_intervals = [interval, interval_after]
 
     first_time_of_reaching, second_time_of_reaching = list(zip(*starmap(
         run_single,
         [dict(
-            client=client,
+            # client=client,
             sim_root=sim_root,
             pulse_intervals=pulse_intervals,
             simulation_id=simulation_id,
             parameters=parameters,
-            mol_states=mol_states,
             channel_width=channel_width,
             channel_length=channel_length,
             duration=duration,
@@ -221,12 +205,12 @@ channel_lengths = [1000]
 
 
 reaching_times = simulate(
-    n_sim=3000,
+    n_sim=4,
     channel_widths=channel_widths,
     channel_lengths=channel_lengths,
     outdir=data_dir,
-    n_workers=20,
-    use_cached=True,
+    n_workers=1,
+    use_cached=False,
     per_width_kwargs = {
         w: {
             'front_direction_minimal_distance': min(max(w - 1, 1), 5),

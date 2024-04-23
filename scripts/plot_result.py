@@ -21,7 +21,7 @@ def plot_result_from_states(data, outfile=None, title=None, t_min=None, t_max=No
     return plot_result_from_activity(activity, outfile=outfile, title=title, t_min=t_min, t_max=t_max, ax=ax, panel_size=panel_size, show=show, **kwargs)
 
 
-def plot_result_from_activity(activity, outfile=None, title=None, t_min=None, t_max=None, ax:plt.Axes = None, panel_size=(20, 8), show=True, **kwargs):
+def plot_result_from_activity(activity, outfile=None, title=None, t_min=None, t_max=None, transpose=False, ax:plt.Axes = None, panel_size=(20, 8), show=True, **kwargs,):
 
 
     if ax is None:
@@ -41,17 +41,17 @@ def plot_result_from_activity(activity, outfile=None, title=None, t_min=None, t_
     img = activity[[t_min <= x <= t_max for x in activity.index.get_level_values('seconds')]].to_numpy().T
     
     ax.imshow(
-        img,
+        img.T if transpose else img,
         **{
             'cmap': 'grey',
-            'origin': 'lower',
+            'origin': 'upper' if transpose else 'lower',
             'aspect': 'auto',
             'interpolation': 'none',
             **kwargs
         }
     )
 
-    ax.set_xlabel('time')
+    ax.set_xlabel('position along channel' if transpose else 'time')
     ax.set_axis_off()
     
     if title is not None:

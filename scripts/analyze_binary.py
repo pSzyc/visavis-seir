@@ -9,11 +9,12 @@ from shutil import rmtree
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to import from scripts.py
 
-from scripts.client import VisAVisClient, _random_name
-from scripts.make_protocol import make_protocol
-from scripts.utils import starmap
+from scripts.simulation import run_simulation
+from scripts.utils import starmap, random_name
 from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT
-from scripts.binary import activity_to_arrival_times, arrival_times_to_dataset, get_entropy
+from scripts.binary import activity_to_arrival_times, arrival_times_to_dataset, get_entropy, plot_scan
+from scripts.analyze_velocity import get_velocity
+from scripts.optimizer import get_optimum_from_scan
 
 
 def make_binary_protocol(interval, n_slots, p=0.5, seed=0):
@@ -30,37 +31,37 @@ def make_binary_protocol(interval, n_slots, p=0.5, seed=0):
 
 
 def perform_single(
-    interval, 
-    n_slots, 
-    duration, 
-    offset, 
-    n_margin, 
-    n_nearest, 
-    min_distance_between_peaks,
-    sim_dir, 
-    client, 
-    simulation_id, 
-    parameters=PARAMETERS_DEFAULT, 
-    p=0.5):
+        interval, 
+        channel_width, 
+        channel_length,
+        n_slots, 
+        duration, 
+        offset, 
+        n_margin, 
+        n_nearest, 
+        min_distance_between_peaks,
+        sim_dir, 
+        simulation_id, 
+        parameters=PARAMETERS_DEFAULT, 
+        p=0.5,
+    ):
     departure_times, pulse_intervals = make_binary_protocol(interval, n_slots, p=p, seed=19+simulation_id)
 
-    protocol_file_path = make_protocol(
-            pulse_intervals=list(pulse_intervals) + [1500],
-            duration=duration,
-            out_folder=sim_dir / f"sim-{simulation_id}",
-        )
-
-    result = client.run(
-            parameters_json=parameters,
+    result = run_simulation(
+            parameters=parameters,
             width=channel_width,
             length=channel_length,
-            protocol_file_path=protocol_file_path,
+            duration=duration,
+            pulse_intervals=list(pulse_intervals) + [1500],
             verbose=False,
-            dir_name=f"sim-{simulation_id}/simulation",
+            sim_root=sim_dir,
+            sim_dir_name=f"sim-{simulation_id}",
             seed=simulation_id+19,
             states=False,
             activity=True,
-        )
+    )
+
+
     # print('Result_loaded')
     arrival_times = activity_to_arrival_times(result.activity, min_distance_between_peaks=min_distance_between_peaks)
     # print('Arrivals_computed')
@@ -87,14 +88,15 @@ def generate_dataset(
     channel_width,
     channel_length,
     parameters=PARAMETERS_DEFAULT,
-    duration=5,
+    duration=1,
+    v=None,
     offset=None,
-    v=1/3.6,
     p=0.5,
     outdir=None,
+    velocity_cache_dir=Path(__file__).parent.parent / 'data' / 'velocity',
     n_margin=4,
     n_nearest=4,
-    min_distance_between_peaks=5,
+    min_distance_between_peaks=20,
     processes=None,
 ):
 
@@ -102,9 +104,11 @@ def generate_dataset(
     if outdir:
         outdir.mkdir(parents=True, exist_ok=True)
 
-    sim_dir = Path(f"{TEMP_DIR}/visavis_seir/binary/" + _random_name(12))
+    sim_dir = Path(f"{TEMP_DIR}/qeir/binary/" + random_name(12))
 
-    client = VisAVisClient(sim_root=sim_dir)
+
+    if v is None:
+        v = get_velocity(channel_width, channel_length, parameters, velocity_cache_dir=velocity_cache_dir)
 
     if offset is None:
         offset = channel_length / v
@@ -115,6 +119,8 @@ def generate_dataset(
         [
             dict(
                 interval=interval,
+                channel_width=channel_width,
+                channel_length=channel_length,
                 n_slots=n_slots,
                 duration=duration,
                 offset=offset,
@@ -123,7 +129,6 @@ def generate_dataset(
                 n_margin=n_margin,
                 n_nearest=n_nearest,
                 sim_dir=sim_dir,
-                client=client,
                 simulation_id=simulation_id,
                 min_distance_between_peaks=min_distance_between_peaks,
                 )
@@ -131,7 +136,6 @@ def generate_dataset(
         ], processes=processes,
     ))
 
-    # print('starmap completed')
 
     dataset['channel_width'] = channel_width
     dataset['channel_length'] = channel_length
@@ -150,13 +154,14 @@ def generate_dataset_batch(
         channel_widths,
         intervals, 
         outdir=None,
-        v=1/3.6,
+        v=None,
         use_cached=False,
         processes=None,
         **kwargs
     ):
 
     # outpath = outdir / 'dataset.csv' if outdir else None
+
 
     dataset_parts = []
 
@@ -169,7 +174,6 @@ def generate_dataset_batch(
                 interval=interval,
                 channel_width=channel_width,
                 channel_length=channel_length,
-                offset=channel_length / v,
                 processes=processes,
                 outdir=outdir and outdir / f"l-{channel_length}-w-{channel_width}-i-{interval}",
                 **kwargs
@@ -201,10 +205,82 @@ def evaluation_fn(log_interval, channel_width, channel_length, fields, k_neighbo
         k_neighbors=k_neighbors,
         outpath=outdir / f"l-{channel_length}-w-{channel_width}-i-{interval}" / f"entropies{suffix}.csv")
     
-    # plt.plot(interval, entropy.iloc[-1]['bitrate_per_hour'], marker='o', color=f"C{channel_lengths.index(channel_length)}")
     assert len(entropy) == 1
     if evaluation_logger is not None:
         evaluation_logger.append(entropy)
     return entropy.iloc[-1]['bitrate_per_min']
+
+
+
+def find_optimal_bitrate(
+    expected_maximums, logstep, scan_points,
+    channel_widths,
+    channel_lengths,
+    outdir=None,
+    fields = 'c',
+    k_neighbors = 25,
+    reconstruction = False,
+    processes=20,
+    **kwargs
+    ):
+    
+    suffix = f"{fields}{k_neighbors}{'-reconstruction' if reconstruction else ''}"
+    channel_wls = list(product(channel_widths, channel_lengths))
+
+    if outdir:
+        (outdir / suffix).mkdir(exist_ok=True, parents=True)
+
+    scan_ranges = (np.exp(np.linspace(
+            np.log(expected_maximums) - scan_points * logstep, 
+            np.log(expected_maximums) + scan_points * logstep,
+            2 * scan_points + 1).T) // 1).astype('int')
+
+    nearest_pulses = pd.concat([
+        generate_dataset_batch(
+            channel_lengths=[channel_length],
+            channel_widths=[channel_width],
+            intervals=intervals,
+            outdir=outdir,
+            processes=processes,
+            **kwargs
+        ) for (channel_width, channel_length), intervals in zip(channel_wls, scan_ranges)
+    ], ignore_index=True)
+
+    fields_letter_to_fields = {
+        'c': ['c+0'],
+        'rl': ['l0', 'r0'],
+        'cm': ['c+0', 'c-1'],
+        'cp': ['c+0', 'c+1'],
+        'cmp': ['c+0', 'c-1', 'c+1'],
+    }
+    # for fields in 'c',:#, 'rl', 'cm', 'cp', 'cmp':
+    #     for k_neighbors in (25,):
+    #         for reconstruction in (False,):
+    print(f"Estimating entropy {suffix}")
+    (outdir / suffix).mkdir(exist_ok=True, parents=True)
+
+    entropies = get_entropy(nearest_pulses.reset_index(), fields=fields_letter_to_fields[fields], reconstruction=reconstruction, k_neighbors=k_neighbors)
+    entropies.to_csv(outdir / suffix / f"entropies.csv")
+
+    result = get_optimum_from_scan(entropies, field='bitrate_per_hour', required_wls=product(channel_widths, channel_lengths))
+
+    result['channel_length_sqrt'] = np.sqrt(result.index.get_level_values('channel_length'))
+    result['optimal_interval_sq'] = result['optimal_interval']**2
+    result['max_bitrate'] = result['max_value'] / 60
+    result['max_bitrate_sq'] = result['max_bitrate']**2
+    result['max_bitrate_log'] = np.log(result['max_bitrate'])
+    result['max_bitrate_inv'] = 1 / result['max_bitrate']
+
+    fig, ax = plot_scan(entropies, x_field='interval', c_field='channel_length')#.reset_index().set_index(['channel_width', 'channel_length', ['bitrate_per_hour'].unstack('channel_width').plot('interval', 'bitrate_per_hour', marker='o')
+    ax.plot(result['optimal_interval'], result['max_value'], color='k', marker='o')
+    
+    plt.savefig(outdir / 'partial_results.png')
+    plt.savefig(outdir / 'partial_results.svg')
+
+
+    if outdir:
+        result.to_csv((outdir / suffix) / f'optimized_bitrate.csv')
+    return result, entropies
+
 
 

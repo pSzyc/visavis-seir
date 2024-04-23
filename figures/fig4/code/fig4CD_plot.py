@@ -20,9 +20,9 @@ plt.rcParams['font.size'] = 8
 plt.rcParams['mathtext.fontset'] = 'custom'
 plt.rcParams['mathtext.rm'] = 'Carlito'
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4CD' / 'approach4'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4CD' / 'approach5' # approach3
 # S1_data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4CD' / 'approach2'
-panels_dir = Path(__file__).parent.parent / 'panels' / 'trials'
+panels_dir = Path(__file__).parent.parent / 'panels' #/ 'trials'
 panels_dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -82,9 +82,9 @@ for fields in 'c', :
             axs[1].plot(np.sqrt(np.array([1,1000])), [(get_cycle_time() + get_cycle_time_std())]*2, alpha=0.4, color='purple', ls='--')
             axs[1].annotate('$T_{\\mathrm{cycle}}$', (np.sqrt(1000), (get_cycle_time())), xytext=(0,-2), textcoords='offset points', horizontalalignment='right', verticalalignment='top', alpha=0.4)
             axs[1].annotate('$T_{\\mathrm{cycle}} +\sigma_{\\mathrm{cycle}}$', (np.sqrt(1000), (get_cycle_time() + get_cycle_time_std())), xytext=(0,-2), textcoords='offset points', horizontalalignment='right', verticalalignment='top', alpha=0.4)
-            axs[0].set_xlabel('$\sqrt{\mathrm{channel~length}}$')
+            axs[0].set_xlabel('$\sqrt{\mathrm{channel~length}~L}$')
             axs[0].set_ylabel('maximal bitrate [bit/h]')
-            axs[1].set_xlabel('$\sqrt{\mathrm{channel~length}}$')
+            axs[1].set_xlabel('$\sqrt{\mathrm{channel~length}~L}$')
             axs[1].set_ylabel('optimal interval [min]')
             # axs[0].legend(
             #     [
@@ -96,19 +96,21 @@ for fields in 'c', :
             #     # ['simulations', f"$\sqrt{{L~/~{1/fit_max_bitrate_sqrt_inv.coef_[0][0]**2:.03g}}} + {fit_max_bitrate_sqrt_inv.intercept_[0]:.03g}$"],
             #     loc='upper right',
             #     )
-            axs[0].get_legend().set_visible(False)
-            axs[1].legend(
-                [
-                    'simulations', 
-                    # f"${fit_optimal_interval_sqrt.coef_[0][0]:.02g} × \sqrt{{L}} + {fit_optimal_interval_sqrt.intercept_[0]:.02g}$",
-                    '$T_{\\mathrm{cycle}}$', 
-                    '$T_{\\mathrm{cycle}} +\sigma_{\\mathrm{cycle}}$',
-                ]
-                ,
-                # ['simulations', f"$\sqrt{{L~/~{1/fit_optimal_interval_sqrt.coef_[0][0]**2:.03g}}} + {fit_optimal_interval_sqrt.intercept_[0]:.03g}$"],
-                loc='upper left',
-                )
-            axs[1].get_legend().set_visible(False)
+            axs[0].legend(labels=['channel width $W$ = 6'])
+            # axs[0].get_legend().set_visible(False)
+            # axs[1].legend(
+            #     [
+            #         'simulations', 
+            #         # f"${fit_optimal_interval_sqrt.coef_[0][0]:.02g} × \sqrt{{L}} + {fit_optimal_interval_sqrt.intercept_[0]:.02g}$",
+            #         '$T_{\\mathrm{cycle}}$', 
+            #         '$T_{\\mathrm{cycle}} +\sigma_{\\mathrm{cycle}}$',
+            #     ]
+            #     ,
+            #     # ['simulations', f"$\sqrt{{L~/~{1/fit_optimal_interval_sqrt.coef_[0][0]**2:.03g}}} + {fit_optimal_interval_sqrt.intercept_[0]:.03g}$"],
+            #     loc='upper left',
+            #     )
+            axs[1].legend(labels=['channel width W = 6'])
+            # axs[1].get_legend().set_visible(False)
             
             axs[0].set_ylim(0,1)
             axs[1].set_ylim(0,300)

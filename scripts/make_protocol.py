@@ -3,7 +3,7 @@ from jinja2 import Template
 from pathlib import Path
 
 TEMPLATE = Template(
-'''{% for t0, t1 in simulation_periods %}[]!
+'''{% for t0, t1 in simulation_periods %}+front at column 0
 run  {{t0}}s...{{t1}}s  [{{duration}}s]
 {% endfor %}
 '''

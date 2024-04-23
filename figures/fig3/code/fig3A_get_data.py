@@ -4,37 +4,32 @@ from shutil import rmtree
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order to be able to import from scripts.py
 
-from scripts.client import VisAVisClient, _random_name
+from scripts.utils import random_name
 from scripts.make_protocol import make_protocol
+from scripts.simulation import run_simulation
 from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT
 
 
 def generate_data(channel_width, channel_length, interval, n_pulses, interval_after=None, duration=5, seed=0):
     
-    sim_dir = Path(f"{TEMP_DIR}/visavis_seir/periodic/" + _random_name(12))
+    sim_dir = Path(f"{TEMP_DIR}/qeir/periodic/" + random_name(12))
 
-    client = VisAVisClient()
-
-    pulse_intervals = n_pulses * [interval]
     if interval_after is None:
         interval_after = int(2 * 3.6*channel_length+200)
-    protocol_file_path = make_protocol(
-            pulse_intervals=list(pulse_intervals) + [interval_after],
-            duration=duration,
-            out_folder=sim_dir,
+
+    result = run_simulation(
+        parameters=PARAMETERS_DEFAULT,
+        width=channel_width,
+        length=channel_length,
+        pulse_intervals=n_pulses * [interval] + [interval_after],
+        duration=duration,
+
+        seed=seed,
+        sim_root=sim_dir,
         )
 
-    result = client.run(
-            parameters_json=PARAMETERS_DEFAULT,
-            width=channel_width,
-            length=channel_length,
-            protocol_file_path=protocol_file_path,
-            verbose=False,
-            activity=True,
-            states=False,
-            seed=seed,
-        )
     rmtree(sim_dir)
+
     return result
     
 

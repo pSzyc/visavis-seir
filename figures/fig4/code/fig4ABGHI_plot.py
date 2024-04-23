@@ -12,18 +12,13 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.style import *
 from scripts.binary import plot_scan
 from scripts.entropy_utils import get_efficiency_from_extinction_probab
+from scripts.handler_tuple_vertical import HandlerTupleVertical
 
 LOG2 = np.log(2)
 
 def xlogx(x):
     return xlogy(x, x) / LOG2
 
-length_to_color = {
-    30: 0,
-    100: 1,
-    300: 2,
-    1000: 3,
-}
 
 channel_length_to_approach = {
     300: 'approach5',
@@ -33,17 +28,16 @@ channel_length_to_approach = {
 }
 
 
-# selected_channel_length = 30
 channel_lengths = [100,300,1000]
 
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' /'approach5'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' /'approach6'
 fig3_data_dir = lambda channel_length: Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' / channel_length_to_approach[channel_length]
 fig2_data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 
-# fig, ax = subplots_from_axsize(1, 1, (2.75, 2), top=.2, left=0.5, wspace=0.5)
 fig, axs = subplots_from_axsize(1, 2, (1.68, 1.5), top=.2, left=0.5, wspace=0.5, right=0.01)
 
  
@@ -73,9 +67,7 @@ plot_scan(
 axs[0].set_ylim(0,1)
 axs[0].set_xlabel('interval between slots [min]')
 handles = axs[0].get_legend().legend_handles
-axs[0].legend(handles=handles[:5], title='channel length')
-# axs[0].legend(title='channel length')
-# axs[0].get_legend().set_visible(False)
+axs[0].legend(handles=handles[:5], title='channel length $L$')
 
 
 
@@ -90,17 +82,6 @@ plot_scan(
     ax=axs[1],
 )
 
-# plot_scan(
-#     entropies_2pts, 
-#     c_field='channel_length',
-#     x_field='interval',
-#     y_field='efficiency',
-#     alpha=0.3,
-#     ms=3,
-#     ax=axs[1],
-# )
-
-# axs[1].set_yscale('logit')
 
 coefs = pd.read_csv(fig2_data_dir / 'coefs.csv').set_index('Unnamed: 0')
 
@@ -127,29 +108,36 @@ for it, channel_length in enumerate(entropies['channel_length'].unique()):
         get_efficiency_from_extinction_probab(
             extinction_probability[entropies['channel_length'] == channel_length]
         ),
-        alpha=.4, ls='-', lw=1, color=f"C{it}")
+        alpha=.4, ls='-', lw=1, color=channel_length_to_color[channel_length], label=f'distant front L={channel_length}')
     # axs[1].plot(
     #     entropies[entropies['channel_length'] == channel_length]['interval'],
     #     get_efficiency_from_extinction_probab(
     #         extinction_probability_only_failure[entropies['channel_length'] == channel_length]
     #     ),
-    #     alpha=.3, ls=':', lw=1, color=f"C{it}")
+    #     alpha=.3, ls=':', lw=1, color=channel_length_to_color[channel_length])
 
 axs[1].set_ylim(0,1)
 axs[1].set_xlabel('interval between slots [min]')
-handles = axs[1].get_legend().legend_handles
 # axs[1].legend(handles=handles[:len(handles)//2], title='channel length')
 # axs[1].legend(title='channel length')
 # # axs[1].get_legend().set_visible(False)
 
+axs[1].legend()
+handles = axs[1].get_legend().legend_handles
 axs[1].legend(
-    handles=[handles[i] for i in [0,1,2,3,4]], 
+    handles=[
+        tuple(handles[i] for i in range(0,4)),
+        tuple(handles[i] for i in range(5,9))],
     labels=[
-        '30','100','300','1000', 'distant-front\nlimit'
+        'colors as \nin panel A',
+         'distant-front\nlimit'
         ],
-    title=f'channel length:',
-    loc='lower right')
+    loc='lower right',
+    handler_map={tuple: HandlerTupleVertical(ncols=4, vpad=-2.3)},
+    # title='colors as in panel A'
+    )
 
+# axs[1].get_legend().set_visible(False)
 
 fig.savefig(panels_dir / f'fig4AB.svg')
 fig.savefig(panels_dir / f'fig4AB.png')
@@ -167,15 +155,15 @@ packed_data = pd.concat([pd.read_csv(fig3_data_dir(channel_length) / f'packed_da
 # expected_fronts = packed_data[['fronts_forward_sum', 'fronts_backward_sum']].div(packed_data['count'], axis=0).fillna(0)
 
 # def expected_number_of_fronts_measured(channel_length, effective_mean_interval):
-#     # effective_mean_interval = probabilities['fail to start'].index * 2 / (1 - probabilities['fail to start'])
+#     # effective_mean_interval = probabilities['initiation failure'].index * 2 / (1 - probabilities['initiation failure'])
 #     # print(effective_mean_interval)
-#     total_event_propensity = propensities['propagation failure'] + propensities['one backward front spawning'] + propensities['other front spawning']
+#     total_event_propensity = propensities['propagation failure'] + propensities['1 backward front spawning'] + propensities['other front spawning events']
 #     return (
 #         (
-#             expected_fronts.loc['one backward front spawning'].mul(propensities['one backward front spawning'], axis=0)
-#             + expected_fronts.loc['other front spawning'].mul(propensities['other front spawning'], axis=0)
+#             expected_fronts.loc['1 backward front spawning'].mul(propensities['1 backward front spawning'], axis=0)
+#             + expected_fronts.loc['other front spawning events'].mul(propensities['other front spawning events'], axis=0)
 #         ).mul(
-#             (1 - probabilities['fail to start']) # not failed at start
+#             (1 - probabilities['initiation failure']) # not failed at start
 #             * (1 - np.exp(-channel_length * propensities['propagation failure'])) / (channel_length * propensities['propagation failure']).where(propensities['propagation failure'] > 0, 0.) # not failed along the channel
 #         , axis=0,
 #         )
@@ -184,8 +172,7 @@ packed_data = pd.concat([pd.read_csv(fig3_data_dir(channel_length) / f'packed_da
 
 def probability_spawning_measured(channel_length):
     probabilities_for_given_channel_length = probabilities.loc[channel_length]
-    data_per_interval = (probabilities_for_given_channel_length['one backward front spawning'] + probabilities_for_given_channel_length['other front spawning']) #/ (1 - probabilities_for_given_channel_length['anihilation by backward front'])
-    print(data_per_interval)
+    data_per_interval = (probabilities_for_given_channel_length['1 backward front spawning'] + probabilities_for_given_channel_length['other front spawning events']) #/ (1 - probabilities_for_given_channel_length['annihilation by backward front'])
     return data_per_interval
 
 def expected_number_of_backward_fronts(x, channel_length):
@@ -214,26 +201,24 @@ def expected_number_of_backward_fronts_from_probab(x, channel_length):
 
 
 def failure_probability_measured(channel_length):
-    # return probabilities['fail to start'] + (1 - probabilities['fail to start']) * (1 - np.exp(-channel_length * (propensities['propagation failure'])))
+    # return probabilities['initiation failure'] + (1 - probabilities['initiation failure']) * (1 - np.exp(-channel_length * (propensities['propagation failure'])))
     # assert channel_length == selected_channel_length
     probabilities_for_channel_length = probabilities[probabilities.index.get_level_values('channel_length') == channel_length].reset_index('channel_length')
-    return probabilities_for_channel_length['fail to start'] + probabilities_for_channel_length['propagation failure'] #/ (1 - probabilities_for_channel_length['anihilation by backward front'])
+    return probabilities_for_channel_length['initiation failure'] + probabilities_for_channel_length['propagation failure'] #/ (1 - probabilities_for_channel_length['annihilation by backward front'])
     
 def failure_probability(x, channel_length):
-    # print(x, channel_length)
-    # print(*zip(*failure_probability_measured(channel_length).items()))
     return np.interp(x, *zip(*failure_probability_measured(channel_length).items()))
 
 
 # def total_failure_probability_measured(channel_length):
-#     return probabilities['fail to start'] + (1 - probabilities['fail to start']) * (1 - np.exp(-channel_length * (propensities['propagation failure'] + propensities['one backward front spawning'] + propensities['other front spawning'])))
+#     return probabilities['initiation failure'] + (1 - probabilities['initiation failure']) * (1 - np.exp(-channel_length * (propensities['propagation failure'] + propensities['1 backward front spawning'] + propensities['other front spawning events'])))
     
 # def total_failure_probability(x, channel_length):
 #     return np.interp(x, *zip(*total_failure_probability_measured(channel_length).items()))
  
 
 # def fail_to_start_probability(x, channel_length):
-#     return np.interp(x, *zip(*probabilities['fail to start'].items()))
+#     return np.interp(x, *zip(*probabilities['initiation failure'].items()))
 
 
 def mi_from_error_probabilities(sending_probab=.5, chance_for_missing=0., chance_for_fake=0.):
@@ -275,7 +260,7 @@ for it, (ax,channel_length) in enumerate(zip(axs, channel_lengths)):
         y_field='bitrate_per_hour',
         ms=3,
         ax=ax,
-        color=f"C{length_to_color[channel_length]}",
+        color=channel_length_to_color[channel_length],
     )
 
     # plot_scan(
@@ -286,7 +271,7 @@ for it, (ax,channel_length) in enumerate(zip(axs, channel_lengths)):
     #     alpha=0.3,
     #     ms=3,
     #     ax=ax,
-    #     color=f"C{length_to_color[channel_length]}",
+    #     color=channel_length_to_color[channel_length],
     # )
 
 
@@ -376,7 +361,7 @@ for it, (ax,channel_length) in enumerate(zip(axs, channel_lengths)):
         ax.set_ylabel('')
         ax.yaxis.set_ticklabels('')
     
-    ax.set_title(f"channel length = {channel_length}", loc='left', pad=-20, fontweight='bold')
+    ax.set_title(f"channel length $L$ = {channel_length}", loc='left', pad=-20, fontweight='bold')
         
     
         # ax.legend()

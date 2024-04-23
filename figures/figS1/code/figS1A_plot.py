@@ -9,35 +9,25 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order t
 from scripts.style import *
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "approach6"
-fig2C_data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / "fig2C" / 'approach8'    
 panel_dir = Path(__file__).parent.parent / 'panels'
 panel_dir.mkdir(exist_ok=True, parents=True)
 data_dir.mkdir(exist_ok=True, parents=True)
 
-channel_length = 300
-channel_widths = list(range(1,10)) + list(range(10,21,2))
-
-
-# plt.figure(figsize=(80 / 25.4, 80 / 25.4))
-
-# data = pd.concat([
-#     pd.read_csv(fig2C_data_dir / f'w-{channel_width}-l-{channel_length}' / 'pulse_fates.csv')
-#     for channel_width in channel_widths
-#     ], ignore_index=True
-# )
-
-# data = data[data['track_end_position'] > 40]
-# data['speed'] = data['track_end_position'] / data['track_end']
-# data.groupby('channel_width')['speed'].mean().to_csv(data_dir / 'velocities.csv')
-
-velocity = pd.read_csv(data_dir / 'velocity.csv').set_index('channel_width')
 
 fig, ax = subplots_from_axsize(1, 1, (2.5, 2), left=.8)
 
-velocity.plot(style='o-', ax=ax)
+# data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "approach6"
+# velocity = pd.read_csv(data_dir / 'velocity.csv').set_index('channel_width')
+# velocity.plot(style='o-', ax=ax)
 
-# data.groupby('channel_width')['speed'].mean().plot(style='o-')
+# data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "approach7"
+# velocity = pd.read_csv(data_dir / 'velocity.csv').set_index('channel_width')
+# velocity[velocity.index.get_level_values('channel_width') <= 1].plot(style='o-', fillstyle='none', ax=ax, color="C0")
 
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "approach10"
+velocity = pd.read_csv(data_dir / 'velocity.csv').set_index('channel_width')
+velocity[velocity['channel_length'].eq(300)].plot(style='o-', ax=ax, color="C4")
+velocity[velocity['channel_length'].eq(30) & (velocity.index.get_level_values('channel_width') == 1)].plot(style='o-', fillstyle='none', ax=ax, color="C4")
 
 yticks = [0.1 * y for y in range(5)]
 ax.set_ylabel('front propagation speed $v$ [step/min]')
