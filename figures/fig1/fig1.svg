@@ -26,10 +26,10 @@
      inkscape:document-units="mm"
      inkscape:zoom="1.4342733"
      inkscape:cx="254.83288"
-     inkscape:cy="35.906685"
-     inkscape:window-width="2560"
-     inkscape:window-height="1369"
-     inkscape:window-x="1912"
+     inkscape:cy="116.78388"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" /><defs
@@ -4783,7 +4783,7 @@
        xlink:href="panels/fig1B.svg"
        id="image1"
        x="-1.9384475"
-       y="42.017071"
+       y="35.667065"
        style="fill:#4c3300;fill-opacity:1" /><image
        preserveAspectRatio="none"
        inkscape:svg-dpi="500"
@@ -4800,4 +4800,12 @@
        xlink:href="panels/fig1A.svg"
        id="image1-3"
        x="-15.837385"
-       y="0.60103911" /></g></svg>
+       y="0.60103911" /><image
+       preserveAspectRatio="none"
+       inkscape:svg-dpi="500"
+       width="100.43028"
+       height="3.0571811"
+       xlink:href="panels/legend_flat.svg"
+       id="image1-9"
+       x="1.3447964"
+       y="73.323326" /></g></svg>
