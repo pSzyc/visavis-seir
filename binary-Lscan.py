@@ -22,12 +22,14 @@ from scripts.make_protocol import make_protocol
 from scripts.entropy_utils import conditional_entropy_discrete
 from scripts.plot_result import plot_result
 
-
 PARAMETERS_DEFAULT = {
   "c_rate": 1,
-  "e_incr": 1,
-  "i_incr": 1,
-  "r_incr": 0.0667
+  "e_forward_rate": 1,
+  "i_forward_rate": 1,
+  "r_forward_rate": 0.0667,
+  "e_subcompartments_count": 4,
+  "i_subcompartments_count": 2,
+  "r_subcompartments_count": 4
 }
 
 
@@ -46,6 +48,8 @@ def make_binary_protocol(interval, n_slots, p=0.5):
 def results_to_arrival_times(
     result,
 ):
+    assert result.states
+
     h_max = result.states['h'].max()
     data = result.states[result.states['h'] == h_max].copy()
     
@@ -107,9 +111,7 @@ def generate_dataset(
     n_nearest=1,
     offset=720, # how should this be determined?
 ):
-    client = VisAVisClient(
-        visavis_bin=f'./target/bins/vis-a-vis-{channel_width}-{channel_length}',
-    )
+    client = VisAVisClient()
     
     data_parts = []
     for simulation_id in tqdm(range(n_simulations)):
@@ -122,6 +124,8 @@ def generate_dataset(
         )
 
         result = client.run(
+            channel_length=channel_length,
+            channel_width=channel_width,
             parameters_json=PARAMETERS_DEFAULT,
             protocol_file_path=protocol_file_path,
             verbose=False,
