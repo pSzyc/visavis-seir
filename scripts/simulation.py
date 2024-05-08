@@ -11,8 +11,8 @@ from .utils import random_name
 def run_simulation(
     
     parameters,
-    width,
-    length,
+    channel_width,
+    channel_length,
     pulse_intervals,
     duration,
     seed=0,
@@ -50,8 +50,8 @@ def run_simulation(
 
     result = client.run(
         parameters_json=parameters,
-        width=width,
-        length=length,
+        channel_length=channel_length,
+        channel_width=channel_width,
         protocol_file_path=protocol_file_path,
         verbose=verbose,
         dir_name=sim_dir_name + '/' + sim_temp_results_dir.name,

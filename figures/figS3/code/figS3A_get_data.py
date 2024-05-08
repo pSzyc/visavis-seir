@@ -46,8 +46,8 @@ def run_single(
 
         result = run_simulation(
             parameters=parameters,
-            width=channel_width,
-            length=channel_length,
+            channel_width=channel_width,
+            channel_length=channel_length,
             pulse_intervals=pulse_intervals,
             duration=duration,
 

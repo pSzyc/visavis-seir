@@ -37,8 +37,8 @@ def perform_single(
 
     result = run_simulation(
         parameters=parameters,
-        width=channel_width,
-        length=channel_length,
+        channel_width=channel_width,
+        channel_length=channel_length,
         pulse_intervals=n_pulses * [interval] + [interval_after],
         duration=duration,
         save_activity=save_iterations,

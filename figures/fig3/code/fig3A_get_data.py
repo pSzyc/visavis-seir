@@ -19,8 +19,8 @@ def generate_data(channel_width, channel_length, interval, n_pulses, interval_af
 
     result = run_simulation(
         parameters=PARAMETERS_DEFAULT,
-        width=channel_width,
-        length=channel_length,
+        channel_width=channel_width,
+        channel_length=channel_length,
         pulse_intervals=n_pulses * [interval] + [interval_after],
         duration=duration,
 

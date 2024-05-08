@@ -33,8 +33,8 @@ def make_video(
 
 
     result = run_simulation(
-        width=channel_width,
-        length=channel_length,
+        channel_width=channel_width,
+        channel_length=channel_length,
         parameters=parameters,
         pulse_intervals=input_protocol,
         seed=seed,

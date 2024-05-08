@@ -9,13 +9,13 @@ sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to i
 # from scripts.make_protocol import make_protocol
 from scripts.tracking import determine_fates, get_pulse_positions
 from scripts.plot_result import plot_result, plot_result_from_activity
-from scripts.tracker import make_tracks
+#from scripts.tracker import make_tracks
 from scripts.simulation import run_simulation
 
-width = 6#6
-length = 150#0
+channel_width = 6#6
+channel_length = 150#0
 
-outpath = Path('../private/current2')
+outpath = Path.cwd() / 'private' / 'current2'
 outpath.mkdir(exist_ok=True, parents=True)
 
 parameters = {
@@ -33,8 +33,8 @@ duration = 5
 
 result = run_simulation(
     parameters=parameters,
-    width=width,
-    length=length,
+    channel_width=channel_width,
+    channel_length=channel_length,
     pulse_intervals=input_protocol,
     duration=duration,
     seed=0,
@@ -45,7 +45,7 @@ result = run_simulation(
     clean_up=False,
     save_states=False,
     save_activity=False,
-    sim_root = Path.cwd().parent / 'private' / 'manual',
+    sim_root = Path.cwd() / 'private' / 'manual',
     sim_dir_name = None,
     outdir=None,
   )
