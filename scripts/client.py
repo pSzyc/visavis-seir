@@ -13,39 +13,39 @@ from .utils import random_name
 
 class VisAVisClient:
     """
-    Wraps running simulations into python class.
+    Wraps running simulations into a python class.
     """
 
     def __init__(
         self,
-        visavis_bin: Path = Path("./target/release/qeir"),
-        path_to_compiling_script=Path(__file__).parent / 'compile_visavis.sh',
-        sim_root: Path = Path("/tmp"),  # where simulation dirs go
+        qeirq_bin: Path = Path("./external/qeirq/target/release/qeirq"),
+        path_to_compiling_script = Path(__file__).parent / 'compile_qeirq.sh',
+        sim_root: Path = Path("/tmp"),  # where simulation dirs are created
         build: Literal[True, False, 'if needed'] = 'if needed',
     ):
 
         assert build in [True, False, 'if needed'], build
 
-        if isinstance(visavis_bin, str):
-            visavis_bin = Path(visavis_bin)
+        if isinstance(qeirq_bin, str):
+            qeirq_bin = Path(qeirq_bin)
 
         if isinstance(sim_root, str):
             sim_root = Path(sim_root)
 
-        self._visavis_bin = visavis_bin
+        self._qeirq_bin = qeirq_bin
         self._path_to_compiling_script = path_to_compiling_script
 
-        if not self._visavis_bin.is_file() and self._visavis_bin.with_suffix(".exe").is_file():
-            self._visavis_bin = self._visavis_bin.with_suffix(".exe")
+        if not self._qeirq_bin.is_file() and self._qeirq_bin.with_suffix(".exe").is_file():
+            self._qeirq_bin = self._qeirq_bin.with_suffix(".exe")
 
-        if build == True or (build == 'if needed' and not self._visavis_bin.is_file()):
+        if build == True or (build == 'if needed' and not self._qeirq_bin.is_file()):
             self.build()
 
-        if not self._visavis_bin.is_file() and self._visavis_bin.with_suffix(".exe").is_file():
-            self._visavis_bin = self._visavis_bin.with_suffix(".exe")
+        if not self._qeirq_bin.is_file() and self._qeirq_bin.with_suffix(".exe").is_file():
+            self._qeirq_bin = self._qeirq_bin.with_suffix(".exe")
 
 
-        assert self._visavis_bin.is_file()
+        assert self._qeirq_bin.is_file()
 
         self._sim_root = sim_root
         self._sim_root.mkdir(parents=True, exist_ok=True)
@@ -61,14 +61,14 @@ class VisAVisClient:
                 cwd=path_to_compiling_script.parent.parent,
             )
         else:
-            raise FileNotFoundError(f'Script for building vis-a-vis not found at {path_to_compiling_script}')
+            raise FileNotFoundError(f'Script for building qeirq not found at {path_to_compiling_script}')
 
 
     def run(
         self,
         parameters_json: Any,  # ...thing that serializes to json
-        width: int,
-        length: int,
+        channel_length: int,
+        channel_width: int,
         protocol_file_path: Path,
         dir_name: Optional[str] = None,  # name the dir with results
         clean_up: bool = False,  # remove files?
@@ -78,7 +78,6 @@ class VisAVisClient:
         states: bool = False,  # save full state
         seed: Optional[int] = None,
     ) -> Optional[SimulationResult]:
-
 
         if isinstance(protocol_file_path, str):
             protocol_file_path = Path(protocol_file_path)
@@ -107,11 +106,11 @@ class VisAVisClient:
 
         ret = subprocess.call(
             [
-                self._visavis_bin.absolute(),
+                self._qeirq_bin.absolute(),
                 parameters_file.absolute(),
                 protocol_file_dst_path.absolute(),
-                '--width', str(length),
-                '--height', str(width),
+                '--width', str(channel_length),
+                '--height', str(channel_width),
                 *(["--images-out"] if images else []),
                 *(["--states-out"] if states else []),
                 *(["--activity-out"] if activity else []),
