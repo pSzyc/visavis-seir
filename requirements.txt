@@ -1,0 +1,13 @@
+click==8..7
+cycler==0.1.0
+Jinja2==3..2
+laptrack
+matplotlib==3..1
+numpy==1.2.4
+pandas
+scikit_learn==1..2
+scipy==1.1.0
+subplots_from_axsize==0..9
+termcolor==2..0
+tqdm==4.6.1
+tracker==0.1
