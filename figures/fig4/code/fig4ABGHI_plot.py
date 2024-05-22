@@ -13,6 +13,8 @@ from scripts.style import *
 from scripts.binary import plot_scan
 from scripts.entropy_utils import get_efficiency_from_extinction_probab
 from scripts.handler_tuple_vertical import HandlerTupleVertical
+from scripts.analyze_velocity import get_velocity
+from scripts.defaults import PARAMETERS_DEFAULT
 
 LOG2 = np.log(2)
 
@@ -35,6 +37,7 @@ data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4A
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' /'approach6'
 fig3_data_dir = lambda channel_length: Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' / channel_length_to_approach[channel_length]
 fig2_data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
+velocity_cache_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'velocity'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 
@@ -248,10 +251,13 @@ fig, axs = subplots_from_axsize(3, 1, (1.68, 1.5), left=0.5, top=.2, wspace=0.1,
 
 
 xx = np.linspace(20,280,101)
-v = 1 / 3.6
+# v = 1 / 3.6
+
 max_gap = 6
 channel_width = 6
 for it, (ax,channel_length) in enumerate(zip(axs, channel_lengths)):
+
+    v = get_velocity(channel_width, channel_length, parameters=PARAMETERS_DEFAULT, velocity_cache_dir=velocity_cache_dir)
 
     plot_scan(
         entropies[entropies['channel_length'] == channel_length], 

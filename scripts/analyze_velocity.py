@@ -42,7 +42,7 @@ def get_velocities(
     return velocity
 
 
-def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, duration=5, processes=20):
+def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, duration=5, use_cached=True, processes=20):
     
     cache_dir = (
         velocity_cache_dir / 
@@ -56,7 +56,7 @@ def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, 
 
     estimated_velocity = get_velocity_formula(parameters)
 
-    if (cache_dir / 'velocity.csv').exists():
+    if use_cached and (cache_dir / 'velocity.csv').exists():
         velocity = pd.read_csv(cache_dir / 'velocity.csv').set_index(['channel_width', 'channel_length'])['velocity']
     else:
         velocity = get_velocities(
