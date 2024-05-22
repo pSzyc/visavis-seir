@@ -39,7 +39,7 @@ ax.grid(which='both', ls=':')
 ax.xaxis.set_ticks(np.sqrt(np.array([1,10,30,100,300,1000])))
 ax.xaxis.set_major_formatter(FuncFormatter(lambda x, pos: f"$\\sqrt{{{x**2:.0f}}}$"))
 ax.set_xlabel('${\\sqrt{\\mathrm{distance~along~channel}}}$')
-ax.set_ylabel('average interval between fronts [min]')
+ax.set_ylabel('interval between fronts [min]')
 # ax.set_xscale('log')
 
 # reaching_time_by_h = reaching_times.groupby(['channel_width', 'channel_length', 'interval', 'h']).mean().reset_index()
@@ -60,7 +60,7 @@ axs[1].annotate("100 min", xy=(65, 152.5), xytext=(70, 152.5))
 
 axs[1].legend(['first pulse', 'second pules', 'first pulse + initial interval'])
 axs[1].set_xlabel('initial interval [min]')
-axs[1].set_ylabel('channel end reaching time [min]')
+axs[1].set_ylabel('mean interval at $L = 300$ [min]')
 
 plt.savefig(panels_dir / f'figS3A.svg')
 plt.savefig(panels_dir / f'figS3A.png')

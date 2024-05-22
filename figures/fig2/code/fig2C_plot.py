@@ -49,7 +49,7 @@ def make_plot(ax, ylim):
     ax.set_xlabel('channel width $W$')
     ax.set_xlim(left=0)
     ax.xaxis.set_major_locator(MultipleLocator(5))
-    ax.set_ylabel('propensity [step$^{-1}$]')
+    ax.set_ylabel('propensity [cell layers$^{-1}$]')
     ax.set_ylim(ylim)
 
 

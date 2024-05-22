@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 import sys
 import subprocess
-from shutil import rmtree
+from shutil import rmtree, copy2
 
 from .tracking import determine_fates, get_pulse_positions
 from .plot_result import plot_result, plot_result_from_activity
@@ -54,6 +54,7 @@ def make_video(
     # input("Press any button to continue...")
 
     if save_video:
+        outdir.mkdir(exist_ok=True, parents=True)
         subprocess.call([
             'ffmpeg', 
             '-framerate', '24',
@@ -70,6 +71,11 @@ def make_video(
             ])
             # ffmpeg -framerate 24 -pattern_type glob -i '../private/manual/AAHOXEGCFWWE/simulation_results/lattice_00*.png' -c:v libx264 -pix_fmt yuv420p -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" out.mp4
     
+    if len(snapshots):
+        (outdir / 'snapshots').mkdir(exist_ok=True, parents=True)
+    for tp in snapshots:
+        copy2(sim_dir / 'simulation_results' / f"lattice_t{tp:06d}.png", outdir / 'snapshots' / f"lattice_t{tp:06d}.png")
+
     rmtree(sim_dir)
 
     

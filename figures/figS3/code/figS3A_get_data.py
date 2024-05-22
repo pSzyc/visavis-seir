@@ -205,7 +205,7 @@ channel_lengths = [1000]
 
 
 reaching_times = simulate(
-    n_sim=4,
+    n_sim=3000,
     channel_widths=channel_widths,
     channel_lengths=channel_lengths,
     outdir=data_dir,
