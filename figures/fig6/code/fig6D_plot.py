@@ -16,8 +16,8 @@ from scripts.defaults import PARAMETERS_DEFAULT
 from scripts.parameter_scan import plot_parameter_scan
 
 
-data_dir_rates = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6' /  'fig6C' / 'rates' /'approach2'
-data_dir_states = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6' /  'fig6C' / 'states' /'approach2'
+data_dir_rates = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6' /  'fig6D' / 'rates' /'approach2'
+data_dir_states = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6' /  'fig6D' / 'states' /'approach2'
 out_dir = Path(__file__).parent.parent / 'panels'
 out_dir_figS5 = Path(__file__).parent.parent.parent / 'figS5' / 'panels'
 
@@ -46,7 +46,7 @@ result_rates['max_bitrate_per_hour'] = 60 * result_rates['max_bitrate']
 result_states['max_bitrate_per_hour'] = 60 * result_states['max_bitrate']
 
 
-figname = 'fig6C'
+figname = 'fig6D'
 feature_name = 'maximal bitrate [bit/h]'
 axs = None
 for channel_length in channel_lengths:

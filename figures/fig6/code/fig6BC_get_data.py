@@ -33,7 +33,7 @@ def generate_data(channel_width, channel_length, interval, n_pulses, parameters=
     return result
     
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6'/ 'fig6B' / 'approach1'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6'/ 'fig6BC' / 'approach1'
 data_dir.mkdir(exist_ok=True, parents=True)
 
 channel_width = 6

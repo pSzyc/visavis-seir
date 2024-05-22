@@ -12,45 +12,50 @@ from scripts.formula import get_expected_maximum_for_defaults
 from scripts.defaults import PARAMETERS_DEFAULT
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6' / 'fig6C' / 'rates' / 'approach3'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6' / 'fig6D' / 'states'/ 'approach3'
 data_dir.mkdir(parents=True, exist_ok=True)
     
 channel_widths = [6]
-channel_lengths = [30]#, 100, 300, 1000]
-channel_lengths = [30, 100, 300, 1000]
-altered_parameters = ['c_rate', 'e_forward_rate',  'i_forward_rate', 'r_forward_rate']
-fold_changes_s = (
-    np.exp(np.linspace(0, 1, 11)),
-    np.exp(np.linspace(0, -1, 11)),
-)
+# channel_lengths = [30, 300]
+channel_lengths = [1000]
+channel_lengths = [30,100,300,1000]
+altered_parameters = ['e_subcompartments_count', 'i_subcompartments_count', 'r_subcompartments_count']
 
 
 channel_wls = list(product(channel_widths, channel_lengths))
 
 
 for altered_parameter in altered_parameters:
-    for fold_changes in fold_changes_s:
+    for param_values in (
+        range(PARAMETERS_DEFAULT[altered_parameter],0,-1),
+        range(PARAMETERS_DEFAULT[altered_parameter],11,1),
+    ):
+
         expected_maximums = get_expected_maximum_for_defaults(np.array([l for w,l in channel_wls]))
-        for fold_change in fold_changes:
+
+        for param_value in param_values:
             
-            print(f"{altered_parameter} * {fold_change}")
+            print(f"{altered_parameter} = {param_value}")
+            corresponding_rate = f"{altered_parameter[0]}_forward_rate"
+
             parameters = PARAMETERS_DEFAULT.copy()
             parameters.update({
-                altered_parameter: fold_change * parameters[altered_parameter]
+                altered_parameter: param_value,
+                corresponding_rate: PARAMETERS_DEFAULT[corresponding_rate] * param_value / PARAMETERS_DEFAULT[altered_parameter]
             })
 
             result, entropies = find_optimal_bitrate(
-                expected_maximums, logstep=0.04, scan_points=5, 
+                expected_maximums, logstep=0.04, scan_points=10, 
+                parameters=parameters,
                 channel_widths=channel_widths,
                 channel_lengths=channel_lengths,
-                parameters=parameters,
-                outdir=data_dir / altered_parameter / f'{fold_change:.3f}', 
+                outdir=data_dir / altered_parameter / f'{param_value:d}', 
                 k_neighbors=25, 
                 n_slots=500, 
-                n_simulations=20, #60 
+                n_simulations=20,#60, 
                 processes=10,
                 use_cached=True,
                 )
-            expected_maximums = result['optimal_interval'].mask(result['optimal_interval'].isna(), expected_maximums)
-        
+            expected_maximums = result['optimal_interval']
+
 

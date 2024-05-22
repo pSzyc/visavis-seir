@@ -16,7 +16,7 @@ from scripts.plot_result import plot_result_from_activity
 from scripts.defaults import PARAMETERS_DEFAULT
 from scripts.style import *
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6'/ 'fig6B' / 'approach1'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6'/ 'fig6BC' / 'approach1'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(exist_ok=True, parents=True)
 
@@ -58,7 +58,7 @@ def parameter_to_label(param_with_value):
 
 
 
-fig, axs = subplots_from_axsize(*(data_sets.shape[:-1]), (1.8,2.1), wspace=0.15, hspace=.2, left=0.6, right=0.1, top=0.3)
+fig, axs = subplots_from_axsize(*(data_sets.shape[:-1]), (1.8,2.1), wspace=0.15, hspace=.55, left=0.6, right=0.1, top=0.2)
 
 for ax, (interval, parameters_update) in zip(axs.flatten(), data_sets.reshape(-1, data_sets.shape[-1])):
     activity = pd.read_csv(data_dir / '/'.join(map(lambda param_upd: f"{param_upd[0]}/{param_upd[1]:.3f}", sorted(parameters_update.items()))) /'activity.csv').set_index(['frame', 'seconds'])
@@ -80,7 +80,7 @@ for ax, (interval, parameters_update) in zip(axs.flatten(), data_sets.reshape(-1
     ax.set_title(title, loc='left', pad=-20, fontweight='bold')
 
     # ax2 = ax.twinx()
-for ax in axs[-1]:
+for ax in axs.flatten():#[-1]:
     ax.set_xlabel('position along channel')
     ax.set_xticklabels(map(int, [0,channel_length / 2, channel_length]))
 
@@ -88,6 +88,6 @@ for ax in axs[:, 0]:
     ax.set_ylabel('time [min]')
     ax.set_yticklabels(list(range(0,experiment_time, duration * 180)))
 
-plt.savefig(panels_dir / 'fig6B.png')
-plt.savefig(panels_dir / 'fig6B.svg')
+plt.savefig(panels_dir / 'fig6BC.png')
+plt.savefig(panels_dir / 'fig6BC.svg')
             
