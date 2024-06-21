@@ -47,7 +47,7 @@ result_states['max_bitrate_per_hour'] = 60 * result_states['max_bitrate']
 
 
 figname = 'fig6D'
-feature_name = 'maximal bitrate [bit/h]'
+feature_name = 'maximum bitrate [bit/h]'
 axs = None
 for channel_length in channel_lengths:
     axs = plot_parameter_scan(
@@ -62,16 +62,19 @@ plt.savefig(out_dir / (figname + ".png"))
 
 
 figname = 'figS5'
-feature_name = 'maximal bitrate [bit/h]'
+feature_name = 'maximum bitrate [bit/h]'
 axs = None
 for channel_length in channel_lengths:
     axs = plot_parameter_scan(
         result_rates[result_rates.index.get_level_values('channel_length') == channel_length]['max_bitrate_per_hour'], 
         result_states[result_states.index.get_level_values('channel_length') == channel_length]['max_bitrate_per_hour'], 
         feature_name=feature_name, color=channel_length_to_color[channel_length], axs=axs, ylim=(0,1), plot_rates=False,)
+handles = axs[0,0].get_lines()
+axs[0,-1].legend(handles=handles[::2], labels=channel_lengths, title="channel length L", loc='center left')
+axs[0,-1].set_visible(True)
+axs[0,-1].spines[['top', 'bottom', 'left', 'right']].set_visible(False)
+axs[0,-1].set_xticks([])
+axs[0,-1].set_yticks([])
 plt.savefig(out_dir_figS5 / (figname + ".svg"))
 plt.savefig(out_dir_figS5 / (figname + ".png"))
-
-
-
 

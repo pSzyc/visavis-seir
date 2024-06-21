@@ -33,8 +33,7 @@ channel_length_to_approach = {
 channel_lengths = [100,300,1000]
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' /'approach5'
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' /'approach6'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' /'approach7'
 fig3_data_dir = lambda channel_length: Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' / channel_length_to_approach[channel_length]
 fig2_data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
 velocity_cache_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'velocity'
@@ -45,8 +44,9 @@ fig, axs = subplots_from_axsize(1, 2, (1.68, 1.5), top=.2, left=0.5, wspace=0.5,
 
  
 entropies = pd.read_csv(data_dir / f'fig4AB_entropies-c25.csv')
-entropies_2pts = pd.read_csv(data_dir / f'fig4AB_entropies-cm15.csv')
 avg_n_backward = 1.285
+
+# --- Fig 4A ---
 
 plot_scan(
     entropies, 
@@ -57,23 +57,13 @@ plot_scan(
     ax=axs[0],
 )
 
-# plot_scan(
-#     entropies_2pts, 
-#     c_field='channel_length',
-#     x_field='interval',
-#     y_field='bitrate_per_hour',
-#     alpha=0.3,
-#     ms=3,
-#     ax=axs[0],
-# )
-
 axs[0].set_ylim(0,1)
-axs[0].set_xlabel('interval between slots [min]')
+axs[0].set_xlabel('interval between slots $T_{\\mathrm{slot}}$ [min]')
 handles = axs[0].get_legend().legend_handles
 axs[0].legend(handles=handles[:5], title='channel length $L$')
 
 
-
+# --- Fig 4B ---
 
 plot_scan(
     entropies, 
@@ -86,44 +76,30 @@ plot_scan(
 )
 
 
-coefs = pd.read_csv(fig2_data_dir / 'coefs.csv').set_index('Unnamed: 0')
+coefs = pd.read_csv(fig2_data_dir / f'coefs--l-300.csv').set_index('coefficient')
 
-extinction_probability = 1-np.exp(-entropies['channel_length'] * (
-    np.exp(
-        coefs['failure']['a'] * entropies['channel_width'] + coefs['failure']['b'])
-        + 
-            avg_n_backward * (coefs['spawning']['a'] * entropies['channel_width'] + coefs['spawning']['b']) 
-            # * (1 -  sum(2**(-i) * (i * 1/3.6/2 * entropies['interval'] / entropies['channel_length']).clip(0,1.) for i in range(10)) )
+
+failure_propensity = np.exp(coefs['failure']['a'] * entropies['channel_width'] + coefs['failure']['b'])
+spawning_propensity = (coefs['spawning']['a'] * entropies['channel_width'] + coefs['spawning']['b']) 
+gamma = 1 # (1 -  sum(2**(-i) * (i * 1/3.6/2 * entropies['interval'] / entropies['channel_length']).clip(0,1.) for i in range(10)) ) # chance that a backward front collides before reaching channel start
+
+extinction_probability_distant_fronts = 1 - np.exp(-entropies['channel_length'] * (
+    failure_propensity + gamma * avg_n_backward * spawning_propensity
 ))
 
-extinction_probability_only_failure = 1-np.exp(-entropies['channel_length'] * (
-    np.exp(
-        coefs['failure']['a'] * entropies['channel_width'] + coefs['failure']['b'])
-        # + 
-            # avg_n_backward * (coefs['spawning']['a'] * entropies['channel_width'] + coefs['spawning']['b']) 
-            # * (1 -  sum(2**(-i) * (i * 1/3.6/2 * entropies['interval'] / entropies['channel_length']).clip(0,1.) for i in range(10)) )
-))
+extinction_probability_free_fronts = 1 - np.exp(-entropies['channel_length'] * failure_propensity)
 
 
 for it, channel_length in enumerate(entropies['channel_length'].unique()):
     axs[1].plot(
         entropies[entropies['channel_length'] == channel_length]['interval'],
         get_efficiency_from_extinction_probab(
-            extinction_probability[entropies['channel_length'] == channel_length]
+            extinction_probability_distant_fronts[entropies['channel_length'] == channel_length]
         ),
         alpha=.4, ls='-', lw=1, color=channel_length_to_color[channel_length], label=f'distant front L={channel_length}')
-    # axs[1].plot(
-    #     entropies[entropies['channel_length'] == channel_length]['interval'],
-    #     get_efficiency_from_extinction_probab(
-    #         extinction_probability_only_failure[entropies['channel_length'] == channel_length]
-    #     ),
-    #     alpha=.3, ls=':', lw=1, color=channel_length_to_color[channel_length])
 
 axs[1].set_ylim(0,1)
-axs[1].set_xlabel('interval between slots [min]')
-# axs[1].legend(handles=handles[:len(handles)//2], title='channel length')
-# axs[1].legend(title='channel length')
-# # axs[1].get_legend().set_visible(False)
+axs[1].set_xlabel('interval between slots $T_{\\mathrm{slot}}$ [min]')
 
 axs[1].legend()
 handles = axs[1].get_legend().legend_handles
@@ -140,46 +116,32 @@ axs[1].legend(
     # title='colors as in panel A'
     )
 
-# axs[1].get_legend().set_visible(False)
 
 fig.savefig(panels_dir / f'fig4AB.svg')
 fig.savefig(panels_dir / f'fig4AB.png')
 plt.close(fig)
 
+# --- Fig 4GHI ---
 
-# entropies = pd.read_csv(data_dir / f'fig4AB_entropies-c25.csv')
 
-
-# channel_lengths = entropies['channel_length'].drop_duplicates().tolist()
-
-# propensities = pd.read_csv(fig3_data_dir / f'propensities.csv').set_index('interval')
 probabilities = pd.concat([pd.read_csv(fig3_data_dir(channel_length) / f'probabilities.csv').set_index('interval') for channel_length in channel_lengths], names=['channel_length'], keys=channel_lengths)
 packed_data = pd.concat([pd.read_csv(fig3_data_dir(channel_length) / f'packed_data.csv').set_index(['fate', 'interval']) for channel_length in channel_lengths], names=['channel_length'], keys=channel_lengths)
-# expected_fronts = packed_data[['fronts_forward_sum', 'fronts_backward_sum']].div(packed_data['count'], axis=0).fillna(0)
-
-# def expected_number_of_fronts_measured(channel_length, effective_mean_interval):
-#     # effective_mean_interval = probabilities['initiation failure'].index * 2 / (1 - probabilities['initiation failure'])
-#     # print(effective_mean_interval)
-#     total_event_propensity = propensities['propagation failure'] + propensities['1 backward front spawning'] + propensities['other front spawning events']
-#     return (
-#         (
-#             expected_fronts.loc['1 backward front spawning'].mul(propensities['1 backward front spawning'], axis=0)
-#             + expected_fronts.loc['other front spawning events'].mul(propensities['other front spawning events'], axis=0)
-#         ).mul(
-#             (1 - probabilities['initiation failure']) # not failed at start
-#             * (1 - np.exp(-channel_length * propensities['propagation failure'])) / (channel_length * propensities['propagation failure']).where(propensities['propagation failure'] > 0, 0.) # not failed along the channel
-#         , axis=0,
-#         )
-#     )
 
 
-def probability_spawning_measured(channel_length):
-    probabilities_for_given_channel_length = probabilities.loc[channel_length]
-    data_per_interval = (probabilities_for_given_channel_length['1 backward front spawning'] + probabilities_for_given_channel_length['other front spawning events']) #/ (1 - probabilities_for_given_channel_length['annihilation by backward front'])
-    return data_per_interval
+def get_measured_spawning_probability(channel_length):
+    probabilities_for_given_channel_length = probabilities[probabilities.index.get_level_values('channel_length') == channel_length].reset_index('channel_length')
+    return probabilities_for_given_channel_length['1 backward front spawning'] + probabilities_for_given_channel_length['other front spawning events'] #/ (1 - probabilities_for_given_channel_length['annihilation by backward front'])
 
-def expected_number_of_backward_fronts(x, channel_length):
-    return avg_n_backward * np.interp(x, *zip(*probability_spawning_measured(channel_length).items()))
+def get_measured_failure_probability(channel_length):
+    probabilities_for_given_channel_length = probabilities[probabilities.index.get_level_values('channel_length') == channel_length].reset_index('channel_length')
+    return probabilities_for_given_channel_length['initiation failure'] + probabilities_for_given_channel_length['propagation failure'] #/ (1 - probabilities_for_channel_length['annihilation by backward front'])
+   
+
+def get_expected_number_of_backward_fronts(x, channel_length):
+    return avg_n_backward * np.interp(x, *zip(*get_measured_spawning_probability(channel_length).items()))
+
+def get_failure_probability(x, channel_length):
+    return np.interp(x, *zip(*get_measured_failure_probability(channel_length).items()))
 
 
 
@@ -189,42 +151,16 @@ def expected_number_of_fronts_measured_from_probab(channel_length):
     return data_per_interval[['fronts_forward_sum', 'fronts_backward_sum']].div(data_per_interval['count'], axis=0)
    
 
-# def expected_number_of_forward_fronts(x, channel_length, effective_mean_interval):
-#     return np.interp(x, *zip(*expected_number_of_fronts_measured(channel_length, effective_mean_interval)['fronts_forward_sum'].items()))
 
-# def expected_number_of_backward_fronts(x, channel_length, effective_mean_interval, v=1/3.6):
-    # return (channel_length - 0.5 * effective_mean_interval * v) * np.interp(x, *zip(*expected_number_of_fronts_measured(channel_length, effective_mean_interval)['fronts_backward_sum'].items()))
-
-
-def expected_number_of_forward_fronts_from_probab(x, channel_length):
-    return (1-erf((x-150) / np.sqrt(2 * channel_length * 1.65)))/2 * np.interp(x, *zip(*expected_number_of_fronts_measured_from_probab(channel_length)['fronts_forward_sum'].items())) # * (-np.tanh((x - 135) / 30) + 1) / 2
+def get_expected_number_of_forward_fronts_from_probab(x, channel_length, sigma):
+    return (1-erf((x-150) / np.sqrt(2 * channel_length * sigma)))/2 * np.interp(x, *zip(*expected_number_of_fronts_measured_from_probab(channel_length)['fronts_forward_sum'].items())) # * (-np.tanh((x - 135) / 30) + 1) / 2
 
 def expected_number_of_backward_fronts_from_probab(x, channel_length):
     return np.interp(x, *zip(*expected_number_of_fronts_measured_from_probab(channel_length)['fronts_backward_sum'].items()))
 
-
-def failure_probability_measured(channel_length):
-    # return probabilities['initiation failure'] + (1 - probabilities['initiation failure']) * (1 - np.exp(-channel_length * (propensities['propagation failure'])))
-    # assert channel_length == selected_channel_length
-    probabilities_for_channel_length = probabilities[probabilities.index.get_level_values('channel_length') == channel_length].reset_index('channel_length')
-    return probabilities_for_channel_length['initiation failure'] + probabilities_for_channel_length['propagation failure'] #/ (1 - probabilities_for_channel_length['annihilation by backward front'])
-    
-def failure_probability(x, channel_length):
-    return np.interp(x, *zip(*failure_probability_measured(channel_length).items()))
-
-
-# def total_failure_probability_measured(channel_length):
-#     return probabilities['initiation failure'] + (1 - probabilities['initiation failure']) * (1 - np.exp(-channel_length * (propensities['propagation failure'] + propensities['1 backward front spawning'] + propensities['other front spawning events'])))
-    
-# def total_failure_probability(x, channel_length):
-#     return np.interp(x, *zip(*total_failure_probability_measured(channel_length).items()))
  
 
-# def fail_to_start_probability(x, channel_length):
-#     return np.interp(x, *zip(*probabilities['initiation failure'].items()))
-
-
-def mi_from_error_probabilities(sending_probab=.5, chance_for_missing=0., chance_for_fake=0.):
+def compute_mi_from_error_probabilities(sending_probab=.5, chance_for_missing=0., chance_for_fake=0.):
     tp = sending_probab * ((1 - chance_for_missing) + chance_for_missing * chance_for_fake)
     fn = sending_probab * chance_for_missing * (1 - chance_for_fake)
     fp = (1 - sending_probab) * chance_for_fake
@@ -235,29 +171,32 @@ def mi_from_error_probabilities(sending_probab=.5, chance_for_missing=0., chance
         - (xlogx(tp + fp) + xlogx(tn + fn)) # -H(R)
     )
 
+
 def chance_of_not_hitting_the_start(x, channel_length):
     return (1 - x * v / (2*channel_length)).clip(0., 1.)
 
 
-def get_inaccurate_probability(xx, channel_length, sigma):
-    return 1 - erf(xx / 2 / (sigma * np.sqrt(2)))
+def get_inaccurate_probability(interval, sigma):
+    'Computes the probability that |Z| > interval for Z ~ N(0, sigma**2)'
+    return 1 - erf(interval / 2 / (sigma * np.sqrt(2)))
 
-def weighted(fn, xx, channel_length, max_gap, **kwargs):
-    return sum(2**(-k) * fn(k * xx, channel_length, **kwargs) for k in range(1, max_gap)) + 2**(-max_gap + 1) * fn(max_gap * xx, channel_length, **kwargs)
+
+def weighted(fn, x, channel_length, n_terms=6, **kwargs):
+    'Computes the weighted sum 2**(-k) * fn(k*x)'
+    return (
+        sum(2**(-k) * fn(k * x, channel_length, **kwargs) for k in range(1, n_terms)) 
+        + 2**(-n_terms + 1) * fn(n_terms * x, channel_length, **kwargs)
+    )
 
 fig, axs = subplots_from_axsize(3, 1, (1.68, 1.5), left=0.5, top=.2, wspace=0.1, hspace=0.65, right=0.1)
-# axs = axs.flatten()
-# fig.delaxes(axs[2])
 
+intervals = np.linspace(20,280,101)
 
-xx = np.linspace(20,280,101)
-# v = 1 / 3.6
-
-max_gap = 6
 channel_width = 6
 for it, (ax,channel_length) in enumerate(zip(axs, channel_lengths)):
 
     v = get_velocity(channel_width, channel_length, parameters=PARAMETERS_DEFAULT, velocity_cache_dir=velocity_cache_dir)
+    sigma = np.sqrt(1.65*channel_length)
 
     plot_scan(
         entropies[entropies['channel_length'] == channel_length], 
@@ -269,83 +208,50 @@ for it, (ax,channel_length) in enumerate(zip(axs, channel_lengths)):
         color=channel_length_to_color[channel_length],
     )
 
-    # plot_scan(
-    #     entropies_2pts[entropies_2pts['channel_length'] == channel_length], 
-    #     c_field='channel_length',
-    #     x_field='interval',
-    #     y_field='bitrate_per_hour',
-    #     alpha=0.3,
-    #     ms=3,
-    #     ax=ax,
-    #     color=channel_length_to_color[channel_length],
-    # )
+    inaccurate_probability = get_inaccurate_probability(intervals, sigma=sigma) #sum((-1)**k * (1-erf((2*k+1) * intervals / 2 / (sigma * np.sqrt(2)))) for k in range(5))
+    failure_probability = weighted(get_failure_probability, intervals, channel_length)
+    asymptotic_failure_probability = get_failure_probability(300 + 0*intervals, channel_length)
+    number_of_forward_fronts = weighted(get_expected_number_of_forward_fronts_from_probab, intervals, channel_length, sigma=sigma)#, effective_mean_interval=effective_mean_interval)
+    number_of_backward_fronts = weighted(get_expected_number_of_backward_fronts, intervals, channel_length)#, effective_mean_interval=effective_mean_interval)
+    weighted_gamma = weighted(chance_of_not_hitting_the_start, intervals, channel_length) # chance that a backward front collides before reaching channel start
 
-
-    sigma = np.sqrt(1.65*channel_length)
-    inaccurate_probability = get_inaccurate_probability(xx, channel_length, sigma=sigma) #sum((-1)**k * (1-erf((2*k+1) * xx / 2 / (sigma * np.sqrt(2)))) for k in range(5))
-    # weighted_total_failure_probability = weighted(total_failure_probability, xx, channel_length, max_gap)
-    weighted_failure_probability = weighted(failure_probability, xx, channel_length, max_gap)
-    # asymptotic_total_failure_probability = total_failure_probability(300 + 0*xx, channel_length)
-    asymptotic_failure_probability = failure_probability(300 + 0*xx, channel_length)
-    # effective_mean_interval = xx * 2 / (1 - weighted_total_failure_probability)
-    weighted_number_of_forward_fronts = weighted(expected_number_of_forward_fronts_from_probab, xx, channel_length, max_gap)#, effective_mean_interval=effective_mean_interval)
-    weighted_number_of_backward_fronts = weighted(expected_number_of_backward_fronts, xx, channel_length, max_gap)#, effective_mean_interval=effective_mean_interval)
-    # asymptotic_number_of_forward_fronts = expected_number_of_forward_fronts_from_probab(300 + 0*xx, channel_length)#, effective_mean_interval=effective_mean_interval)
-    # asymptotic_number_of_backward_fronts = expected_number_of_backward_fronts_from_probab(300 + 0*xx, channel_length)#, effective_mean_interval=effective_mean_interval)
-
-    # asymptotic_number_of_backward_fronts = channel_length * (
-    #     # np.exp(coefs['failure']['a'] * entropies['channel_width'] + coefs['failure']['b'])
-    #     + (coefs['spawning']['a'] * channel_width + coefs['spawning']['b']) + 0 * xx
-    # )
-
-
-    weighted_chance_of_not_hitting_the_start = weighted(chance_of_not_hitting_the_start, xx, channel_length, max_gap)
-
-    failure_or_anihilated_probability = 1 - (1 - weighted_failure_probability) / (1 + weighted_number_of_backward_fronts * weighted_chance_of_not_hitting_the_start)
-    # asymptotic_failure_or_anihilated_probability = 1 - (1 - asymptotic_failure_probability) / (1 + asymptotic_number_of_backward_fronts * weighted_chance_of_not_hitting_the_start)
-    ax.plot(xx, 60 * mi_from_error_probabilities(
-        chance_for_missing=failure_or_anihilated_probability,
-        chance_for_fake=0.,#1-np.exp(-weighted_number_of_forward_fronts),
-        ) / xx,
+    extinction_probability = 1 - (1 - failure_probability) / (1 + number_of_backward_fronts * weighted_gamma) # probability that propagation fails or the front gets annihilated
+    # asymptotic_extinction_probability = 1 - (1 - asymptotic_failure_probability) / (1 + asymptotic_number_of_backward_fronts * weighted_gamma)
+    
+    ax.plot(intervals, 60 * compute_mi_from_error_probabilities(
+        chance_for_missing=extinction_probability,
+        chance_for_fake=0.,#1-np.exp(-number_of_forward_fronts),
+        ) / intervals,
         color=f"black", alpha=0.3, ls=':', label='prediction\n(failure & back-fronts)')
-    # ax.plot(xx, 60 * mi_from_error_probabilities(
-    #     chance_for_missing=weighted_failure_probability + (1 - weighted_failure_probability) * inaccurate_probability,
-    #     chance_for_fake=1-np.exp(-weighted_number_of_forward_fronts) + np.exp(-weighted_number_of_forward_fronts)*(lambda x: 2*x-x**2)(0.5 * (1 - weighted_failure_probability) * inaccurate_probability),
-    #     ) / xx,
+    # ax.plot(intervals, 60 * compute_mi_from_error_probabilities(
+    #     chance_for_missing=failure_probability + (1 - failure_probability) * inaccurate_probability,
+    #     chance_for_fake=1-np.exp(-number_of_forward_fronts) + np.exp(-number_of_forward_fronts)*(lambda x: 2*x-x**2)(0.5 * (1 - failure_probability) * inaccurate_probability),
+    #     ) / intervals,
     #     color=f"black", alpha=0.3, ls=':', label='prediction \n(failure & variance)')
-    # ax.plot(xx, 60 * mi_from_error_probabilities(
-    #     chance_for_missing=asymptotic_failure_or_anihilated_probability + (1 - asymptotic_failure_or_anihilated_probability) * inaccurate_probability,
-    #     chance_for_fake=1-np.exp(-asymptotic_number_of_forward_fronts) + np.exp(-asymptotic_number_of_forward_fronts)*(lambda x: 2*x-x**2)(0.5 * (1 - asymptotic_failure_or_anihilated_probability) * inaccurate_probability),
-    #     ) / xx,
+    # ax.plot(intervals, 60 * compute_mi_from_error_probabilities(
+    #     chance_for_missing=asymptotic_extinction_probability + (1 - asymptotic_extinction_probability) * inaccurate_probability,
+    #     chance_for_fake=1-np.exp(-asymptotic_number_of_forward_fronts) + np.exp(-asymptotic_number_of_forward_fronts)*(lambda x: 2*x-x**2)(0.5 * (1 - asymptotic_extinction_probability) * inaccurate_probability),
+    #     ) / intervals,
     #     color=f"black", alpha=0.3, ls=':', label='prediction \n(asymptotic & variance)')
-    ax.plot(xx, 60 * mi_from_error_probabilities(
-        chance_for_missing=failure_or_anihilated_probability + (1 - failure_or_anihilated_probability) * inaccurate_probability,
-        chance_for_fake=(lambda x: 2*x-x**2)(0.5 * (1 - failure_or_anihilated_probability) * inaccurate_probability),
-        ) / xx,
+    ax.plot(intervals, 60 * compute_mi_from_error_probabilities(
+        chance_for_missing=extinction_probability + (1 - extinction_probability) * inaccurate_probability,
+        chance_for_fake=(lambda x: 2*x-x**2)(0.5 * (1 - extinction_probability) * inaccurate_probability),
+        ) / intervals,
         color=f"black", alpha=0.3, ls='--', label='prediction \n(failure & back-fronts & variance)')
-    # ax.plot(xx, 60 * mi_from_error_probabilities(
-        # chance_for_missing=failure_or_anihilated_probability + (1 - failure_or_anihilated_probability) * inaccurate_probability,
-        # chance_for_fake=weighted_number_of_forward_fronts /(1 + weighted_number_of_backward_fronts * weighted_chance_of_not_hitting_the_start) + (lambda x: 2*x-x**2)(0.5 * (1 - failure_or_anihilated_probability) * inaccurate_probability),
-        # ) / xx,
+    # ax.plot(intervals, 60 * compute_mi_from_error_probabilities(
+        # chance_for_missing=extinction_probability + (1 - extinction_probability) * inaccurate_probability,
+        # chance_for_fake=number_of_forward_fronts /(1 + number_of_backward_fronts * weighted_gamma) + (lambda x: 2*x-x**2)(0.5 * (1 - extinction_probability) * inaccurate_probability),
+        # ) / intervals,
         # color=f"black", alpha=0.3, ls='-', label='prediction \n(failure & back-fronts & variance)')
     
-    # ax.plot(xx, 60 * mi_from_error_probabilities(
-    #     chance_for_missing=failure_or_anihilated_probability + (1 - failure_or_anihilated_probability) * inaccurate_probability,
-    #     chance_for_fake=1-np.exp(-weighted_number_of_forward_fronts) + np.exp(-weighted_number_of_forward_fronts)*(lambda x: 2*x-x**2)(0.5 * (1 - failure_or_anihilated_probability) * inaccurate_probability),
-    #     ) / xx,
+    # ax.plot(intervals, 60 * compute_mi_from_error_probabilities(
+    #     chance_for_missing=extinction_probability + (1 - extinction_probability) * inaccurate_probability,
+    #     chance_for_fake=1-np.exp(-number_of_forward_fronts) + np.exp(-number_of_forward_fronts)*(lambda x: 2*x-x**2)(0.5 * (1 - extinction_probability) * inaccurate_probability),
+    #     ) / intervals,
     #     color=f"black", alpha=0.3, ls='-', label='prediction \n(failure & back-fronts & variance & forw-fronts)')
-    print(pd.DataFrame({
-        # 'weighted_total_failure_probability': weighted_total_failure_probability,
-        'weighted_failure_probability': weighted_failure_probability,
-        'weighted_number_of_backward_fronts': weighted_number_of_backward_fronts,
-        'weighted_number_of_forward_fronts': weighted_number_of_forward_fronts,
-        'fake_due_to_inaccuracy': (lambda x: 2*x-x**2)(0.5 * (1 - failure_or_anihilated_probability) * inaccurate_probability),
-        # 'expected_number_of_backward_fronts': expected_number_of_backward_fronts(xx, channel_length, effective_mean_interval),
-        # 'expected_number_of_forward_fronts': expected_number_of_forward_fronts(xx, channel_length, effective_mean_interval),
-        },
-        index=xx).tail(20))
+
     ax.set_ylim(0,1)
-    ax.set_xlabel('interval between slots [min]')
+    ax.set_xlabel('interval between slots $T_{\\mathrm{slot}}$ [min]')
     if True:#it == 2  :
         ax.legend()
         handles = ax.get_legend().legend_handles
@@ -370,13 +276,5 @@ for it, (ax,channel_length) in enumerate(zip(axs, channel_lengths)):
     ax.set_title(f"channel length $L$ = {channel_length}", loc='left', pad=-20, fontweight='bold')
         
     
-        # ax.legend()
-        # handles = ax.get_legend().legend_handles
-        # ax.legend(
-        #     handles=[handles[i] for i in [0,4,5,6,1]], 
-        #     labels=[f'simulation', 'prediction (failure & back-fronts)', 'prediction (asymptotic & variance)', 'prediction (failure & back-fronts & variance)', 'perfect'],
-        #     title=f'channel length = {channel_length}',
-        #     loc='upper right')
-
 fig.savefig(panels_dir / f'fig4GHI.svg')
 fig.savefig(panels_dir / f'fig4GHI.png')

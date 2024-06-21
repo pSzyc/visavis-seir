@@ -27,7 +27,6 @@ def run_simulation(
     sim_dir_name: Optional[str] = None,
     outdir=None,
     ):
-    
 
     sim_root = Path(sim_root)
     if sim_dir_name is None:

@@ -20,9 +20,9 @@ plt.rcParams['font.size'] = 8
 plt.rcParams['mathtext.fontset'] = 'custom'
 plt.rcParams['mathtext.rm'] = 'Carlito'
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4CD' / 'approach5' # approach3
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4CD' / 'approach6' # approach3
 # S1_data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' /'fig4CD' / 'approach2'
-panels_dir = Path(__file__).parent.parent / 'panels' #/ 'trials'
+panels_dir = Path(__file__).parent.parent / 'panels' 
 panels_dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -74,18 +74,18 @@ for fields in 'c', :
             axs[0].plot(np.sqrt(np.array([1,1000])), [60/(get_cycle_time())]*2, alpha=0.4, color='purple', ls='-')
             axs[0].plot(np.sqrt(np.array([1,1000])), [60/(get_cycle_time() + get_cycle_time_std())]*2, alpha=0.4, color='purple', ls='--')
             axs[0].annotate('1 bit / $T_{\\mathrm{cycle}}$', (np.sqrt(1000), 60/(get_cycle_time())), xytext=(0,-2), textcoords='offset points', horizontalalignment='right', verticalalignment='top', alpha=0.4)
-            axs[0].annotate('1 bit / ($T_{\\mathrm{cycle}} +\sigma_{\\mathrm{cycle}}$)', (np.sqrt(1000), 60/(get_cycle_time() + get_cycle_time_std())), xytext=(0,-2), textcoords='offset points', horizontalalignment='right', verticalalignment='top', alpha=0.4)
+            axs[0].annotate('1 bit / $T_{\\mathrm{R}}$ = 1 bit / ($T_{\\mathrm{cycle}} +\sigma_{\\mathrm{cycle}}$)', (np.sqrt(1000), 60/(get_cycle_time() + get_cycle_time_std())), xytext=(0,-2), textcoords='offset points', horizontalalignment='right', verticalalignment='top', alpha=0.4)
             result.plot('channel_length_sqrt', 'optimal_interval', marker='o', color='maroon', ls='-', ax=axs[1])
             # axs[1].plot(result['channel_length_sqrt'], predict_optimal_interval_sqrt, alpha=0.4, color='k')
             # axs[1].plot(result['channel_length_sqrt'], predicted_optimal_interval_formula(result['channel_width'], result['channel_length']), alpha=0.4, color='r')
             axs[1].plot(np.sqrt(np.array([1,1000])), [(get_cycle_time())]*2, alpha=0.4, color='purple', ls='-')
             axs[1].plot(np.sqrt(np.array([1,1000])), [(get_cycle_time() + get_cycle_time_std())]*2, alpha=0.4, color='purple', ls='--')
             axs[1].annotate('$T_{\\mathrm{cycle}}$', (np.sqrt(1000), (get_cycle_time())), xytext=(0,-2), textcoords='offset points', horizontalalignment='right', verticalalignment='top', alpha=0.4)
-            axs[1].annotate('$T_{\\mathrm{cycle}} +\sigma_{\\mathrm{cycle}}$', (np.sqrt(1000), (get_cycle_time() + get_cycle_time_std())), xytext=(0,-2), textcoords='offset points', horizontalalignment='right', verticalalignment='top', alpha=0.4)
+            axs[1].annotate('$T_{\\mathrm{R}} = T_{\\mathrm{cycle}} +\sigma_{\\mathrm{cycle}}$', (np.sqrt(1000), (get_cycle_time() + get_cycle_time_std())), xytext=(0,-2), textcoords='offset points', horizontalalignment='right', verticalalignment='top', alpha=0.4)
             axs[0].set_xlabel('$\sqrt{\mathrm{channel~length}~L}$')
-            axs[0].set_ylabel('maximal bitrate [bit/h]')
+            axs[0].set_ylabel('maximum bitrate [bit/h]')
             axs[1].set_xlabel('$\sqrt{\mathrm{channel~length}~L}$')
-            axs[1].set_ylabel('optimal interval [min]')
+            axs[1].set_ylabel('optimal interval $T_{\\mathrm{slot}}$ [min]')
             # axs[0].legend(
             #     [
             #         'simulations', 

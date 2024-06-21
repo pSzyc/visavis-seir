@@ -16,15 +16,6 @@ from scripts.handler_tuple_vertical import HandlerTupleVertical
 
 LOG2 = np.log(2)
 
-
-channel_length_to_approach = {
-    300: 'approach5',
-    30: 'approach6',
-    100: 'approach7',
-    1000: 'approach8',
-}
-
-
 channel_lengths = [30,100,300,1000]
 
 
@@ -59,7 +50,7 @@ plot_scan(
 
 
 ax.set_ylim(0,1)
-ax.set_xlabel('interval between slots [min]')
+ax.set_xlabel('interval between slots $T_{\\mathrm{slot}}$ [min]')
 handles = ax.get_legend().legend_handles
 ax.legend(
     handles=list(zip(handles[:4], handles[5:9])) + [tuple(handles[:4]), tuple(handles[5:9]), handles[4]], #title='channel length $L$',

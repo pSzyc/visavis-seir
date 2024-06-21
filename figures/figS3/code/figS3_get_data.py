@@ -15,7 +15,7 @@ from scripts.utils import simple_starmap, starmap, random_name
 from scripts.simulation import run_simulation
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3A' / 'approach10'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3' / 'approach11'
 data_dir.mkdir(exist_ok=True, parents=True)
 
 
@@ -199,18 +199,19 @@ def simulate(n_sim, channel_widths, channel_lengths, outdir, n_workers, per_widt
 
 
 channel_widths = [6]#[::-1]
-intervals = [40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,180,200]
+# intervals = [40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,180,200]
+intervals = [40,50,60,70,80,90,100,120,140,160,200]
 channel_lengths = [1000]
 
 
 
 reaching_times = simulate(
-    n_sim=3000,
+    n_sim=30000,
     channel_widths=channel_widths,
     channel_lengths=channel_lengths,
     outdir=data_dir,
-    n_workers=1,
-    use_cached=False,
+    n_workers=20,
+    use_cached=True,
     per_width_kwargs = {
         w: {
             'front_direction_minimal_distance': min(max(w - 1, 1), 5),

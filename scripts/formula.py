@@ -26,11 +26,11 @@ figS1_3_data_dir = Path(__file__).parent.parent / 'data' /  'figS1' / 'approach6
 variance_data = pd.read_csv(figS1_3_data_dir / 'variance_per_step.csv')
 
 fig2C_data_dir = Path(__file__).parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
-coefs = pd.read_csv(fig2C_data_dir / 'coefs--l-300.csv').set_index('coeficient')
+coefs = pd.read_csv(fig2C_data_dir / 'coefs--l-300.csv').set_index('coefficient')
 
 fig2E_data_dir = Path(__file__).parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
-specific = pd.read_csv(fig2C_data_dir / 'specific.csv').set_index('channel_width').fillna(0)
-permanent_share = specific['events with > 6 \n spawned fronts'] / specific.sum(axis=1)
+specific = pd.read_csv(fig2C_data_dir / 'detailed_event_propensities.csv').set_index('channel_width').fillna(0)
+permanent_share = specific['events with > 6 spawned fronts'] / specific.sum(axis=1)
 
 
 

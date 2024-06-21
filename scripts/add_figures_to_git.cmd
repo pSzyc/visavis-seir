@@ -11,7 +11,8 @@ git add .\figures\fig2\panels\fig2E.png -f
 git add .\figures\fig3\fig3.png -f
 git add .\figures\fig3\panels\fig3A.png -f
 git add .\figures\fig3\panels\fig3B.png -f
-git add .\figures\fig3\panels\fig3CD.png -f
+git add .\figures\fig3\panels\fig3C.png -f
+git add .\figures\fig3\panels\fig3D.png -f
 git add .\figures\fig3\panels\fig3E.png -f
 git add .\figures\fig4\fig4.png -f
 git add .\figures\fig4\panels\fig4AB.png -f
@@ -31,7 +32,7 @@ git add .\figures\figS1\panels\figS1A.png -f
 git add .\figures\figS1\panels\figS1B.png -f
 git add .\figures\figS2\figS2.png -f
 git add .\figures\figS3\figS3.png -f
-git add .\figures\figS3\panels\figS3A.png -f
+git add .\figures\figS3\panels\figS3.png -f
 git add .\figures\figS4\figS4.png -f
 git add .\figures\figS4\panels\figS4.png -f
 git add .\figures\figS5\figS5.png -f
@@ -52,7 +53,8 @@ git add .\figures\fig2\panels\fig2E.svg -f
 git add .\figures\fig3\fig3.svg -f
 git add .\figures\fig3\panels\fig3A.svg -f
 git add .\figures\fig3\panels\fig3B.svg -f
-git add .\figures\fig3\panels\fig3CD.svg -f
+git add .\figures\fig3\panels\fig3C.svg -f
+git add .\figures\fig3\panels\fig3D.svg -f
 git add .\figures\fig3\panels\fig3E.svg -f
 git add .\figures\fig4\fig4.svg -f
 git add .\figures\fig4\panels\fig4AB.svg -f
@@ -72,7 +74,7 @@ git add .\figures\figS1\panels\figS1A.svg -f
 git add .\figures\figS1\panels\figS1B.svg -f
 git add .\figures\figS2\figS2.svg -f
 git add .\figures\figS3\figS3.svg -f
-git add .\figures\figS3\panels\figS3A.svg -f
+git add .\figures\figS3\panels\figS3.svg -f
 @REM git add .\figures\figS4\figS4.svg -f
 git add .\figures\figS4\panels\figS4.svg -f
 @REM git add .\figures\figS5\figS5.svg -f

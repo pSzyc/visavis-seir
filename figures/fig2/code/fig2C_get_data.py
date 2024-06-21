@@ -46,7 +46,7 @@ for channel_length in channel_lengths:
     a_fail, b_fail = lreg_failure.coef_[0,0], lreg_failure.intercept_[0]
 
     coefs = pd.DataFrame({'spawning': {'a': a_sp, 'b': b_sp}, 'failure': {'a': a_fail, 'b': b_fail}})
-    coefs.index.name = 'coeficient'
+    coefs.index.name = 'coefficient'
     coefs.to_csv(data_dir / f'coefs--l-{channel_length}.csv')
 
     print(coefs.loc['b'] / coefs.loc['a'])

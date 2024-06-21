@@ -23,6 +23,7 @@ def plot_parameter_scan(feature_rates, feature_states, feature_name, logscale=Fa
             **{
                     'label': feature_name,
                     'color': 'navy',
+                    'ms': 3,
                     **kwargs
                 }
             )
@@ -31,7 +32,11 @@ def plot_parameter_scan(feature_rates, feature_states, feature_name, logscale=Fa
             1 / PARAMETERS_DEFAULT[altered_parameter], 
             feature_rates.loc[altered_parameter, 1], 
             'o',
-            color='maroon',
+            fillstyle='none',
+            **{
+                    'color': 'navy',
+                    **kwargs
+            }
             )
 
         ax.set_xlabel(r"$\tau_{\mathrm {act}}$ [min]")
@@ -51,6 +56,7 @@ def plot_parameter_scan(feature_rates, feature_states, feature_name, logscale=Fa
                 'o-',
                 **{
                     'color': 'navy',
+                    'ms': 3,
                     **kwargs
                 }
                 )
@@ -59,7 +65,11 @@ def plot_parameter_scan(feature_rates, feature_states, feature_name, logscale=Fa
                 PARAMETERS_DEFAULT[corresponding_states] / PARAMETERS_DEFAULT[altered_parameter], 
                 feature_rates.loc[altered_parameter, 1.], 
                 'o',
-                color='maroon',
+                fillstyle='none',
+                **{
+                        'color': 'navy',
+                        **kwargs,
+                }
                 )
             ax.set_xlabel(r"$\tau_{\mathrm {" + species.upper() + r"}}$ [min]")
             ax.tick_params(labelleft=False)
@@ -89,6 +99,7 @@ def plot_parameter_scan(feature_rates, feature_states, feature_name, logscale=Fa
                 'o-',
                 **{
                     'color': 'navy',
+                    'ms': 3,
                     **kwargs
                 }
                 )
@@ -97,7 +108,11 @@ def plot_parameter_scan(feature_rates, feature_states, feature_name, logscale=Fa
                 PARAMETERS_DEFAULT[altered_parameter],
                 feature_states.loc[altered_parameter, PARAMETERS_DEFAULT[altered_parameter]], 
                 'o',
-                color='maroon',
+                fillstyle='none',
+                **{
+                        'color': 'navy',
+                        **kwargs
+                }
                 )
             ax.set_xlabel(r"$n_{\mathrm {" + species.upper() + r"}}$")
             ax.xaxis.set_major_locator(MultipleLocator(2))

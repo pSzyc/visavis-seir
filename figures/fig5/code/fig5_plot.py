@@ -34,15 +34,15 @@ def plot_fig2C(coefficients, ax, show_optimal_w=False, show_min_propensity=False
         return np.where(y <= ymax, y, np.nan)
     
     ax.plot(xs, clip(np.exp(coefficients['a_failure'] * xs.reshape(-1,1) + coefficients['b_failure'])), color='olive', alpha=0.3, 
-        label=r"$\lambda_{\mathrm{failure}}=\exp(a_{\mathrm{fail}}~×~(W - W_{\mathrm{fail}}))$",
+        label=r"$\lambda_{\mathrm{fail}}=\exp(a_{\mathrm{fail}}~×~(W - W_{\mathrm{fail}}))$",
         )
 
     ax.plot(xs, clip(coefficients['a_spawning'] * xs + coefficients['b_spawning']).reshape(-1,1), color='maroon', alpha=.4, 
-        label=r"$\lambda_{\mathrm{spawning}}=a_{\mathrm{sp}}~×~(W - W_{\mathrm{sp}})$",
+        label=r"$\lambda_{\mathrm{spawn}}=a_{\mathrm{spawn}}~×~(W - W_{\mathrm{spawn}})$",
         )
     
     ax.plot(xs, clip((np.exp(coefficients['a_failure'] * xs + coefficients['b_failure']) + (coefficients['a_spawning'] * xs + coefficients['b_spawning']))).reshape(-1,1), color='navy', alpha=.4, 
-        label=r"$\lambda_{\mathrm{tot}} = \lambda_{\mathrm{failure}} + \lambda_{\mathrm{spawning}}$",
+        label=r"$\lambda_{\mathrm{tot}} = \lambda_{\mathrm{fail}} + \lambda_{\mathrm{spawn}}$",
         )
 
 
@@ -116,7 +116,7 @@ plt.savefig(out_dir / ("fig5" + (letter or re.sub(r'\s+', '_', feature_name)) + 
 plt.savefig(out_dir / ("fig5" + (letter or re.sub(r'\s+', '_', feature_name)) + ".png"))
 
 letter = 'B2'
-feature_name = 'minimal $\\lambda_{tot}$ [step$^{-1}$]'
+feature_name = 'minimal $\\lambda_{tot}$ [cell layer$^{-1}$]'
 axs = plot_parameter_scan(minimal_propensity_rates, minimal_propensity_states, feature_name=feature_name, logscale=True)
 ax = axs[1,0]
 ax.set_visible(True)
@@ -129,21 +129,21 @@ plt.savefig(out_dir / ("fig5" + (letter or re.sub(r'\s+', '_', feature_name)) + 
 
 letter = 'A'
 feature_name = 'coefficients'
-axs = plot_parameter_scan(coefficients_rates['a_failure'], coefficients_states['a_failure'], feature_name=r'$a_{\mathrm{fail}},  \log_{10} a_{\mathrm{sp}}$', ylim=(-6.7, 0), color='olive', alpha=.4)
-plot_parameter_scan(np.log10(coefficients_rates['a_spawning']), np.log10(coefficients_states['a_spawning']), feature_name=r'coefficient value', ylim=(-6.7, 0),  color='maroon', alpha=.4, axs=axs)
+axs = plot_parameter_scan(coefficients_rates['a_failure'], coefficients_states['a_failure'], feature_name=r'$a_{\mathrm{fail}},  \log_{10} a_{\mathrm{spawn}}$', ylim=(-6.7, 0), color='olive', alpha=.7)
+plot_parameter_scan(np.log10(coefficients_rates['a_spawning']), np.log10(coefficients_states['a_spawning']), feature_name=r'coefficient value', ylim=(-6.7, 0),  color='maroon', alpha=.7, axs=axs)
 ax = axs[1,0]
 ax.set_visible(True)
 plot_fig2C(coefficients_rates.loc['e_forward_rate', PARAMETERS_DEFAULT['e_forward_rate']], ax, show_legend=True)
 axs[0,0].legend()
 handles, _ = axs[0,0].get_legend_handles_labels()
-axs[0,0].legend(handles, [r'$a_{\mathrm{fail}}$', r'$\log_{10} a_{\mathrm{sp}}$'], loc='lower right', ncol=2, handlelength=1)
+axs[0,0].legend(handles, [r'$a_{\mathrm{fail}}$', r'$\log_{10} a_{\mathrm{spawn}}$'], loc='lower right', ncol=2, handlelength=1)
 plt.savefig(out_dir / ("fig5" + (letter or re.sub(r'\s+', '_', feature_name)) + ".svg"))
 plt.savefig(out_dir / ("fig5" + (letter or re.sub(r'\s+', '_', feature_name)) + ".png"))
 
 
 
 letter = 'B'
-feature_name = 'minimal $\\lambda_{tot}$ [step$^{-1}$]'
+feature_name = 'minimal $\\lambda_{tot}$ [cell layer$^{-1}$]'
 axs = plot_parameter_scan(minimal_propensity_rounded_rates, minimal_propensity_rounded_states, feature_name=feature_name, logscale=True)
 ax = axs[1,0]
 ax.set_visible(True)
@@ -154,7 +154,7 @@ plt.savefig(out_dir / ("fig5" + (letter or re.sub(r'\s+', '_', feature_name)) + 
 
 letter = 'C'
 feature_name = 'optimal width $W_{opt}$'
-axs = plot_parameter_scan(optimal_w_rouded_rates, optimal_w_rouded_states, feature_name=feature_name, ylim=(0,11), grid=True)
+axs = plot_parameter_scan(optimal_w_rouded_rates, optimal_w_rouded_states, feature_name=feature_name, ylim=(0,11), grid=True, color='slategray')
 ax = axs[1,0]
 ax.set_visible(True)
 plot_fig2C(coefficients_rates.loc['e_forward_rate', PARAMETERS_DEFAULT['e_forward_rate']], ax, show_optimal_w=True)
@@ -165,14 +165,14 @@ plt.savefig(out_dir / ("fig5" + (letter or re.sub(r'\s+', '_', feature_name)) + 
 
 letter = 'S4'
 feature_name = 'coefficients'
-axs = plot_parameter_scan(-coefficients_rates['b_failure'] / coefficients_rates['a_failure'], -coefficients_states['b_failure'] / coefficients_states['a_failure'], feature_name=r'$a_{\mathrm{fail}},  \log_{10} a_{\mathrm{sp}}$', color='olive', alpha=.4)
-plot_parameter_scan(-coefficients_rates['b_spawning'] / coefficients_rates['a_spawning'], -coefficients_states['b_spawning'] / coefficients_states['a_spawning'], feature_name='coefficient value',  color='maroon', alpha=.4, axs=axs)
+axs = plot_parameter_scan(-coefficients_rates['b_failure'] / coefficients_rates['a_failure'], -coefficients_states['b_failure'] / coefficients_states['a_failure'], feature_name=r'$a_{\mathrm{fail}},  \log_{10} a_{\mathrm{spawn}}$', color='darkseagreen', alpha=1.)
+plot_parameter_scan(-coefficients_rates['b_spawning'] / coefficients_rates['a_spawning'], -coefficients_states['b_spawning'] / coefficients_states['a_spawning'], feature_name='coefficient value',  color='rosybrown', alpha=1., axs=axs)
 ax = axs[1,0]
 ax.set_visible(True)
 plot_fig2C(coefficients_rates.loc['e_forward_rate', PARAMETERS_DEFAULT['e_forward_rate']], ax, show_legend=True)
 axs[0,0].legend()
 handles, _ = axs[0,0].get_legend_handles_labels()
-axs[0,0].legend(handles, [r'$W_{\mathrm{fail}}$', r'$W_{\mathrm{sp}}$'], loc='lower right', ncol=2, handlelength=1)
+axs[0,0].legend(handles, [r'$W_{\mathrm{fail}}$', r'$W_{\mathrm{spawn}}$'], loc='lower right', ncol=2, handlelength=1)
 plt.savefig(out_dir_figS4 / ('figS4' + ".svg"))
 plt.savefig(out_dir_figS4 / ('figS4' + ".png"))
 

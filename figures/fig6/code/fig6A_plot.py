@@ -25,13 +25,13 @@ results_states = results_states[1 / results_states['max_value'] < 1000]
 
 letter = 'A'
 feature_name = 'minimum average interval\nat channel end [min]'
-plot_parameter_scan(1 / results_rates['max_value'], 1 / results_states['max_value'], feature_name=feature_name, ylim=(0,600), plot_states=False)
+plot_parameter_scan(1 / results_rates['max_value'], 1 / results_states['max_value'], feature_name=feature_name, ylim=(0,600), plot_states=False, color='coral')
 plt.savefig(out_dir / ("fig6" + (letter or re.sub(r'\s+', '_', feature_name)) + ".svg"))
 plt.savefig(out_dir / ("fig6" + (letter or re.sub(r'\s+', '_', feature_name)) + ".png"))
 
 
 letter = 'A1'
-feature_name = 'optimal interval [min]'
+feature_name = 'optimal interval $T_{\\mathrm{slot}}$ [min]'
 plot_parameter_scan(results_rates['optimal_interval'], results_states['optimal_interval'], feature_name=feature_name, ylim=(0, 600))
 plt.savefig(out_dir / ("fig6" + (letter or re.sub(r'\s+', '_', feature_name)) + ".svg"))
 plt.savefig(out_dir / ("fig6" + (letter or re.sub(r'\s+', '_', feature_name)) + ".png"))

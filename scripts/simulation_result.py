@@ -19,9 +19,9 @@ class SimulationResult:
         if has_states:
             self._states = pd.concat(
                 pd.read_csv(states_part_path).assign(
-                    seconds=int(re.findall(r"(-?\d+)\.csv", states_part_path.name)[0]),
+                    seconds=int(re.findall(r"state_t(\d+)\.csv", states_part_path.name)[0]),
                     )
-                for states_part_path in self._simulation_dir.glob("t_*.csv")
+                for states_part_path in self._simulation_dir.glob("state_t*.csv")
             )
         else: self._states = None
 

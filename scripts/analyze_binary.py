@@ -17,6 +17,15 @@ from scripts.analyze_velocity import get_velocity
 from scripts.optimizer import get_optimum_from_scan
 
 
+fields_letter_to_fields = {
+    'c': ['c+0'],
+    'rl': ['l0', 'r0'],
+    'cm': ['c+0', 'c-1'],
+    'cp': ['c+0', 'c+1'],
+    'cmp': ['c+0', 'c-1', 'c+1'],
+}
+
+
 def make_binary_protocol(interval, n_slots, p=0.5, seed=0):
     random_generator = np.random.default_rng(seed)
     pulse_bits = random_generator.choice(2, size=n_slots, p=[1.-p, p])
@@ -96,7 +105,7 @@ def generate_dataset(
     velocity_cache_dir=Path(__file__).parent.parent / 'data' / 'velocity',
     n_margin=4,
     n_nearest=4,
-    min_distance_between_peaks=20,
+    min_distance_between_peaks=30,
     processes=None,
 ):
 
@@ -230,39 +239,67 @@ def find_optimal_bitrate(
     if outdir:
         (outdir / suffix).mkdir(exist_ok=True, parents=True)
 
-    scan_ranges = (np.exp(np.linspace(
-            np.log(expected_maximums) - scan_points * logstep, 
-            np.log(expected_maximums) + scan_points * logstep,
-            2 * scan_points + 1).T) // 1).astype('int')
+    # scan_ranges = (np.exp(np.linspace(
+    #         np.log(expected_maximums) - scan_points * logstep, 
+    #         np.log(expected_maximums) + scan_points * logstep,
+    #         2 * scan_points + 1).T) // 1).astype('int')
 
-    nearest_pulses = pd.concat([
-        generate_dataset_batch(
-            channel_lengths=[channel_length],
-            channel_widths=[channel_width],
-            intervals=intervals,
-            outdir=outdir,
-            processes=processes,
-            **kwargs
-        ) for (channel_width, channel_length), intervals in zip(channel_wls, scan_ranges)
-    ], ignore_index=True)
+    # nearest_pulses = pd.concat([
+    #     generate_dataset_batch(
+    #         channel_lengths=[channel_length],
+    #         channel_widths=[channel_width],
+    #         intervals=intervals,
+    #         outdir=outdir,
+    #         processes=processes,
+    #         **kwargs
+    #     ) for (channel_width, channel_length), intervals in zip(channel_wls, scan_ranges)
+    # ], ignore_index=True)
 
-    fields_letter_to_fields = {
-        'c': ['c+0'],
-        'rl': ['l0', 'r0'],
-        'cm': ['c+0', 'c-1'],
-        'cp': ['c+0', 'c+1'],
-        'cmp': ['c+0', 'c-1', 'c+1'],
-    }
-    # for fields in 'c',:#, 'rl', 'cm', 'cp', 'cmp':
-    #     for k_neighbors in (25,):
-    #         for reconstruction in (False,):
-    print(f"Estimating entropy {suffix}")
-    (outdir / suffix).mkdir(exist_ok=True, parents=True)
+    nearest_pulses_parts = []
+    entropies_parts = []
+    result_parts = []
+    for (channel_width, channel_length), expected_maximum in zip(channel_wls, expected_maximums):
+        extend_to_low = 1
+        extend_to_high = 1
 
-    entropies = get_entropy(nearest_pulses.reset_index(), fields=fields_letter_to_fields[fields], reconstruction=reconstruction, k_neighbors=k_neighbors)
+        while True:
+            intervals = (np.exp(np.linspace(
+                np.log(expected_maximum) - extend_to_low * scan_points * logstep, 
+                np.log(expected_maximum) + extend_to_high * scan_points * logstep,
+                (extend_to_low + extend_to_high) * scan_points + 1).T) // 1).astype('int')
+
+
+            nearest_pulses_part = generate_dataset_batch(
+                channel_lengths=[channel_length],
+                channel_widths=[channel_width],
+                intervals=intervals,
+                outdir=outdir,
+                processes=processes,
+                **kwargs
+            )
+            entropies_part = get_entropy(nearest_pulses_part.reset_index(), fields=fields_letter_to_fields[fields], reconstruction=reconstruction, k_neighbors=k_neighbors)
+            result_part, search_better_around = get_optimum_from_scan(entropies_part, field='bitrate_per_hour', required_wls=[(channel_width, channel_length)], return_errors=True)
+            if not len(search_better_around):
+                break
+            elif search_better_around[(channel_width, channel_length)] == -1:
+                extend_to_low += 1
+            elif search_better_around[(channel_width, channel_length)] == 1:
+                extend_to_high += 1
+
+        nearest_pulses_parts.append(nearest_pulses_part)
+        entropies_parts.append(entropies_part)
+        result_parts.append(result_part.reset_index())
+
+                
+    # nearest_pulses_parts = pd.concat(nearest_pulses_parts, ignore_index=True)
+    entropies = pd.concat(entropies_parts).set_index(['channel_width', 'channel_length', 'interval'])
+    result = pd.concat(result_parts).set_index(['channel_width', 'channel_length'])
+    # print(f"Estimating entropy {suffix}")
+
+    # entropies = get_entropy(nearest_pulses.reset_index(), fields=fields_letter_to_fields[fields], reconstruction=reconstruction, k_neighbors=k_neighbors)
     entropies.to_csv(outdir / suffix / f"entropies.csv")
 
-    result = get_optimum_from_scan(entropies, field='bitrate_per_hour', required_wls=product(channel_widths, channel_lengths))
+    # result, search_better_around = get_optimum_from_scan(entropies, field='bitrate_per_hour', required_wls=product(channel_widths, channel_lengths))
 
     result['channel_length_sqrt'] = np.sqrt(result.index.get_level_values('channel_length'))
     result['optimal_interval_sq'] = result['optimal_interval']**2
@@ -271,7 +308,7 @@ def find_optimal_bitrate(
     result['max_bitrate_log'] = np.log(result['max_bitrate'])
     result['max_bitrate_inv'] = 1 / result['max_bitrate']
 
-    fig, ax = plot_scan(entropies, x_field='interval', c_field='channel_length')#.reset_index().set_index(['channel_width', 'channel_length', ['bitrate_per_hour'].unstack('channel_width').plot('interval', 'bitrate_per_hour', marker='o')
+    fig, ax = plot_scan(entropies.reset_index(), x_field='interval', c_field='channel_length')#.reset_index().set_index(['channel_width', 'channel_length', ['bitrate_per_hour'].unstack('channel_width').plot('interval', 'bitrate_per_hour', marker='o')
     ax.plot(result['optimal_interval'], result['max_value'], color='k', marker='o')
     
     plt.savefig(outdir / 'partial_results.png')

@@ -79,7 +79,7 @@ for ch_l_it, (channel_length, result_group) in enumerate(result.groupby('channel
         #yerr='optimal_interval_err', capsize=4, 
         ls='-', lw=1, ms=5, ax=axs[1], label=f"{channel_length:.0f}")
 
-axs[1].set_ylabel('optimal interval [min]')
+axs[1].set_ylabel('optimal interval $T_{\\mathrm{slot}}$ [min]')
 axs[1].set_xlabel('channel width $W$')
 axs[1].set_xlim(left=2, right=13)
 axs[1].set_ylim(bottom=0, top=300)

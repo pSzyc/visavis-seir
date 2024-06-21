@@ -8,7 +8,7 @@ from scripts.analyze_binary import generate_dataset_batch
 from scripts.binary import get_entropy
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' / 'approach6'# approach5
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' / 'approach7'# approach5
 data_dir.mkdir(parents=True, exist_ok=True)
 velocity_cache_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'velocity'
 
@@ -36,7 +36,7 @@ nearest_pulses = generate_dataset_batch(
     duration=1,
     n_margin=4,
     n_nearest=4,
-    min_distance_between_peaks=20,
+    min_distance_between_peaks=30,
     use_cached=True,
     processes=10,
 )
@@ -47,9 +47,11 @@ fields_letter_to_fields = {
     'cm': ['c+0', 'c-1'],
     'cp': ['c+0', 'c+1'],
     'cmp': ['c+0', 'c-1', 'c+1'],
+    'cmm': ['c+0', 'c-1', 'c-2'],
+    'cmmp': ['c+0', 'c-1', 'c-2', 'c+1'],
 }
 
-for fields in 'c', 'rl', 'cm', 'cp', 'cmp':
+for fields in 'cmmp',:#'c', 'rl', 'cm', 'cp', 'cmp', 'cmm', 'cmmp':
     for k_neighbors in (15, 25):
         for reconstruction in (True, False):
             suffix = f"-{fields}{k_neighbors}{'-reconstruction' if reconstruction else ''}"

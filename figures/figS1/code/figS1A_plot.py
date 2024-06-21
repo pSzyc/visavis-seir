@@ -30,8 +30,8 @@ velocity[velocity['channel_length'].eq(300)].plot(style='o-', ax=ax, color="C4")
 velocity[velocity['channel_length'].eq(30) & (velocity.index.get_level_values('channel_width') == 1)].plot(style='o-', fillstyle='none', ax=ax, color="C4")
 
 yticks = [0.1 * y for y in range(5)]
-ax.set_ylabel('front propagation speed $v$ [step/min]')
-ax.set_xlabel('channel width')
+ax.set_ylabel('front propagation speed $v$ [cell layer/min]')
+ax.set_xlabel('channel width $W$')
 ax.set_xlim(left=0)
 ax.set_ylim(bottom=0, top = 0.4)
 ax.xaxis.set_major_locator(MultipleLocator(5))

@@ -43,8 +43,6 @@ class HandlerTupleVertical(HandlerBase):
         # docstring inherited
         handler_map = legend.get_legend_handler_map()
 
-        print(xdescent, ydescent, width, height)
-
         if self._nrows is None and self._ncols is None:
             ncols = 1
             nrows = len(orig_handle)
@@ -100,7 +98,6 @@ class HandlerTupleVertical(HandlerBase):
                 legend, handle1,
                 *xy, width, height, fontsize, trans)
             a_list.extend(_a_list)
-            print(xy, width, height)
             # a_list.extend([Rectangle(xy, width, height, color=f'C{it}', alpha=.3)])
 
         

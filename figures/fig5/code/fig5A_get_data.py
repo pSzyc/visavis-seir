@@ -86,21 +86,17 @@ for altered_parameter, fold_change in product(altered_parameters, fold_changes):
         points_to_show = propensities['l_spawning'].between(*ylim)
         ax.plot(propensities[points_to_show]['channel_width'], propensities[points_to_show]['l_spawning'], '^', color='maroon',label='front spawning', clip_on=False)
         ax.plot(xs, np.exp(a_fail * xs.reshape(-1,1) + b_fail), color='olive', alpha=0.3, 
-            # label=f"$\\lambda_f$ = {np.exp(b_fail):.2f} $\\times$ {np.exp(-a_fail):.2f}$^{{-w}}$"
-            # label=r"$\lambda_{\mathrm{failure}}=\exp(\alpha W + \beta)$"
-            label=f"$\\lambda_{{\mathrm{{failure}}}}=\exp({a_fail:.3f}~×~(W {b_fail / a_fail:+.3f}))$",
+            label=f"$\\lambda_{{\mathrm{{fail}}}}=\exp({a_fail:.3f}~×~(W {b_fail / a_fail:+.3f}))$",
             )
         ax.plot(xs, (a_sp * xs + b_sp).reshape(-1,1), color='maroon', alpha=.4, 
-            # label=f"$\\lambda_s$ = (w - {-b_sp/a_sp:.2f}) / {1/a_sp:.0f}"
-            # label=r"$\lambda_{\mathrm{spawning}}=a W + b$"
-            label=f"$\\lambda_{{\mathrm{{spawning}}}}={a_sp:.3g}~×~(W {b_sp / a_sp:+.3f})$",
+            label=f"$\\lambda_{{\mathrm{{spawn}}}}={a_sp:.3g}~×~(W {b_sp / a_sp:+.3f})$",
             )
         ax.plot(xs, (np.exp(a_fail * xs + b_fail) + (a_sp * xs + b_sp)).reshape(-1,1), color='navy', alpha=.4, 
-            label=r"$\lambda_{\mathrm{tot}} = \lambda_{\mathrm{failure}} + \lambda_{\mathrm{spawning}}$"),
+            label=r"$\lambda_{\mathrm{tot}} = \lambda_{\mathrm{fail}} + \lambda_{\mathrm{spawn}}$"),
         ax.set_xlabel('channel width $W$')
         ax.set_xlim(left=0)
         ax.xaxis.set_major_locator(MultipleLocator(5))
-        ax.set_ylabel('propensity [step$^{-1}$]')
+        ax.set_ylabel('propensity [cell layer$^{-1}$]')
         ax.set_ylim(ylim)
 
 
