@@ -1,5 +1,6 @@
 from pathlib import Path
 from shutil import rmtree
+import json
 
 from typing import Optional
 
@@ -23,7 +24,7 @@ def run_simulation(
     clean_up=True,
     save_states=False,
     save_activity=False,
-    sim_root: Path | str = Path(TEMP_DIR) / 'qeir',
+    sim_root: Path | str = Path(TEMP_DIR) / 'qeirq',
     sim_dir_name: Optional[str] = None,
     outdir=None,
     ):

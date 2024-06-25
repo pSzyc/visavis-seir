@@ -1,15 +1,17 @@
+.vscode
 .ipynb_checkpoints
+__pycache__
 Cargo.lock
+target
 *.csv
 *.png
 *.svg
-movies/**/snaps
-private
-__pycache__
-target
-.vscode
+*.mp4
 **data
 **data2
 **.pkl
 **.gz
+movies/**/snaps
+private
+results
 

@@ -62,9 +62,7 @@ def plot_result_from_activity(activity, outfile=None, title=None, t_min=None, t_
         )
 
     if outfile is not None:
-        print("Don't call me off")
         fig.savefig(outfile)
-        print("Please!")
         plt.close(fig)
     elif show:
         plt.show()

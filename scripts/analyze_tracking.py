@@ -1,7 +1,6 @@
 from pathlib import Path
 import pandas as pd
 
-from tqdm import tqdm
 import json
 from shutil import rmtree
 
@@ -36,23 +35,6 @@ def run_single(
             sim_out_dir.absolute().mkdir(parents=True, exist_ok=True)
 
 
-        # try:    # Try not running simulations and passing activity=None -- maybe the results are chached?
-        #     print('A', end='')
-        #     tracked_results = TrackedResults(
-        #         activity=None,
-        #         input_protocol=pulse_intervals,
-        #         duration=duration,
-        #         channel_length=channel_length,
-        #         outdir=outdir and sim_out_dir,
-        #         verbose=verbose,
-        #         save_csv=save_iterations,
-        #         **kwargs,
-        #     )
-        #     pulse_fates_part = tracked_results.pulse_fates
-        
-        # except e:
-            # print(e)
-            # print('B', end='')
         result = run_simulation(
             parameters=parameters,
             channel_width=channel_width,
@@ -82,21 +64,6 @@ def run_single(
             **kwargs,
         )
         pulse_fates_part = tracked_results.pulse_fates
-
-        # data_part = determine_fates(
-        #     activity=result.activity,
-        #     input_protocol=pulse_intervals,
-        #     duration=duration,
-        #     channel_length=channel_length,
-        #     outdir=outdir and sim_out_dir,
-        #     verbose=False,
-        #     plot_results=plot_results,
-        #     save_csv=save_iterations,
-        #     indir=indir and indir / f'sim-{simulation_id}',
-        #     **kwargs,
-        #     )
-
-
         pulse_fates_part['simulation_id'] = simulation_id
         return pulse_fates_part
 

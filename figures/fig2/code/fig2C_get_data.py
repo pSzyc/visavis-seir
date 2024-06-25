@@ -9,7 +9,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 
 from scripts.propensities import get_propensities_batch
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8' #approach6
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8' 
 data_dir.mkdir(exist_ok=True, parents=True)
 
 channel_widths = (list(range(1,10,1)) + list(range(10,21,2)))#[::-1]
