@@ -43,7 +43,7 @@ panels_dir.mkdir(parents=True, exist_ok=True)
 fig, axs = subplots_from_axsize(1, 2, (1.68, 1.5), top=.2, left=0.5, wspace=0.5, right=0.01)
 
  
-entropies = pd.read_csv(data_dir / f'fig4AB_entropies-c25.csv')
+entropies = pd.read_csv(data_dir / 'fig4AB_entropies-c25.csv')
 avg_n_backward = 1.285
 
 # --- Fig 4A ---
@@ -76,7 +76,7 @@ plot_scan(
 )
 
 
-coefs = pd.read_csv(fig2_data_dir / f'coefs--l-300.csv').set_index('coefficient')
+coefs = pd.read_csv(fig2_data_dir / 'coefs--l-300.csv').set_index('coefficient')
 
 
 failure_propensity = np.exp(coefs['failure']['a'] * entropies['channel_width'] + coefs['failure']['b'])
@@ -124,8 +124,8 @@ plt.close(fig)
 # --- Fig 4GHI ---
 
 
-probabilities = pd.concat([pd.read_csv(fig3_data_dir(channel_length) / f'probabilities.csv').set_index('interval') for channel_length in channel_lengths], names=['channel_length'], keys=channel_lengths)
-packed_data = pd.concat([pd.read_csv(fig3_data_dir(channel_length) / f'packed_data.csv').set_index(['fate', 'interval']) for channel_length in channel_lengths], names=['channel_length'], keys=channel_lengths)
+probabilities = pd.concat([pd.read_csv(fig3_data_dir(channel_length) / 'probabilities.csv').set_index('interval') for channel_length in channel_lengths], names=['channel_length'], keys=channel_lengths)
+packed_data = pd.concat([pd.read_csv(fig3_data_dir(channel_length) / 'packed_data.csv').set_index(['fate', 'interval']) for channel_length in channel_lengths], names=['channel_length'], keys=channel_lengths)
 
 
 def get_measured_spawning_probability(channel_length):

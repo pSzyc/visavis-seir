@@ -16,7 +16,7 @@ from scripts.plot_result import plot_result_from_activity
 from scripts.defaults import PARAMETERS_DEFAULT
 from scripts.style import *
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6'/ 'fig6BC' / 'approach1'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6' / 'fig6BC' / 'approach1'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(exist_ok=True, parents=True)
 
@@ -56,8 +56,6 @@ def parameter_to_label(param_with_value):
         return f"{param_label} = {presented_value:.0f}"
 
 
-
-
 fig, axs = subplots_from_axsize(*(data_sets.shape[:-1]), (1.8,2.1), wspace=0.15, hspace=.55, left=0.6, right=0.1, top=0.2)
 
 for ax, (interval, parameters_update) in zip(axs.flatten(), data_sets.reshape(-1, data_sets.shape[-1])):
@@ -75,11 +73,8 @@ for ax, (interval, parameters_update) in zip(axs.flatten(), data_sets.reshape(-1
     ax.set_xlabel('')
     ax.set_xticklabels([])
     ax.set_xticks([0,channel_length / 2, channel_length])
-
-    # ax.set_ylabel(f'{interval = } min')
     ax.set_title(title, loc='left', pad=-20, fontweight='bold')
 
-    # ax2 = ax.twinx()
 for ax in axs.flatten():#[-1]:
     ax.set_xlabel('position along channel')
     ax.set_xticklabels(map(int, [0,channel_length / 2, channel_length]))

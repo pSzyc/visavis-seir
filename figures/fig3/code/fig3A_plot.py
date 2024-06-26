@@ -19,7 +19,6 @@ out_dir = Path(__file__).parent.parent / 'panels'
 
 channel_widths = [6]
 channel_lengths = [300]
-# intervals = [100, 150, 200]
 intervals = [180, 120, 60]
 duration = 5
 
@@ -42,11 +41,7 @@ for it, (channel_width, channel_length, interval) in enumerate(data_sets):
     else:
         axs[it].set_ylabel('')
         axs[it].set_yticklabels([])
-    axs[it].set_xticks([])
-    # axs[it].set_ylabel(f'{interval = } min')
     axs[it].set_title(f"interval {interval} min", loc='left', pad=-20, fontweight='bold')
-
-    # ax2 = axs[it].twinx()
     axs[it].set_xticks([0,channel_length / 2, channel_length])
     axs[it].set_xlabel('position along channel')
 

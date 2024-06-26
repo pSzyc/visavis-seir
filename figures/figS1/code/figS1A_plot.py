@@ -1,6 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import os
 from pathlib import Path
 from matplotlib.ticker import MultipleLocator
 from subplots_from_axsize import subplots_from_axsize
@@ -8,23 +7,12 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order to be able to import from scripts.py
 from scripts.style import *
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "approach6"
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "approach10"
 panel_dir = Path(__file__).parent.parent / 'panels'
 panel_dir.mkdir(exist_ok=True, parents=True)
-data_dir.mkdir(exist_ok=True, parents=True)
-
 
 fig, ax = subplots_from_axsize(1, 1, (2.5, 2), left=.8)
 
-# data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "approach6"
-# velocity = pd.read_csv(data_dir / 'velocity.csv').set_index('channel_width')
-# velocity.plot(style='o-', ax=ax)
-
-# data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "approach7"
-# velocity = pd.read_csv(data_dir / 'velocity.csv').set_index('channel_width')
-# velocity[velocity.index.get_level_values('channel_width') <= 1].plot(style='o-', fillstyle='none', ax=ax, color="C0")
-
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS1' / "approach10"
 velocity = pd.read_csv(data_dir / 'velocity.csv').set_index('channel_width')
 velocity[velocity['channel_length'].eq(300)].plot(style='o-', ax=ax, color="C4")
 velocity[velocity['channel_length'].eq(30) & (velocity.index.get_level_values('channel_width') == 1)].plot(style='o-', fillstyle='none', ax=ax, color="C4")

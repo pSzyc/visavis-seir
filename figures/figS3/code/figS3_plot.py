@@ -11,7 +11,6 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.handler_tuple_vertical import HandlerTupleVertical
 
 plt.rcParams["font.sans-serif"] = ['Carlito']
-# plt.rcParams['mathtext.fontset'] = 'Carlito'
 plt.rcParams['mathtext.fontset'] = 'custom'
 plt.rcParams['mathtext.rm'] = 'Carlito'
 plt.rcParams['font.size'] = 8
@@ -20,10 +19,7 @@ plt.rcParams['font.size'] = 8
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3' / 'approach11'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
-# differences = pd.read_csv(data_dir / 'difference_trajectories.csv').set_index(['channel_width', 'channel_length', 'interval'])
 differences = pd.read_csv(data_dir / 'difference_in_reaching_times.csv').set_index(['channel_width', 'channel_length', 'interval']).assign(sqrt_h=lambda df: np.sqrt(df['h']))
-
-# reaching_times = pd.read_csv(data_dir / 'reaching_times.csv')#.set_index(['channel_width', 'channel_length', 'interval', 'simulation_id'])
 
 fig, axs = subplots_from_axsize(1, 2, (2.7, 2), left=0.5, wspace=0.7)
 
@@ -44,24 +40,16 @@ ax.legend(
     title='interval between fronts'
     )
 
-# ax.get_legend().set(visible=False)
 ax.grid(which='both', ls=':')
 ax.xaxis.set_ticks(np.sqrt(np.array([1,10,30,100,300,1000])))
 ax.xaxis.set_major_formatter(FuncFormatter(lambda x, pos: f"$\\sqrt{{{x**2:.0f}}}$"))
 ax.set_xlabel('${\\sqrt{\\mathrm{distance~along~channel}}}$')
 ax.set_ylabel('interval between fronts [min]')
-# ax.set_xscale('log')
 
-# reaching_time_by_h = reaching_times.groupby(['channel_width', 'channel_length', 'interval', 'h']).mean().reset_index()
-# reaching_time_by_h.to_csv(data_dir / 'reaching_time_by_h.csv')
 reaching_time_by_h = pd.read_csv(data_dir / 'reaching_time_by_h.csv')
 time_of_reaching_300 = reaching_time_by_h[reaching_time_by_h['h'] == 30]
 time_of_reaching_300.plot('interval', ['first_pulse_reaching_time', 'second_pulse_reaching_time'], marker='o', ax=axs[1])
 axs[1].plot(time_of_reaching_300['interval'], time_of_reaching_300['first_pulse_reaching_time'] + time_of_reaching_300['interval'], ls=':')
-
-# axs[1].annotate("", xy=(75, 1230), xytext=(75, 1085),
-#             arrowprops=dict(arrowstyle="<->"))
-# axs[1].annotate("145 min", xy=(75, 1152.5), xytext=(85, 1152.5))
 
 axs[1].annotate("", xy=(65, 205), xytext=(65, 105),
             arrowprops=dict(arrowstyle="<->"))

@@ -6,6 +6,7 @@ target
 *.csv
 *.png
 *.svg
+*.tiff
 *.mp4
 **data
 **data2
