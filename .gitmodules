@@ -1,0 +1,3 @@
+[submodule "external/qeirq"]
+	path = external/qeirq
+	url = https://github.com/kochanczyk/qeirq
