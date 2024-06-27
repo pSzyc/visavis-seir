@@ -8,8 +8,8 @@ target
 *.svg
 *.tiff
 *.mp4
-**data2
-**data-full
+data
+data-full
 **.pkl
 **.gz
 movies/**/snaps

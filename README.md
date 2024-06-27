@@ -60,18 +60,17 @@ To run a sample simulation, enter the main repository directory and run
 ```bash
 python run_simulation.py
 ```
-You can edit the file to change simulation parameters.
+You can edit the file to change simulation parameters. The results will be found in 'results' directory.
 
-To genenerate data required for a particular figure/panel, run:
+# Figures and data
+All the figures and videos used in the papers are in the 'figures' and 'videos' folders.
+Scripts that were used to create the figures can be found in 'figures/fig<X>/code'.
+In the folder 'data' you will find data sufficient to draw the figures using 'figures/fig<X>/code/fig<X><panel>_plot.py' scripts.
+To redraw a plot, run:
 ```bash
-python figures/<figure>/code/<figure><panel>_get_data.py
+python figures/fig<X>/code/fig<X><panel>_plot.py
 ```
-
-To draw the plot, run:
-```bash
-python figures/<figure>/code/<figure><panel>_plot.py
-```
-Note that some panels are generated in groups -- check the content of figure/\<figure>/code.
-Some figures require data from other figures, so running another *_get_data.py script may be necessary.
-Reproducing all the results requires ca. 1000h computational workforce. 
+By running 'figures/fig<X>/code/fig<X><panel>_get_data.py' scripts you can regenerate the data in 'data'.
+Note that regenerating data for all figures will take ~1000h of computational workworce, and generate gigabytes of data.
 You can reduce the computational cost by reducing the number of simulations (n_simiulations) in the *_get_data.py file.
+Be careful, as the data in 'data' will be overriden with this operation.
