@@ -1,3 +1,7 @@
+# Script used in Information transmission in a cell monolayer: A numerical study, Nałęcz-Jawecki et al. 2024
+# Copyright (C) 2024 Paweł Nałęcz-Jawecki, Przemysław Szyc, Frederic Grabowski, Marek Kochańczyk
+# Available under GPLv3 licence, see README for more details
+    
 from typing import Iterable, Dict, Callable, Tuple, Iterator
 from pathlib import Path
 import subprocess
