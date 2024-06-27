@@ -10,13 +10,6 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.two_fronts import get_pulse_fate_counts_batch
 
 
-channel_length_to_approach = {
-    300: 'approach5',
-    30: 'approach6',
-    100: 'approach7',
-    1000: 'approach8',
-}
-
 channel_lengths = [30, 100, 300, 1000]
 channel_widths = [6]#[::-1]
 intervals = [40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,150,200,300]
@@ -25,7 +18,7 @@ intervals = [40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,150,200,300]
 
 for channel_length in channel_lengths:
 
-    data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' / channel_length_to_approach[channel_length]
+    data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' / 'approach1' / f'l-{channel_length}'
     data_dir.mkdir(exist_ok=True, parents=True)
 
     data = get_pulse_fate_counts_batch(

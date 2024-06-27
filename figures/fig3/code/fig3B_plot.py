@@ -7,7 +7,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent)) # in order to be able to import from scripts.py
 from scripts.style import *
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' / 'approach5'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' / 'approach1' / 'l-300'
 out_dir = Path(__file__).parent.parent / 'panels'
 
 probabilities = pd.read_csv(data_dir / 'probabilities.csv').set_index('interval')

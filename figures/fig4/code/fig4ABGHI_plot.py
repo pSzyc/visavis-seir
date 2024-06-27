@@ -22,19 +22,11 @@ def xlogx(x):
     return xlogy(x, x) / LOG2
 
 
-channel_length_to_approach = {
-    300: 'approach5',
-    30: 'approach6',
-    100: 'approach7',
-    1000: 'approach8',
-}
-
-
 channel_lengths = [100,300,1000]
 
 
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' /'approach7'
-fig3_data_dir = lambda channel_length: Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' / channel_length_to_approach[channel_length]
+fig3_data_dir = lambda channel_length: Path(__file__).parent.parent.parent.parent / 'data' / 'fig3' / 'fig3B' / 'approach1' / f"l-{channel_length}"
 fig2_data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
 velocity_cache_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'velocity'
 panels_dir = Path(__file__).parent.parent / 'panels'
