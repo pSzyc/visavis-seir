@@ -46,12 +46,12 @@ def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, 
     
     cache_dir = (
         velocity_cache_dir / 
-        'c_rate' / f"{parameters['c_rate']:.3f}" 
-        / 'e_forward_rate' / f"{parameters['e_forward_rate']:.3f}" 
-        / 'e_subcompartments_count' / f"{parameters['e_subcompartments_count']:d}" 
-        / 'i_forward_rate' / f"{parameters['i_forward_rate']:.3f}" 
-        / 'i_subcompartments_count' / f"{parameters['i_subcompartments_count']:d}" 
-        / f"l-{channel_length}--w-{channel_width}"
+        'c_rate' '-' f"{parameters['c_rate']:.3f}" 
+        '--' 'e_forward_rate' '-' f"{parameters['e_forward_rate']:.3f}" 
+        '--' 'e_subcompartments_count' '-' f"{parameters['e_subcompartments_count']:d}" 
+        '--' 'i_forward_rate' '-' f"{parameters['i_forward_rate']:.3f}" 
+        '--' 'i_subcompartments_count' '-' f"{parameters['i_subcompartments_count']:d}" 
+        '/' f"l-{channel_length}--w-{channel_width}"
         )
 
     estimated_velocity = get_velocity_formula(parameters)
