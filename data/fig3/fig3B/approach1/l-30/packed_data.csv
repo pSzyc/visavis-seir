@@ -1,0 +1,109 @@
+fate,interval,count,first_event_position_sum,fronts_forward_sum,fronts_backward_sum
+successful transmission,40,27.0,729.0,-1.0,0.0
+successful transmission,45,93.0,2538.0,0.0,0.0
+successful transmission,50,218.0,5942.0,-6.0,0.0
+successful transmission,55,431.0,11652.0,-12.0,0.0
+successful transmission,60,734.0,19969.0,-8.0,0.0
+successful transmission,65,1111.0,30301.0,-16.0,0.0
+successful transmission,70,1460.0,39933.0,-27.0,0.0
+successful transmission,75,1775.0,48575.0,-33.0,0.0
+successful transmission,80,2071.0,56950.0,-24.0,0.0
+successful transmission,85,2347.0,64586.0,-26.0,0.0
+successful transmission,90,2511.0,69229.0,-31.0,0.0
+successful transmission,95,2655.0,73368.0,-20.0,0.0
+successful transmission,100,2800.0,77520.0,-22.0,0.0
+successful transmission,110,2892.0,80287.0,-17.0,0.0
+successful transmission,120,2932.0,81492.0,-12.0,0.0
+successful transmission,150,2976.0,83041.0,-4.0,0.0
+successful transmission,200,2983.0,83268.0,-6.0,0.0
+successful transmission,300,2993.0,83582.0,-4.0,0.0
+initiation failure,40,2880.0,0.0,0.0,2.0
+initiation failure,45,2693.0,0.0,1.0,13.0
+initiation failure,50,2426.0,0.0,2.0,15.0
+initiation failure,55,1982.0,32.0,3.0,32.0
+initiation failure,60,1474.0,65.0,3.0,43.0
+initiation failure,65,1022.0,92.0,6.0,48.0
+initiation failure,70,658.0,71.0,3.0,43.0
+initiation failure,75,452.0,33.0,1.0,44.0
+initiation failure,80,240.0,37.0,4.0,36.0
+initiation failure,85,167.0,55.0,1.0,31.0
+initiation failure,90,92.0,86.0,1.0,23.0
+initiation failure,95,59.0,65.0,3.0,18.0
+initiation failure,100,33.0,16.0,0.0,15.0
+initiation failure,110,13.0,0.0,0.0,2.0
+initiation failure,120,12.0,18.0,0.0,7.0
+initiation failure,150,3.0,0.0,0.0,0.0
+initiation failure,200,8.0,0.0,0.0,2.0
+initiation failure,300,1.0,0.0,0.0,0.0
+propagation failure,40,11.0,146.0,0.0,0.0
+propagation failure,45,29.0,356.0,0.0,0.0
+propagation failure,50,62.0,747.0,0.0,0.0
+propagation failure,55,126.0,1489.0,3.0,0.0
+propagation failure,60,199.0,2580.0,1.0,0.0
+propagation failure,65,221.0,2868.0,0.0,0.0
+propagation failure,70,236.0,3167.0,1.0,0.0
+propagation failure,75,232.0,3247.0,2.0,0.0
+propagation failure,80,211.0,2918.0,0.0,0.0
+propagation failure,85,129.0,1831.0,1.0,0.0
+propagation failure,90,90.0,1306.0,0.0,0.0
+propagation failure,95,66.0,1028.0,0.0,0.0
+propagation failure,100,49.0,731.0,0.0,0.0
+propagation failure,110,27.0,446.0,0.0,0.0
+propagation failure,120,10.0,191.0,0.0,0.0
+propagation failure,150,6.0,118.0,0.0,0.0
+propagation failure,200,4.0,83.0,0.0,0.0
+propagation failure,300,2.0,24.0,0.0,0.0
+1 backward front spawning,40,75.0,667.0,0.0,75.0
+1 backward front spawning,45,156.0,1608.0,0.0,156.0
+1 backward front spawning,50,263.0,3205.0,-2.0,263.0
+1 backward front spawning,55,370.0,4807.0,-2.0,370.0
+1 backward front spawning,60,476.0,6706.0,-3.0,476.0
+1 backward front spawning,65,497.0,7864.0,1.0,497.0
+1 backward front spawning,70,483.0,7971.0,-1.0,483.0
+1 backward front spawning,75,402.0,7233.0,-4.0,402.0
+1 backward front spawning,80,337.0,6338.0,-2.0,337.0
+1 backward front spawning,85,234.0,4927.0,-1.0,234.0
+1 backward front spawning,90,186.0,3941.0,-2.0,186.0
+1 backward front spawning,95,140.0,2907.0,0.0,140.0
+1 backward front spawning,100,75.0,1793.0,0.0,75.0
+1 backward front spawning,110,38.0,857.0,0.0,38.0
+1 backward front spawning,120,18.0,398.0,0.0,18.0
+1 backward front spawning,150,8.0,178.0,0.0,8.0
+1 backward front spawning,200,5.0,80.0,0.0,5.0
+1 backward front spawning,300,0.0,0.0,0.0,0.0
+other front spawning events,40,6.0,110.0,4.0,7.0
+other front spawning events,45,28.0,424.0,23.0,35.0
+other front spawning events,50,30.0,529.0,24.0,38.0
+other front spawning events,55,89.0,1626.0,74.0,120.0
+other front spawning events,60,114.0,1996.0,109.0,136.0
+other front spawning events,65,146.0,2699.0,139.0,169.0
+other front spawning events,70,160.0,2888.0,155.0,188.0
+other front spawning events,75,138.0,2545.0,133.0,160.0
+other front spawning events,80,136.0,2509.0,135.0,159.0
+other front spawning events,85,119.0,2330.0,122.0,123.0
+other front spawning events,90,116.0,2155.0,125.0,139.0
+other front spawning events,95,79.0,1485.0,92.0,96.0
+other front spawning events,100,42.0,846.0,45.0,51.0
+other front spawning events,110,27.0,478.0,28.0,29.0
+other front spawning events,120,27.0,531.0,28.0,31.0
+other front spawning events,150,4.0,112.0,4.0,4.0
+other front spawning events,200,0.0,0.0,0.0,0.0
+other front spawning events,300,4.0,96.0,4.0,3.0
+annihilation by backward front,40,1.0,10.0,0.0,0.0
+annihilation by backward front,45,1.0,11.0,0.0,0.0
+annihilation by backward front,50,1.0,9.0,0.0,0.0
+annihilation by backward front,55,2.0,24.0,0.0,0.0
+annihilation by backward front,60,3.0,37.0,0.0,0.0
+annihilation by backward front,65,3.0,49.0,0.0,0.0
+annihilation by backward front,70,3.0,33.0,0.0,0.0
+annihilation by backward front,75,1.0,15.0,0.0,0.0
+annihilation by backward front,80,5.0,69.0,1.0,0.0
+annihilation by backward front,85,4.0,58.0,0.0,0.0
+annihilation by backward front,90,5.0,84.0,0.0,0.0
+annihilation by backward front,95,1.0,18.0,0.0,0.0
+annihilation by backward front,100,1.0,14.0,0.0,0.0
+annihilation by backward front,110,3.0,30.0,0.0,0.0
+annihilation by backward front,120,1.0,15.0,0.0,0.0
+annihilation by backward front,150,3.0,37.0,0.0,0.0
+annihilation by backward front,200,0.0,0.0,0.0,0.0
+annihilation by backward front,300,0.0,0.0,0.0,0.0
