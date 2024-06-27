@@ -8,7 +8,6 @@ target
 *.svg
 *.tiff
 *.mp4
-**data
 **data2
 **data-full
 **.pkl
