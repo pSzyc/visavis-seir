@@ -19,7 +19,7 @@ class VisAVisClient:
     def __init__(
         self,
         qeirq_bin: Path = Path("./external/qeirq/target/release/qeirq"),
-        path_to_compiling_script = Path(__file__).parent / 'compile_qeirq.sh',
+        path_to_compiling_script = Path(__file__).parent.parent / 'utils' / 'compile_qeirq.sh',
         sim_root: Path = Path("/tmp"),  # where simulation dirs are created
         build: Literal[True, False, 'if needed'] = 'if needed',
     ):

@@ -36,7 +36,7 @@ def get_velocities(
         variance_per_step = transit_time_variance / (transit_time_variance.index.get_level_values('channel_length') - 2)
         variance_per_step.name = 'variance_per_step'
         if outdir:
-            variance_per_step.to_csv(data_dir  / 'variance_per_step.csv')
+            variance_per_step.to_csv(outdir / 'variance_per_step.csv')
         return velocity, variance_per_step
 
     return velocity

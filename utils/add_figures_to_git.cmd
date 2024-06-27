@@ -1,7 +1,7 @@
 git add .\figures\fig1\fig1.png -f
-# git add .\figures\fig1\panels\fig1A.png -f
-# git add .\figures\fig1\panels\fig1B.png -f
-# git add .\figures\fig1\panels\fig1C.png -f
+git add .\figures\fig1\panels\fig1A.png -f
+git add .\figures\fig1\panels\fig1B.png -f
+git add .\figures\fig1\panels\fig1C.png -f
 git add .\figures\fig2\fig2.png -f
 git add .\figures\fig2\panels\fig2A.png -f
 git add .\figures\fig2\panels\fig2B.png -f
@@ -41,9 +41,9 @@ git add .\figures\figS6\figS6.png -f
 git add .\figures\figS6\panels\figS6.png -f
 
 git add .\figures\fig1\fig1.svg -f
-# git add .\figures\fig1\panels\fig1A.svg -f
-# git add .\figures\fig1\panels\fig1B.svg -f
-# git add .\figures\fig1\panels\fig1C.svg -f
+git add .\figures\fig1\panels\fig1A.svg -f
+git add .\figures\fig1\panels\fig1B.svg -f
+git add .\figures\fig1\panels\fig1C.svg -f
 git add .\figures\fig2\fig2.svg -f
 git add .\figures\fig2\panels\fig2A.svg -f
 git add .\figures\fig2\panels\fig2B.svg -f

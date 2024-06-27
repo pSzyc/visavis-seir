@@ -10,9 +10,12 @@ target
 *.mp4
 **data
 **data2
+**data-full
 **.pkl
 **.gz
 movies/**/snaps
 private
+notebooks
 results
+leftover
 

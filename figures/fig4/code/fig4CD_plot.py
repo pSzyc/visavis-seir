@@ -25,8 +25,8 @@ panels_dir.mkdir(parents=True, exist_ok=True)
 
 
 fields = 'c'
-k_neighbors = 25:
-for reconstruction = False:
+k_neighbors = 25
+reconstruction = False
 suffix = f"-{fields}{k_neighbors}{'-reconstruction' if reconstruction else ''}"
 print(f"Drawing plots for suffix: {suffix}")
 
