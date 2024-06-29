@@ -9,7 +9,6 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to import from scripts.py
 
-from scripts.tracking import determine_fates, get_pulse_positions
 from scripts.plot_result import plot_result, plot_result_from_activity
 from scripts.simulation import run_simulation
 
