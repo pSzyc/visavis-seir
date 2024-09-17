@@ -243,22 +243,6 @@ def find_optimal_bitrate(
     if outdir:
         (outdir / suffix).mkdir(exist_ok=True, parents=True)
 
-    # scan_ranges = (np.exp(np.linspace(
-    #         np.log(expected_maximums) - scan_points * logstep, 
-    #         np.log(expected_maximums) + scan_points * logstep,
-    #         2 * scan_points + 1).T) // 1).astype('int')
-
-    # nearest_pulses = pd.concat([
-    #     generate_dataset_batch(
-    #         channel_lengths=[channel_length],
-    #         channel_widths=[channel_width],
-    #         intervals=intervals,
-    #         outdir=outdir,
-    #         processes=processes,
-    #         **kwargs
-    #     ) for (channel_width, channel_length), intervals in zip(channel_wls, scan_ranges)
-    # ], ignore_index=True)
-
     nearest_pulses_parts = []
     entropies_parts = []
     result_parts = []
@@ -289,21 +273,19 @@ def find_optimal_bitrate(
                 extend_to_low += 1
             elif search_better_around[(channel_width, channel_length)] == 1:
                 extend_to_high += 1
+            else:
+                raise ValueError(search_better_around)
 
         nearest_pulses_parts.append(nearest_pulses_part)
         entropies_parts.append(entropies_part)
         result_parts.append(result_part.reset_index())
 
                 
-    # nearest_pulses_parts = pd.concat(nearest_pulses_parts, ignore_index=True)
     entropies = pd.concat(entropies_parts).set_index(['channel_width', 'channel_length', 'interval'])
     result = pd.concat(result_parts).set_index(['channel_width', 'channel_length'])
-    # print(f"Estimating entropy {suffix}")
 
-    # entropies = get_entropy(nearest_pulses.reset_index(), fields=fields_letter_to_fields[fields], reconstruction=reconstruction, k_neighbors=k_neighbors)
     entropies.to_csv(outdir / suffix / f"entropies.csv")
 
-    # result, search_better_around = get_optimum_from_scan(entropies, field='bitrate_per_hour', required_wls=product(channel_widths, channel_lengths))
 
     result['channel_length_sqrt'] = np.sqrt(result.index.get_level_values('channel_length'))
     result['optimal_interval_sq'] = result['optimal_interval']**2
