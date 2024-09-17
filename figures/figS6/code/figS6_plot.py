@@ -23,7 +23,7 @@ LOG2 = np.log(2)
 channel_lengths = [30,100,300,1000]
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' /'approach5'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' /'approach7'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 
@@ -31,7 +31,9 @@ fig, ax = subplots_from_axsize(1, 1, (2*1.68, 2*1.5), top=.2, left=0.5, wspace=0
 
  
 entropies = pd.read_csv(data_dir / f'fig4AB_entropies-c25.csv')
-entropies_2pts = pd.read_csv(data_dir / f'fig4AB_entropies-cm15.csv')
+entropies_cm = pd.read_csv(data_dir / f'fig4AB_entropies-cm25.csv')
+entropies_cmp = pd.read_csv(data_dir / f'fig4AB_entropies-cmp25.csv')
+entropies_cmm = pd.read_csv(data_dir / f'fig4AB_entropies-cmm25.csv')
 avg_n_backward = 1.285
 
 plot_scan(
@@ -42,25 +44,56 @@ plot_scan(
     ms=3,
     ax=ax,
 )
+
 plot_scan(
-    entropies_2pts, 
+    entropies_cm, 
     c_field='channel_length',
     x_field='interval',
     y_field='bitrate_per_hour',
     alpha=0.3,
     ms=3,
     ax=ax,
+    marker='s',
+    fillstyle='none',
 )
+
+plot_scan(
+    entropies_cmp, 
+    c_field='channel_length',
+    x_field='interval',
+    y_field='bitrate_per_hour',
+    alpha=0.3,
+    ms=3,
+    ax=ax,
+    marker='^',
+    fillstyle='none',
+)
+
+plot_scan(
+    entropies_cmm, 
+    c_field='channel_length',
+    x_field='interval',
+    y_field='bitrate_per_hour',
+    alpha=0.3,
+    ms=3,
+    ax=ax,
+    marker='v',
+    fillstyle='none',
+)
+
 
 
 ax.set_ylim(0,1)
 ax.set_xlabel('interval between slots $T_{\\mathrm{slot}}$ [min]')
 handles = ax.get_legend().legend_handles
 ax.legend(
-    handles=list(zip(handles[:4], handles[5:9])) + [tuple(handles[:4]), tuple(handles[5:9]), handles[4]], #title='channel length $L$',
-    labels=list(map('L = {:d}'.format, channel_lengths)) + ['based on 1 front', 'based on 2 fronts', 'perfect'],
+    handles=list(zip(handles[:4], handles[5:9])) + [tuple(handles[:4]), tuple(handles[5:9]), tuple(handles[10:14]),tuple(handles[15:19]), handles[4]], #title='channel length $L$',
+    labels=list(map('L = {:d}'.format, channel_lengths)) + ['nearest', 'nearest and 1 preceeding', 'nearest, 1 preceeding and 1 following', 'nearest and 2 preceeding', 'perfect'],
     handler_map={tuple: HandlerTupleVertical(nrows=1, vpad=-2.3)},
     )
 
-fig.savefig(panels_dir / f'figS6.svg')
+fig.savefig(panels_dir / f'figS6-with_legend.svg')
 fig.savefig(panels_dir / f'figS6.png')
+
+ax.get_legend().set_visible(False)
+fig.savefig(panels_dir / f'figS6.svg')
