@@ -31,9 +31,9 @@ fig, ax = subplots_from_axsize(1, 1, (2*1.68, 2*1.5), top=.2, left=0.5, wspace=0
 
  
 entropies = pd.read_csv(data_dir / f'fig4AB_entropies-c25.csv')
-entropies_cm = pd.read_csv(data_dir / f'fig4AB_entropies-cm25.csv')
-entropies_cmp = pd.read_csv(data_dir / f'fig4AB_entropies-cmp25.csv')
-entropies_cmm = pd.read_csv(data_dir / f'fig4AB_entropies-cmm25.csv')
+entropies_cm = pd.read_csv(data_dir / f'fig4AB_entropies-cm15.csv')
+entropies_cmp = pd.read_csv(data_dir / f'fig4AB_entropies-cmp15.csv')
+entropies_cmm = pd.read_csv(data_dir / f'fig4AB_entropies-cmm15.csv')
 avg_n_backward = 1.285
 
 plot_scan(
