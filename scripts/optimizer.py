@@ -21,9 +21,12 @@ def get_optimum_from_scan(scan_results: pd.DataFrame, field, required_wls=None, 
         smoothed_data = data[field].rolling(3, center=True).mean()
         optimal_interval_idx = smoothed_data.argmax()
         if not 1 < optimal_interval_idx < len(data[field]) - 2:
+            if not 0 < optimal_interval_idx < len(data[field]) - 1:
+                print(data)
+                raise ValueError(f"Problems with finding maximum for {channel_width = }, {channel_length = }: found {optimal_interval_idx=}")
             is_on_lower_edge = optimal_interval_idx <= 1
-            warn(f"Maximum on the {'lower' if is_on_lower_edge else 'upper'} > edge of the scan range for {channel_width = }, {channel_length = }")
-            search_better_around.update({(channel_width, channel_length): - 2 * is_on_lower_edge})
+            warn(f"Maximum found at {data['interval'].iloc[optimal_interval_idx]}, which is the {'lower' if is_on_lower_edge else 'upper'} edge of the scan range for {channel_width = }, {channel_length = }")
+            search_better_around.update({(channel_width, channel_length): 1 - 2 * is_on_lower_edge})
         optimal_interval = data['interval'].iloc[optimal_interval_idx] 
         max_value = data[field].iloc[optimal_interval_idx]
 
