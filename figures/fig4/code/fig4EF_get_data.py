@@ -14,15 +14,18 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.formula import get_expected_maximum_for_defaults
 from scripts.analyze_binary import find_optimal_bitrate
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4EF' / 'approach7'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4EF' / 'approach8'#'approach9--500-rep--100-pulses'
 data_dir.mkdir(parents=True, exist_ok=True)
     
 channel_widths_s = (
-    [6,5,4,3],
-    [6,7,8,9,10,11,12],
+    [6,5,4,3,2,1],
+    # [6,7,8,9,10,11,12] + list(range(15,31,3)),
+    list(range(6,31,1)),
+    # list(range(6,13,1)),
+    # list(range(6,21,1)),
     )
 
-channel_lengths = [100,300,1000] #,1000
+channel_lengths = [30,100,300,1000] #,1000
 
 
 fields = 'c'
@@ -35,28 +38,32 @@ entropies_parts = []
 
 for channel_widths in channel_widths_s:
     expected_maximums = get_expected_maximum_for_defaults(np.array(channel_lengths))
+    channel_lengths_worth_progressing = channel_lengths
     for channel_width in channel_widths:
         result, entropies = find_optimal_bitrate(
             expected_maximums, logstep=0.03, scan_points=5, 
-            channel_lengths=channel_lengths,
+            channel_lengths=channel_lengths_worth_progressing,
             channel_widths=[channel_width],
             outdir=data_dir / f'w-{channel_width}', 
             k_neighbors=k_neighbors, 
             reconstruction=reconstruction,
             fields=fields,
-            n_slots=500, 
-            n_simulations=100, #60 
-            processes=10,
+            n_slots=500, #500
+            n_simulations=100, #100 
+            processes=20,
             use_cached=True,
             )
-        expected_maximums = result['optimal_interval']
+        # expected_maximums = result['optimal_interval']
         result_parts.append(result)
         entropies_parts.append(entropies)
 
+        worth_progressing = result[result['max_bitrate'] > 0.02 / 60]
+        channel_lengths_worth_progressing = worth_progressing.index.get_level_values('channel_length').tolist()
+        expected_maximums = worth_progressing['optimal_interval']
+
 
 result = pd.concat(result_parts).reset_index().drop_duplicates().set_index(['channel_width', 'channel_length']).sort_index()
-result.to_csv((data_dir / suffix) / f'optimized_bitrate-{suffix}.csv')
+result.to_csv(data_dir / f'optimized_bitrate-{suffix}.csv')
 
 entropies = pd.concat(entropies_parts)
 entropies.to_csv(data_dir / f'entropies-{suffix}.csv')
-

@@ -81,7 +81,7 @@ axs[1].annotate('$T_{\\mathrm{R}} = T_{\\mathrm{cycle}} +\sigma_{\\mathrm{cycle}
 
 axs[0].set_xlabel('$\sqrt{\mathrm{channel~length}~L}$')
 axs[1].set_xlabel('$\sqrt{\mathrm{channel~length}~L}$')
-axs[0].set_ylabel('maximum bitrate [bit/h]')
+axs[0].set_ylabel('max bitrate [bit/h]')
 axs[1].set_ylabel('optimal interval $T_{\\mathrm{slot}}$ [min]')
 axs[0].legend(labels=['channel width $W$ = 6'])
 axs[1].legend(labels=['channel width $W$ = 6'])

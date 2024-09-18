@@ -18,7 +18,7 @@ from scripts.binary import plot_scan
 from scripts.handler_tuple_vertical import HandlerTupleVertical
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4EF' / 'approach7'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4EF' / 'approach8'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 
@@ -61,43 +61,42 @@ for ch_l_it, (channel_length, result_group) in enumerate(result.groupby('channel
         'channel_width', 
         'max_bitrate_per_hour', 
         marker='o', 
-        color=channel_length_to_color[channel_length], #yerr='max_bitrate_err', capsize=4, 
+        color=channel_length_to_color[channel_length],
         ls='-', lw=1, ms=5, ax=axs[0], label=f"{channel_length:.0f}")
 
 axs[0].set_ylabel('max bitrate [bit/h]')
 axs[0].set_xlabel('channel width $W$')
-axs[0].set_xlim(left=2, right=13)
+axs[0].set_xlim(left=0, right=31)
 axs[0].set_ylim(bottom=0, top=1)
 axs[0].xaxis.set_major_locator(MultipleLocator(5))
 axs[0].legend(title='channel length $L$')
-# axs[0].get_legend().set(visible=False)
 axs[0].grid(ls=':')
 
 
-for ch_l_it, (channel_length, result_group) in enumerate(result.groupby('channel_length')):
-    result_group[result_group['optimal_interval'] < 300].plot(
-        'channel_width', 
+result_with_valid_optimal_interval = result[
+    result['optimal_interval'].le(300)
+    & result['max_bitrate_per_hour'].ge(.07)
+]
+
+for ch_l_it, (channel_length, result_group) in enumerate(result_with_valid_optimal_interval.groupby('channel_length')):
+    result_group.plot(
+        'channel_width',
         'optimal_interval', 
         marker='o', 
         color=channel_length_to_color[channel_length], 
-        #yerr='optimal_interval_err', capsize=4, 
         ls='-', lw=1, ms=5, ax=axs[1], label=f"{channel_length:.0f}")
-
 axs[1].set_ylabel('optimal interval $T_{\\mathrm{slot}}$ [min]')
 axs[1].set_xlabel('channel width $W$')
-axs[1].set_xlim(left=2, right=13)
+axs[1].set_xlim(left=0, right=31)
 axs[1].set_ylim(bottom=0, top=300)
 axs[1].xaxis.set_major_locator(MultipleLocator(5))
-# axs[1].legend(title='channel length $L$')
-# axs[1].get_legend().set(visible=False)
 
-axs[1].legend()
-handles = axs[1].get_legend().legend_handles
+handles = axs[1].get_lines()
 axs[1].legend(
-    handles=[tuple(handles[i] for i in range(0,3))],
+    handles=[tuple(handles)],
     labels=['colors as \nin panel E'],
     loc='lower right',
-    handler_map={tuple: HandlerTupleVertical(ncols=3, vpad=-2.3)},
+    handler_map={tuple: HandlerTupleVertical(ncols=len(handles), vpad=-2.3)},
     # title='colors as in panel A'
     )
 axs[1].grid(ls=':')
