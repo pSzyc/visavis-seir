@@ -12,7 +12,6 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from scripts.defaults import PARAMETERS_DEFAULT, TEMP_DIR
-from scripts.tracking import determine_fates
 from scripts.utils import simple_starmap, starmap, random_name
 from scripts.tracked_results import TrackedResults
 from scripts.simulation import run_simulation
