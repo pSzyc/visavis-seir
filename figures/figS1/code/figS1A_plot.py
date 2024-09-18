@@ -18,8 +18,8 @@ panel_dir.mkdir(exist_ok=True, parents=True)
 fig, ax = subplots_from_axsize(1, 1, (2.5, 2), left=.8)
 
 velocity = pd.read_csv(data_dir / 'velocity.csv').set_index('channel_width')
-velocity[velocity['channel_length'].eq(300)].plot(style='o-', ax=ax, color="C4")
-velocity[velocity['channel_length'].eq(30) & (velocity.index.get_level_values('channel_width') == 1)].plot(style='o-', fillstyle='none', ax=ax, color="C4")
+velocity[velocity['channel_length'].eq(300)].plot(style='o', lw=0, ax=ax, color="C4")
+velocity[velocity['channel_length'].eq(30) & (velocity.index.get_level_values('channel_width') == 1)].plot(style='o', fillstyle='none', ax=ax, color="C4")
 
 yticks = [0.1 * y for y in range(5)]
 ax.set_ylabel('front propagation speed $v$ [cell layer/min]')
