@@ -24,16 +24,17 @@ def get_first_split_events(
     channel_length, 
     use_cached=True,
     ):
+    print(f'w-{channel_width}-l-{channel_length}')
     outdir = data_dir / f'w-{channel_width}-l-{channel_length}'
 
     if use_cached and (outdir / 'first_split_events.csv').exists():
-        return pd.read_csv(outdir / 'first_split_events.csv').set_index(['channel_length', 'channel_width', 'simulation_id'])
+        return pd.read_csv(outdir / 'first_split_events.csv').set_index(['channel_width', 'channel_length', 'simulation_id'])
     
     split_events = pd.concat(
         (pd.read_csv(outdir / f'sim-{simulation_id}' / 'split_events.csv').set_index('event_id')
             for simulation_id in range(n_simulations)),
-        names=['channel_length', 'channel_width', 'simulation_id'],
-        keys=list(product([channel_length], [channel_width], range(n_simulations))),
+        names=['channel_width', 'channel_length', 'simulation_id'],
+        keys=list(product([channel_width], [channel_length], range(n_simulations))),
     )
 
     first_split_events = split_events[split_events.index.get_level_values('event_id') == 0].reset_index('event_id', drop=True)
