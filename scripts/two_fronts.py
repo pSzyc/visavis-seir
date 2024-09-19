@@ -24,7 +24,7 @@ def get_pulse_fate_counts(
         []
     )
 
-    if use_cached and outdir:
+    if use_cached and outdir and (outdir / 'pulse_fates.csv').exists():
         data = pd.read_csv(outdir / 'pulse_fates.csv').set_index(['channel_length', 'channel_width', 'simulation_id'])
     else:
         data = generate_dataset(
