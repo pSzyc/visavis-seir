@@ -19,24 +19,47 @@ field_backward = 'backward'
 
 propensities = pd.read_csv(data_dir / 'fig2C--propensities.csv').set_index(['channel_width', 'channel_length'])
 
+def get_first_split_events(
+    channel_width, 
+    channel_length, 
+    use_cached=True,
+    ):
+    outdir = data_dir / f'w-{channel_width}-l-{channel_length}'
+
+    if use_cached and (outdir / 'first_split_events.csv').exists():
+        return pd.read_csv(outdir / 'first_split_events.csv').set_index(['channel_length', 'channel_width', 'simulation_id'])
+    
+    split_events = pd.concat(
+        (pd.read_csv(outdir / f'sim-{simulation_id}' / 'split_events.csv').set_index('event_id')
+            for simulation_id in range(n_simulations)),
+        names=['channel_length', 'channel_width', 'simulation_id'],
+        keys=list(product([channel_length], [channel_width], range(n_simulations))),
+    )
+
+    first_split_events = split_events[split_events.index.get_level_values('event_id') == 0].reset_index('event_id', drop=True)
+    first_split_events.to_csv(outdir / 'first_split_events.csv')
+    return first_split_events
+    
+
 events_parts = {}
-for w in channel_widths:
-    first_split_events = pd.read_csv(data_dir / f'w-{w}-l-{channel_length}' / 'first_split_events.csv').set_index(['channel_width', 'channel_length', 'simulation_id'])
+for channel_width in channel_widths:
+    
+    first_split_events = get_first_split_events(channel_width, channel_length)
 
     counts = (
         first_split_events[[field_forward, field_backward]]
-            .reindex(list(product([w], [channel_length], range(n_simulations))), fill_value=0)
+            .reindex(list(product([channel_width], [channel_length], range(n_simulations))), fill_value=0)
             .value_counts([field_forward, field_backward])
             .reset_index()
             .assign(
                 total_spawned=lambda df: df[field_forward] + df[field_backward],
-                channel_width=w,
+                channel_width=channel_width,
             )
             .rename(columns={0: 'count'})
     )
     counts_spawning = counts[counts[field_forward].gt(0) | counts[field_backward].gt(0)].copy()
-    counts_spawning['propensity'] = propensities.loc[w, channel_length]['l_spawning'] * counts_spawning['count'] / counts_spawning['count'].sum()
-    events_parts.update({w: counts_spawning})
+    counts_spawning['propensity'] = propensities.loc[channel_width, channel_length]['l_spawning'] * counts_spawning['count'] / counts_spawning['count'].sum()
+    events_parts.update({channel_width: counts_spawning})
 
 events = pd.concat(events_parts, ignore_index=True).set_index('channel_width')
 events.to_csv(data_dir / 'event_counts.csv')
