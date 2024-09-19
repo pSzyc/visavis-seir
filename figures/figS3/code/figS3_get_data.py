@@ -114,7 +114,7 @@ def generate_dataset(
     **kwargs
 ):
 
-    if use_cached and (outdir / 'reaching_times.csv').exists():
+    if use_cached and outdir and (outdir / 'reaching_times.csv').exists():
         reaching_times = pd.read_csv(outdir / 'reaching_times.csv').set_index(['channel_width', 'channel_length', 'interval', 'simulation_id', 'h'])
         # first_time_of_reaching = pd.read_csv(outdir / 'first_time_of_reaching.csv').set_index(['channel_width', 'channel_length', 'interval', 'simulation_id', 'h'])['seconds']
         # second_time_of_reaching = pd.read_csv(outdir / 'second_time_of_reaching.csv').set_index(['channel_width', 'channel_length', 'interval', 'simulation_id', 'h'])['seconds']

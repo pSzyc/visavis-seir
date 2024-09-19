@@ -85,7 +85,7 @@ def generate_dataset(
     **kwargs
 ):
 
-    if use_cached and (outdir / 'pulse_fates.csv').exists():
+    if use_cached and outdir and (outdir / 'pulse_fates.csv').exists():
         pulse_fates = pd.read_csv(outdir / 'pulse_fates.csv').set_index(['channel_length', 'channel_width', 'simulation_id'])
         if len(pulse_fates.index.get_level_values('simulation_id').unique()) == n_simulations:
             return pulse_fates
