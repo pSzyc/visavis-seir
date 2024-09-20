@@ -288,7 +288,6 @@ class TrackedResults():
             coordinate_cols=['h'],
             frame_col='frame',
             only_coordinate_cols=False,
-            validate_frame=False,
         )
         tracks = track_df.reset_index(drop=True).rename(columns={'frame_y': 'frame'})
         tracks = tracks[tracks['h'] != -200] # remove the artificial track
