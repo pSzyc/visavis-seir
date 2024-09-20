@@ -12,23 +12,30 @@ import sys
 root_repo_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 from scripts.analyze_velocity import get_velocity
+from scripts.entropy_utils import xlog2x
 from scripts.defaults import PARAMETERS_DEFAULT
 
 
-velocity_cache_dir = Path(__file__).parent.parent / 'data' / 'velocity'
-
-LOG2 = np.log(2)
-def xlogx(x):
-    return xlogy(x, x) / LOG2
+PREDICTION_TYPE_TO_LS = {
+    'failure_and_backward': ':',
+    'failure_and_variance': ':',
+    'asymptotic_and_variance': ':',
+    'failure_backward_and_variance': '--',
+    'failure_backward_forward_and_variance': '-',
+    'failure_backward_forward_and_variance_v2': '-',
+}
 
 channel_lengths = [30,100,300,1000]
 
 
-avg_n_backward = 1.285
-sigma2_0 = 1.65
-
 fig3_data_dir = lambda channel_length: Path(__file__).parent.parent / 'data' / 'fig3' / 'fig3B' / 'approach1' / f"l-{channel_length}"
 fig2_data_dir = Path(__file__).parent.parent / 'data' / 'fig2' / 'fig2C' / 'approach8'
+velocity_cache_dir = Path(__file__).parent.parent / 'data' / 'velocity'
+
+avg_n_backward = 1.285
+sigma2_0 = get_velocity(channel_width=6, channel_length=300, parameters=PARAMETERS_DEFAULT, velocity_cache_dir=velocity_cache_dir, quantity='variance_per_step') # 1.65
+
+print(sigma2_0)
 
 coefs = pd.read_csv(fig2_data_dir / 'coefs--l-300.csv').set_index('coefficient')
 
@@ -98,16 +105,13 @@ def compute_mi_from_error_probabilities(sending_probab=.5, chance_for_missing=0.
     fp = (1 - sending_probab) * chance_for_fake
     tn = (1 - sending_probab) * (1 - chance_for_fake)
     return (
-        (xlogx(tp) + xlogx(fn) + xlogx(fp) + xlogx(tn)) # -H(S,R)
-        - (xlogx(sending_probab) + xlogx(1 - sending_probab)) # -H(S)
-        - (xlogx(tp + fp) + xlogx(tn + fn)) # -H(R)
+        (xlog2x(tp) + xlog2x(fn) + xlog2x(fp) + xlog2x(tn)) # -H(S,R)
+        - (xlog2x(sending_probab) + xlog2x(1 - sending_probab)) # -H(S)
+        - (xlog2x(tp + fp) + xlog2x(tn + fn)) # -H(R)
     )
 
 
-
-def plot_predictions(intervals, channel_length, sending_probab, prediction_types=[], ax=None, **kwargs):
-    if ax is None:
-        ax = plt.gca()
+def get_predictions(intervals, channel_length, sending_probab, prediction_types=[]):
 
     v = get_velocity(channel_width=6, channel_length=channel_length, parameters=PARAMETERS_DEFAULT, velocity_cache_dir=velocity_cache_dir)
 
@@ -119,9 +123,9 @@ def plot_predictions(intervals, channel_length, sending_probab, prediction_types
     weighted_gamma = weighted(chance_of_not_hitting_the_start, intervals, channel_length, v=v, sending_probab=sending_probab) # chance that a backward front collides before reaching channel start
     extinction_probability = 1 - (1 - failure_probability) / (1 + number_of_backward_fronts * weighted_gamma) # probability that propagation fails or the front gets annihilated
 
-    predictions = {}
+    mi_per_slot_predictions = {}
     if 'failure_and_backward' in prediction_types:
-        predictions.update({
+        mi_per_slot_predictions.update({
             'failure_and_backward': compute_mi_from_error_probabilities(
                 sending_probab=sending_probab,
                 chance_for_missing=extinction_probability,
@@ -129,7 +133,7 @@ def plot_predictions(intervals, channel_length, sending_probab, prediction_types
             )
         })
     if 'failure_and_variance' in prediction_types:
-        predictions.update({
+        mi_per_slot_predictions.update({
             'failure_and_variance': compute_mi_from_error_probabilities(
                 sending_probab=sending_probab,
                 chance_for_missing=failure_probability + (1 - failure_probability) * inaccurate_probability,
@@ -137,7 +141,7 @@ def plot_predictions(intervals, channel_length, sending_probab, prediction_types
             )
         })
     if 'asymptotic_and_variance' in prediction_types:
-        predictions.update({
+        mi_per_slot_predictions.update({
             'asymptotic_and_variance':  compute_mi_from_error_probabilities(
                 sending_probab=sending_probab,
                 chance_for_missing=asymptotic_extinction_probability + (1 - asymptotic_extinction_probability) * inaccurate_probability,
@@ -145,7 +149,7 @@ def plot_predictions(intervals, channel_length, sending_probab, prediction_types
             )
         })
     if 'failure_backward_and_variance' in prediction_types:
-        predictions.update({
+        mi_per_slot_predictions.update({
             'failure_backward_and_variance': compute_mi_from_error_probabilities(
                 sending_probab=sending_probab,
                 chance_for_missing=extinction_probability + (1 - extinction_probability) * inaccurate_probability,
@@ -153,7 +157,7 @@ def plot_predictions(intervals, channel_length, sending_probab, prediction_types
             ) 
         })
     if 'backward_forward_and_variance' in prediction_types:
-        predictions.update({
+        mi_per_slot_predictions.update({
             'backward_forward_and_variance': compute_mi_from_error_probabilities(
                 sending_probab=sending_probab,
                 chance_for_missing=extinction_probability + (1 - extinction_probability) * inaccurate_probability,
@@ -161,25 +165,30 @@ def plot_predictions(intervals, channel_length, sending_probab, prediction_types
             )
         })
     if 'backward_forward_and_variance_v2' in prediction_types:
-        predictions.update({
+        mi_per_slot_predictions.update({
             'backward_forward_and_variance_v2': compute_mi_from_error_probabilities(
                 sending_probab=sending_probab,
                 chance_for_missing=extinction_probability + (1 - extinction_probability) * inaccurate_probability,
                 chance_for_fake=1-np.exp(-number_of_forward_fronts) + np.exp(-number_of_forward_fronts)*(lambda x: 2*x-x**2)(0.5 * (1 - extinction_probability) * inaccurate_probability),
             )
         })
-
-    prediction_type_to_ls = {
-        'failure_and_backward': ':',
-        'failure_and_variance': ':',
-        'asymptotic_and_variance': ':',
-        'failure_backward_and_variance': '--',
-        'failure_backward_forward_and_variance': '-',
-        'failure_backward_forward_and_variance_v2': '-',
+    
+    bit_per_h_predictions = {
+        key: val * 60 / intervals 
+        for key,val in mi_per_slot_predictions.items()
     }
+    return bit_per_h_predictions
+
+
+def plot_predictions(intervals, channel_length, sending_probab, prediction_types=[], prediction_type_to_ls=PREDICTION_TYPE_TO_LS, ax=None, **kwargs):
+    if ax is None:
+        ax = plt.gca()
+
+    predictions = get_predictions(intervals, channel_length, sending_probab, prediction_types)
+
 
     for prediction_type in prediction_types:
-        ax.plot(intervals, 60 * predictions[prediction_type] / intervals,
+        ax.plot(intervals, predictions[prediction_type],
             **(dict(color=f"black", alpha=0.3, ls=prediction_type_to_ls[prediction_type], label=prediction_type) | kwargs)
             )
 

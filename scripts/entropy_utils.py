@@ -14,8 +14,10 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 
 from scripts.defaults import PARAMETERS_DEFAULT
 
+
+LOG2 = np.log(2)
 def xlog2x(x):
-    return xlogy(x, x) / np.log(2)
+    return xlogy(x, x) / LOG2
 
 
 def conditional_entropy_discrete(

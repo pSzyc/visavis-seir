@@ -5,6 +5,7 @@
 from pathlib import Path
 import pandas as pd
 from warnings import warn
+from typing import Literal
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent)) # in order to be able to import from scripts.py
@@ -46,7 +47,7 @@ def get_velocities(
     return velocity
 
 
-def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, duration=5, use_cached=True, processes=20):
+def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, quantity: Literal['velocity'] | Literal['variance_per_step'] = 'velocity', duration=5, use_cached=True, processes=20):
     
     cache_dir = (
         velocity_cache_dir / 
@@ -60,8 +61,8 @@ def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, 
 
     estimated_velocity = get_velocity_formula(parameters)
 
-    if use_cached and (cache_dir / 'velocity.csv').exists():
-        velocity = pd.read_csv(cache_dir / 'velocity.csv').set_index(['channel_width', 'channel_length'])['velocity']
+    if use_cached and (cache_dir / f'{quantity}.csv').exists():
+        velocity = pd.read_csv(cache_dir / f'{quantity}.csv').set_index(['channel_width', 'channel_length'])[quantity]
     else:
         velocity = get_velocities(
             channel_widths=[channel_width],
@@ -71,9 +72,12 @@ def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, 
             duration=duration,
             interval_after=int((2 * channel_length/estimated_velocity) // duration) * duration + 200,
             processes=processes,
+            return_variance = quantity == 'variance_per_step',
         )
+        if quantity == 'variance_per_step':
+            velocity = velocity[1]
         cache_dir.mkdir(exist_ok=True, parents=True)
-        velocity.to_csv(cache_dir / 'velocity.csv')
+        velocity.to_csv(cache_dir / f'{quantity}.csv')
 
     if len(velocity):
         return velocity.loc[channel_width, channel_length]
