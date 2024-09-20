@@ -1,6 +1,8 @@
 This code features the research article [_Information transmission in a cell monolayer: 
-A numerical study_](https://doi.org/10.1101/2024.06.21.600012) by Paweł Nałęcz-Jawecki et al., 2024, and allows to reproduce images and
+A numerical study_](https://doi.org/10.1101/2024.06.21.600012) by Paweł Nałęcz-Jawecki _et al._, 2024, and allows to reproduce images and
 movies from the article.
+
+# License
 
     Copyright (C) 2024 Paweł Nałęcz-Jawecki, Przemysław Szyc, Frederic Grabowski, Marek Kochańczyk
     
@@ -18,13 +20,13 @@ movies from the article.
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+# Cloning the repository
 
-# Cloning
 ```bash
 git clone --recurse-submodules https://github.com/pSzyc/visavis-seir
 ```
 
-# Installation
+# Setup
 
 1. Install [python](https://www.python.org/downloads)>=3.10.
 2. Install [rust](https://www.rust-lang.org/tools/install)>=1.78.
@@ -46,10 +48,10 @@ python -m venv $Home\qeirq
 [Linux]:
 ```bash
 python -m venv ~/.venv/qeirq
-source ~/.venv/bin/activate
+source ~/.venv/qeirq/bin/activate
 ```
 
-4. Enter the cloned repository and install depencencies:
+4. Enter the cloned repository and install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
@@ -62,15 +64,18 @@ python run_simulation.py
 ```
 You can edit the file to change simulation parameters. The results will be found in 'results' directory.
 
-# Figures and data
+
+# Data and figures
+
 All the figures and videos used in the papers are in the 'figures' and 'videos' folders.
-Scripts that were used to create the figures can be found in 'figures/fig<X>/code'.
-In the folder 'data' you will find data sufficient to draw the figures using 'figures/fig<X>/code/fig<X><panel>_plot.py' scripts.
+Scripts that were used to create the figures can be found in folders 'figures/fig<X>/code'.
+In folder 'data' you will find data that can be used to regenerate the figures.
+The figures can regenerated using scripts 'figures/fig<X>/code/fig<X><panel>_plot.py'.
 To redraw a plot, run:
 ```bash
 python figures/fig<X>/code/fig<X><panel>_plot.py
 ```
-By running 'figures/fig<X>/code/fig<X><panel>_get_data.py' scripts you can regenerate the data in 'data'.
-Note that regenerating data for all figures will take ~1000h of computational workworce, and generate gigabytes of data.
-You can reduce the computational cost by reducing the number of simulations (n_simiulations) in the *_get_data.py file.
-Be careful, as the data in 'data' will be overriden with this operation.
+By running 'figures/fig<X>/code/fig<X><panel>_get_data.py' scripts you can regenerate the data in folder 'data'.
+Note that regenerating data for all figures will take ~1000 h of aggregated computational time and ~100 GB of storage.
+You can reduce the computational cost by reducing the number of simulations (`n_simulations`) in *_get_data.py files.
+Note that the data in folder 'data' will be overwritten with this operation.
