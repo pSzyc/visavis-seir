@@ -1,6 +1,7 @@
-This code features the research article [_Information transmission in a cell monolayer: 
-A numerical study_](https://doi.org/10.1101/2024.06.21.600012) by Paweł Nałęcz-Jawecki _et al._, 2024, and allows to reproduce images and
-movies from the article.
+This code features the research article
+[_Information transmission in a cell monolayer: A numerical study_](https://doi.org/10.1101/2024.06.21.600012)
+by Paweł Nałęcz-Jawecki _et al._ (2024)
+and allows to reproduce images and movies from the article.
 
 # License
 
@@ -58,24 +59,31 @@ pip install -r requirements.txt
 
 # Running
 
-To run a sample simulation, enter the main repository directory and run
+Prior to running any python scripts to generate or plot data, compile the simulator with:
+```bash
+utils/compile_qeirq.sh
+```
+
+## Sample simulation
+
+To run a sample simulation, enter the top-most directory of the repository and run:
 ```bash
 python run_simulation.py
 ```
-You can edit the file to change simulation parameters. The results will be found in 'results' directory.
+You can edit the file to change simulation parameters. The results will be placed in folder `results`.
 
 
-# Data and figures
+## Data and figures from the article
 
-All the figures and videos used in the papers are in the 'figures' and 'videos' folders.
+All the figures and videos used in the paper are in the folders `figures` and `videos`.
 Scripts that were used to create the figures can be found in folders 'figures/fig<X>/code'.
 In folder 'data' you will find data that can be used to regenerate the figures.
-The figures can regenerated using scripts 'figures/fig<X>/code/fig<X><panel>_plot.py'.
+The figures can regenerated using scripts `figures/fig<X>/code/fig<X><panel>_plot.py`.
 To redraw a plot, run:
 ```bash
 python figures/fig<X>/code/fig<X><panel>_plot.py
 ```
-By running 'figures/fig<X>/code/fig<X><panel>_get_data.py' scripts you can regenerate the data in folder 'data'.
-Note that regenerating data for all figures will take ~1000 h of aggregated computational time and ~100 GB of storage.
-You can reduce the computational cost by reducing the number of simulations (`n_simulations`) in *_get_data.py files.
-Note that the data in folder 'data' will be overwritten with this operation.
+By running `figures/fig<X>/code/fig<X><panel>_get_data.py` scripts you can regenerate the data in folder `data`.
+Note that regenerating data for all figures will take ~1000 h of aggregated computational time and ~300 GB of storage.
+You can reduce the computational cost by reducing the number of simulations (`n_simulations`) in `_get_data.py`files.
+Note that the data in folder `data` will be overwritten with this operation.
