@@ -19,8 +19,9 @@ def run_simulation(
     channel_width,
     channel_length,
     pulse_intervals,
-    duration,
+    logging_interval,
     seed=0,
+    lattice_top_edge_aperiodic=False,
     verbose=False,
     states=False,
     activity=True,
@@ -48,8 +49,9 @@ def run_simulation(
 
     protocol_file_path = make_protocol(
         pulse_intervals=pulse_intervals,
-        duration=duration,
+        logging_interval=logging_interval,
         out_folder=sim_root / sim_dir_name,
+        lattice_top_edge_aperiodic=lattice_top_edge_aperiodic,
     )
 
     result = client.run(

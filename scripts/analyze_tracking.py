@@ -24,6 +24,7 @@ def run_single(
     simulation_id,
     channel_width,
     channel_length,
+    lattice_top_edge_aperiodic=False,
     parameters=PARAMETERS_DEFAULT,
     duration=5,
     outdir=None,
@@ -43,9 +44,10 @@ def run_single(
             channel_width=channel_width,
             channel_length=channel_length,
             pulse_intervals=pulse_intervals,
-            duration=duration,
+            logging_interval=duration,
 
             seed=19 + simulation_id,
+            lattice_top_edge_aperiodic=lattice_top_edge_aperiodic,
             verbose=False,
             states=save_states,
             activity=True,
@@ -77,6 +79,7 @@ def generate_dataset(
     n_simulations,
     channel_width=6,
     channel_length=300,
+    lattice_top_edge_aperiodic=False,
     interval_after=1500,
     plot_results=False,
     outdir=None,
@@ -93,7 +96,7 @@ def generate_dataset(
     if outdir:
         outdir.mkdir(exist_ok=True, parents=True)
     
-    sim_root = Path(TEMP_DIR) / 'qeir' / 'tracking' 
+    sim_root = Path(TEMP_DIR) / 'qeirq' / 'tracking' 
 
     pulse_intervals = list(input_protocol) + [interval_after]
 
@@ -105,6 +108,7 @@ def generate_dataset(
             simulation_id=simulation_id,
             channel_width=channel_width,
             channel_length=channel_length,
+            lattice_top_edge_aperiodic=lattice_top_edge_aperiodic,
             plot_results=plot_results,
             use_cached=use_cached,
             outdir=outdir,

@@ -32,9 +32,7 @@ def make_video(
 
     assert outdir is not None
 
-
-    sim_dir = Path(TEMP_DIR) / 'qeir' / 'images' / random_name(12)
-
+    sim_dir = Path(TEMP_DIR) / 'qeirq' / 'images' / random_name(12)
 
     result = run_simulation(
         channel_width=channel_width,

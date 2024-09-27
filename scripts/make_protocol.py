@@ -2,26 +2,38 @@
 # Copyright (C) 2024 Paweł Nałęcz-Jawecki, Przemysław Szyc, Frederic Grabowski, Marek Kochańczyk
 # Available under GPLv3 licence, see README for more details
     
-import numpy as np
+from typing import List
 from jinja2 import Template
 from pathlib import Path
+import numpy as np
 
-TEMPLATE = Template(
-'''{% for t0, t1 in simulation_periods %}+front at column 0
-run  {{t0}}s...{{t1}}s  [{{duration}}s]
+PROTOCOL_TEMPLATE = Template(
+'''{% if lattice_top_edge_aperiodic %}lattice top edge aperiodic
+{% endif %}{% for t0, t1 in simulation_periods %}+front at column 0
+run  {{t0}}s...{{t1}}s  [{{logging_interval}}s]
 {% endfor %}
 '''
 )
 
-def make_protocol(pulse_intervals, duration, out_folder):
+def make_protocol(
+    pulse_intervals: List[int],
+    logging_interval: int,
+    out_folder: str,
+    lattice_top_edge_aperiodic: bool,
+) -> str:
     pulse_times = list(np.cumsum(pulse_intervals))
     simulation_periods = list(zip([0] + pulse_times, pulse_times))
 
     Path(out_folder).mkdir(parents=True, exist_ok=True)
-    with open(f'{out_folder}/out.protocol', 'w') as f:
+    protocol_file_path = f'{out_folder}/out.protocol'
+    with open(protocol_file_path, 'w') as f:
         f.write(
-            TEMPLATE.render(simulation_periods=simulation_periods, duration=duration)
+            PROTOCOL_TEMPLATE.render(
+                simulation_periods=simulation_periods,
+                logging_interval=logging_interval,
+                lattice_top_edge_aperiodic=lattice_top_edge_aperiodic,
+            )
         )
-    return f'{out_folder}/out.protocol'
+    return protocol_file_path
 
 # make_protocol([100, 100], 2, '.')
