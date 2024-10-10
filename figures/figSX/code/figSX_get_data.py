@@ -16,7 +16,7 @@ from scripts.propensities import get_propensities_batch
 data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figSX' / 'approach8' 
 data_dir.mkdir(exist_ok=True, parents=True)
 
-channel_widths = (list(range(1+1,10+1,1)) + list(range(10+1,21+1,2)))#[::-1]
+channel_widths = (list(range(1,10,1)) + list(range(10,21,2)))#[::-1]
 channel_lengths = [300]
 
 propensities = get_propensities_batch(

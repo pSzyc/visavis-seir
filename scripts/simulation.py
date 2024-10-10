@@ -57,7 +57,7 @@ def run_simulation(
     result = client.run(
         parameters_json=parameters,
         channel_length=channel_length,
-        channel_width=channel_width,
+        channel_width=channel_width + lattice_top_edge_aperiodic,
         protocol_file_path=protocol_file_path,
         verbose=verbose,
         dir_name=sim_dir_name + '/' + sim_temp_results_dir.name,
