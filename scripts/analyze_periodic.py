@@ -26,7 +26,7 @@ def perform_single(
     n_pulses, 
     simulation_id,  
     parameters=PARAMETERS_DEFAULT, 
-    duration=5, 
+    logging_interval=5, 
     interval_after=None, 
     outdir=None,  
     save_iterations=False, 
@@ -44,7 +44,7 @@ def perform_single(
         channel_width=channel_width,
         channel_length=channel_length,
         pulse_intervals=n_pulses * [interval] + [interval_after],
-        duration=duration,
+        logging_interval=logging_interval,
         save_activity=save_iterations,
         outdir=outdir,
 

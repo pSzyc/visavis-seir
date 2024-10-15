@@ -62,7 +62,7 @@ class TrackedResults():
 
     def __init__(
         self,
-        activity: pd.DataFrame = None, input_protocol: Iterable[float] = None, v=1/3.6, duration=5, channel_length=None, 
+        activity: pd.DataFrame = None, input_protocol: Iterable[float] = None, v=1/3.6, logging_interval=5, channel_length=None, 
         min_distance_between_peaks=6, smoothing_sigma_h=1.5, smoothing_sigma_frames=1.2, min_peak_height=0.002, smoothing_exp_frames=0.8, # parameters for "get_pulse_positions"
         laptrack_parameters={},
         front_direction_minimal_distance=5, min_track_length=5, min_significant_track_length=10, # parameters for "get_track_info"
@@ -76,7 +76,7 @@ class TrackedResults():
         self.input_protocol = input_protocol,
         self.pulse_times = [0] + list(np.cumsum(input_protocol))[:-1]
         self.v = v
-        self.duration = duration,
+        self.logging_interval = logging_interval,
         self.channel_length = channel_length or int(activity.columns[-1]) + 1
         self.min_distance_between_peaks = min_distance_between_peaks
         self.smoothing_sigma_h = smoothing_sigma_h
@@ -123,7 +123,7 @@ class TrackedResults():
                 panel_size=panel_size, show=False)
             plt.close()
             self.plot_kymograph_with_endings(
-                # activity, front_fates, duration, pulse_fates,  pulse_times, significant_splits=significant_splits, show=False, outpath=(outdir / 'out-kymo.png') if outdir else None, 
+                # activity, front_fates, logging_interval, pulse_fates,  pulse_times, significant_splits=significant_splits, show=False, outpath=(outdir / 'out-kymo.png') if outdir else None, 
                 panel_size=panel_size, show=False)
             plt.close()
 
@@ -281,7 +281,7 @@ class TrackedResults():
 
         lt = LapTrack(**self.laptrack_parameters)
 
-        self.pulse_positions['frame'] = self.pulse_positions['seconds'] // self.duration
+        self.pulse_positions['frame'] = self.pulse_positions['seconds'] // self.logging_interval
 
         track_df, split_df, merge_df = lt.predict_dataframe(
             self.pulse_positions,
@@ -773,7 +773,7 @@ class TrackedResults():
         ):
             events = self.front_fates[self.front_fates['fate'] == fate]
             ax.scatter(
-                events['track_end'] / self.duration,
+                events['track_end'] / self.logging_interval,
                 events['track_end_position'],
                 marker='x',
                 color=color,
@@ -781,10 +781,10 @@ class TrackedResults():
 
         
         if self.pulse_fates is not None and self.pulse_times is not None:
-            ax.scatter(np.array(self.pulse_times) / self.duration, [0]*len(self.pulse_times), marker='^', c=[fate_to_color[fate] for fate in self.pulse_fates['fate']])
+            ax.scatter(np.array(self.pulse_times) / self.logging_interval, [0]*len(self.pulse_times), marker='^', c=[fate_to_color[fate] for fate in self.pulse_fates['fate']])
     
         if self.significant_splits is not None and len(self.significant_splits):
-            ax.scatter(self.significant_splits['significant_split_time'] / self.duration, self.significant_splits['significant_split_position'] , marker='o', edgecolors='cyan', facecolor='none')
+            ax.scatter(self.significant_splits['significant_split_time'] / self.logging_interval, self.significant_splits['significant_split_position'] , marker='o', edgecolors='cyan', facecolor='none')
     
 
         if self.outdir is not None and filename is not None:
@@ -820,7 +820,7 @@ class TrackedResults():
             indir = outdir
 
         activity = pd.read_csv(indir / 'activity.csv')
-        duration = pd.Series(activity.index.get_level_values('seconds').unique().sort_values()).diff()[0]
+        logging_interval = pd.Series(activity.index.get_level_values('seconds').unique().sort_values()).diff()[0]
         front_fates = pd.read_csv(indir / 'front_fates.csv').set_index('track_id')
         pulse_fates = pd.read_csv(indir / 'pulse_fates.csv')
         

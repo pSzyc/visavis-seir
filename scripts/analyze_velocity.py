@@ -47,7 +47,7 @@ def get_velocities(
     return velocity
 
 
-def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, quantity: Literal['velocity'] | Literal['variance_per_step'] = 'velocity', duration=5, use_cached=True, processes=20):
+def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, quantity: Literal['velocity'] | Literal['variance_per_step'] = 'velocity', logging_interval=5, use_cached=True, processes=20):
     
     cache_dir = (
         velocity_cache_dir / 
@@ -69,8 +69,8 @@ def get_velocity(channel_width, channel_length, parameters, velocity_cache_dir, 
             channel_lengths=[channel_length],
             parameters=parameters,
             n_simulations=3000,
-            duration=duration,
-            interval_after=int((2 * channel_length/estimated_velocity) // duration) * duration + 200,
+            logging_interval=logging_interval,
+            interval_after=int((2 * channel_length/estimated_velocity) // logging_interval) * logging_interval + 200,
             processes=processes,
             return_variance = quantity == 'variance_per_step',
         )

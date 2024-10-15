@@ -31,7 +31,7 @@ def run_single(
     parameters=PARAMETERS_DEFAULT,
     channel_width=7,
     channel_length=300,
-    duration=5,
+    logging_interval=5,
     common_track_length=300,
     n_margin=0,
     outdir=None,
@@ -53,7 +53,7 @@ def run_single(
             channel_width=channel_width,
             channel_length=channel_length,
             pulse_intervals=pulse_intervals,
-            duration=duration,
+            logging_interval=logging_interval,
 
             seed=19 + simulation_id,
             verbose=False,
@@ -67,7 +67,7 @@ def run_single(
         tracked_results = TrackedResults(
             result.activity,
             input_protocol=pulse_intervals,
-            duration=duration,
+            logging_interval=logging_interval,
             channel_length=channel_length,
             outdir=outdir and outdir / f'sim-{simulation_id}',
             verbose=verbose,
@@ -101,7 +101,7 @@ def generate_dataset(
     parameters=PARAMETERS_DEFAULT,
     channel_width=7,
     channel_length=300,
-    duration=5,
+    logging_interval=5,
     interval_after=1500,
     n_margin=0,
     outdir=None,
@@ -137,7 +137,7 @@ def generate_dataset(
             parameters=parameters,
             channel_width=channel_width,
             channel_length=channel_length,
-            duration=duration,
+            logging_interval=logging_interval,
             n_margin=n_margin,
             outdir=outdir,
             plot_results=plot_results,
@@ -149,7 +149,7 @@ def generate_dataset(
         processes=n_workers,
     )))
 
-    assert not (interval % duration), f"{interval = } must be divisible by {duration = }"
+    assert not (interval % logging_interval), f"{interval = } must be divisible by {logging_interval = }"
 
     first_time_of_reaching = pd.DataFrame(first_time_of_reaching)
     first_time_of_reaching.index.name = 'simulation_id'

@@ -27,7 +27,7 @@ panels_dir.mkdir(exist_ok=True, parents=True)
 channel_width = 6
 channel_length = 300
 # intervals = [100, 150, 200]
-duration = 5
+logging_interval = 5
 
 data_sets = np.array([[
     (150, {'r_forward_rate': 4/tau_r})
@@ -70,8 +70,8 @@ for ax, (interval, parameters_update) in zip(axs.flatten(), data_sets.reshape(-1
 
     experiment_time = activity.index.get_level_values('seconds').max() + 1
     ax.set_axis_on()
-    ax.set_yticks(list(range(0,experiment_time // duration, 180)))
-    ax.yaxis.set_minor_locator(MultipleLocator(interval // duration))
+    ax.set_yticks(list(range(0,experiment_time // logging_interval, 180)))
+    ax.yaxis.set_minor_locator(MultipleLocator(interval // logging_interval))
     ax.set_ylabel('')
     ax.set_yticklabels([])
     ax.set_xlabel('')
@@ -85,7 +85,7 @@ for ax in axs.flatten():#[-1]:
 
 for ax in axs[:, 0]:
     ax.set_ylabel('time [min]')
-    ax.set_yticklabels(list(range(0,experiment_time, duration * 180)))
+    ax.set_yticklabels(list(range(0,experiment_time, logging_interval * 180)))
 
 plt.savefig(panels_dir / 'fig6BC.png')
 plt.savefig(panels_dir / 'fig6BC.svg')

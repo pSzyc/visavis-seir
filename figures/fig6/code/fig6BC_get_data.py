@@ -14,7 +14,7 @@ from scripts.simulation import run_simulation
 from scripts.defaults import TEMP_DIR, PARAMETERS_DEFAULT
 
 
-def generate_data(channel_width, channel_length, interval, n_pulses, parameters=PARAMETERS_DEFAULT,  interval_after=None, duration=5, seed=0):
+def generate_data(channel_width, channel_length, interval, n_pulses, parameters=PARAMETERS_DEFAULT,  interval_after=None, logging_interval=5, seed=0):
     
     sim_dir = Path(f"{TEMP_DIR}/qeir/periodic/" + random_name(12))
 
@@ -26,7 +26,7 @@ def generate_data(channel_width, channel_length, interval, n_pulses, parameters=
         channel_width=channel_width,
         channel_length=channel_length,
         pulse_intervals=n_pulses * [interval] + [interval_after],
-        duration=duration,
+        logging_interval=logging_interval,
 
         seed=seed,
         sim_root=sim_dir,
@@ -42,7 +42,7 @@ data_dir.mkdir(exist_ok=True, parents=True)
 
 channel_width = 6
 channel_length = 300
-duration = 5
+logging_interval = 5
 simulation_length = 3000
 
 data_sets = list(
@@ -66,7 +66,7 @@ for interval, parameters_update in data_sets:
         },
         n_pulses=simulation_length //interval,
         interval_after=0,
-        duration=duration,
+        logging_interval=logging_interval,
         seed=2,
     )
     outdir = data_dir / '/'.join(map(lambda param_upd: f"{param_upd[0]}/{param_upd[1]:.3f}", sorted(parameters_update.items())))

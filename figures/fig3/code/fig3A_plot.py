@@ -24,7 +24,7 @@ out_dir = Path(__file__).parent.parent / 'panels'
 channel_widths = [6]
 channel_lengths = [300]
 intervals = [180, 120, 60]
-duration = 5
+logging_interval = 5
 
 data_sets = list(product(channel_widths, channel_lengths, intervals))
 
@@ -37,11 +37,11 @@ for it, (channel_width, channel_length, interval) in enumerate(data_sets):
 
     experiment_time = activity.index.get_level_values('seconds').max() + 1
     axs[it].set_axis_on()
-    axs[it].set_yticks(list(range(0,experiment_time // duration, 180)))
-    axs[it].yaxis.set_minor_locator(MultipleLocator(interval // duration))
+    axs[it].set_yticks(list(range(0,experiment_time // logging_interval, 180)))
+    axs[it].yaxis.set_minor_locator(MultipleLocator(interval // logging_interval))
     if it == 0:
         axs[it].set_ylabel('time [min]')
-        axs[it].set_yticklabels(list(range(0,experiment_time, duration * 180)))
+        axs[it].set_yticklabels(list(range(0,experiment_time, logging_interval * 180)))
     else:
         axs[it].set_ylabel('')
         axs[it].set_yticklabels([])

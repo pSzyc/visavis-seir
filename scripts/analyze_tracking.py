@@ -26,7 +26,7 @@ def run_single(
     channel_length,
     lattice_top_edge_aperiodic=False,
     parameters=PARAMETERS_DEFAULT,
-    duration=5,
+    logging_interval=5,
     outdir=None,
     save_states=False,
     save_activity=False,
@@ -44,7 +44,7 @@ def run_single(
             channel_width=channel_width,
             channel_length=channel_length,
             pulse_intervals=pulse_intervals,
-            logging_interval=duration,
+            logging_interval=logging_interval,
 
             seed=19 + simulation_id,
             lattice_top_edge_aperiodic=lattice_top_edge_aperiodic,
@@ -61,7 +61,7 @@ def run_single(
         tracked_results = TrackedResults(
             activity=result.activity,
             input_protocol=pulse_intervals,
-            duration=duration,
+            logging_interval=logging_interval,
             channel_length=channel_length,
             outdir=outdir and sim_out_dir,
             verbose=verbose,
