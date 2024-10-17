@@ -23,7 +23,7 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="4.7177282"
-     inkscape:cx="163.32013"
+     inkscape:cx="562.66489"
      inkscape:cy="46.526631"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
@@ -1116,7 +1116,9 @@
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan22">E</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan39"> </tspan>/𝜏<tspan
+   id="tspan39"> </tspan>/<tspan
+   style="font-style:normal"
+   id="tspan8">𝜏</tspan><tspan
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan24">E</tspan></tspan></text>
   <path
@@ -1312,7 +1314,9 @@
        y="106.96926"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.2627px;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:#030303;stroke-width:0.171045;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;paint-order:stroke fill markers"><tspan
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Carlito;-inkscape-font-specification:'Carlito Italic';stroke-width:0.171045"
-         id="tspan6">1/𝜏<tspan
+         id="tspan6">1/<tspan
+   style="font-style:normal"
+   id="tspan46">𝜏</tspan><tspan
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan21">act</tspan></tspan></tspan></text>
   <text
@@ -1481,7 +1485,9 @@
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan20">E</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan39-8"> </tspan>/𝜏<tspan
+   id="tspan39-8"> </tspan>/<tspan
+   style="font-style:normal"
+   id="tspan11">𝜏</tspan><tspan
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan24-7">E</tspan></tspan></text>
   <text
@@ -1498,7 +1504,9 @@
    style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:65%;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:sub"
    id="tspan19">E</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan39-4"> </tspan>/𝜏<tspan
+   id="tspan39-4"> </tspan>/<tspan
+   style="font-style:normal"
+   id="tspan29">𝜏</tspan><tspan
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan24-9">E</tspan></tspan></text>
   <text
@@ -1517,7 +1525,9 @@
    style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:65%;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:sub"
    id="tspan18">E</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan15"> </tspan>/𝜏<tspan
+   id="tspan15"> </tspan>/<tspan
+   style="font-style:normal"
+   id="tspan47">𝜏</tspan><tspan
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan24-6">E</tspan> </tspan><tspan
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;font-family:Carlito;-inkscape-font-specification:Carlito;baseline-shift:sub;stroke-width:0.171045"
@@ -1536,7 +1546,9 @@
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan25">I</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan39-9"> </tspan>/𝜏<tspan
+   id="tspan39-9"> </tspan>/<tspan
+   style="font-style:normal"
+   id="tspan48">𝜏</tspan><tspan
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan24-93">I</tspan></tspan></text>
   <text
@@ -1553,7 +1565,9 @@
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan23">I</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan39-9-5"> </tspan>/𝜏<tspan
+   id="tspan39-9-5"> </tspan>/<tspan
+   style="font-style:normal"
+   id="tspan49">𝜏</tspan><tspan
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan24-93-4">I</tspan></tspan></text>
   <text
@@ -1570,7 +1584,9 @@
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan26">R</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan39-9-0"> </tspan>/𝜏<tspan
+   id="tspan39-9-0"> </tspan>/<tspan
+   style="font-style:normal"
+   id="tspan50">𝜏</tspan><tspan
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan24-93-1">R</tspan></tspan></text>
   <text
@@ -1587,7 +1603,9 @@
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan27">R</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan39-9-0-9"> </tspan>/𝜏<tspan
+   id="tspan39-9-0-9"> </tspan>/<tspan
+   style="font-style:normal"
+   id="tspan51">𝜏</tspan><tspan
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan24-93-1-2">R</tspan></tspan></text>
   <text
@@ -1604,7 +1622,9 @@
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Carlito;-inkscape-font-specification:'Carlito Italic'"
          id="tspan8-6-9-8">n<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan39-9-0-98">R </tspan>/𝜏<tspan
+   id="tspan39-9-0-98">R </tspan>/<tspan
+   style="font-style:normal"
+   id="tspan52">𝜏</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
    id="tspan24-93-1-4">R</tspan></tspan></tspan></text>
   <text
@@ -1621,7 +1641,9 @@
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan28">R</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan39-9-0-5"> </tspan>/𝜏<tspan
+   id="tspan39-9-0-5"> </tspan>/<tspan
+   style="font-style:normal"
+   id="tspan53">𝜏</tspan><tspan
    style="font-style:normal;font-size:65%;baseline-shift:sub"
    id="tspan24-93-1-5">R</tspan></tspan></text>
 </svg>
