@@ -20,7 +20,7 @@ plt.rcParams['mathtext.rm'] = 'Carlito'
 plt.rcParams['font.size'] = 8
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3' / 'approach11'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS4' / 'figS4' / 'approach11'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 differences = pd.read_csv(data_dir / 'difference_in_reaching_times.csv').set_index(['channel_width', 'channel_length', 'interval']).assign(sqrt_h=lambda df: np.sqrt(df['h']))
@@ -64,8 +64,8 @@ axs[1].legend(['first front', 'second front', 'first front + initial interval'])
 axs[1].set_xlabel('initial interval [min]')
 axs[1].set_ylabel('average interval at $L = 300$ [min]')
 
-plt.savefig(panels_dir / f'figS3.svg')
-plt.savefig(panels_dir / f'figS3.png')
+plt.savefig(panels_dir / f'figS4.svg')
+plt.savefig(panels_dir / f'figS4.png')
 
 fig, ax = subplots_from_axsize(1, 1, (8, 6), left=0.5, wspace=0.5)
 
@@ -74,7 +74,7 @@ for (channel_width, channel_length, interval), data in differences_filtered.grou
 
 ax.set_yscale('log')
 
-plt.savefig(panels_dir / f'figS3--aux1.svg')
-plt.savefig(panels_dir / f'figS3--aux1.png')
+plt.savefig(panels_dir / f'figS4--aux1.svg')
+plt.savefig(panels_dir / f'figS4--aux1.png')
 
 

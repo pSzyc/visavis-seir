@@ -23,7 +23,7 @@ LOG2 = np.log(2)
 channel_lengths = [30,100,300,1000]
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' /'approach7'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4AB' / 'approach7'
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 
@@ -92,8 +92,8 @@ ax.legend(
     handler_map={tuple: HandlerTupleVertical(nrows=1, vpad=-2.3)},
     )
 
-fig.savefig(panels_dir / f'figS6-with_legend.svg')
-fig.savefig(panels_dir / f'figS6.png')
+fig.savefig(panels_dir / f'figS2T-with_legend.svg')
+fig.savefig(panels_dir / f'figS2T.png')
 
 ax.get_legend().set_visible(False)
-fig.savefig(panels_dir / f'figS6.svg')
+fig.savefig(panels_dir / f'figS2T.svg')

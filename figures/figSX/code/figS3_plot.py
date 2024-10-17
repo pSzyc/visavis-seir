@@ -17,12 +17,12 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.style import *
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figSX' / 'approach8'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'approach8'
 out_dir = Path(__file__).parent.parent / 'panels'
 
 channel_length = 300
 
-propensities = pd.read_csv(data_dir / 'figSX--propensities.csv')
+propensities = pd.read_csv(data_dir / 'figS3--propensities.csv')
 propensities = propensities[propensities['channel_length'] == channel_length]
 propensities_cropped_for_plot = propensities[propensities['channel_width'] <= 7]
 
@@ -66,6 +66,6 @@ axs[1].set_yscale('log')
 # axs[1].set_ylim(2e-5, None)
 axs[1].legend()
 
-plt.savefig(out_dir / 'figSX.png', bbox_inches="tight")
-plt.savefig(out_dir / 'figSX.svg', bbox_inches="tight")
+plt.savefig(out_dir / 'figS3.png', bbox_inches="tight")
+plt.savefig(out_dir / 'figS3.svg', bbox_inches="tight")
 

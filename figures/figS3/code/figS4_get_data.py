@@ -19,7 +19,7 @@ from scripts.utils import simple_starmap, starmap, random_name
 from scripts.simulation import run_simulation
 
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS3' / 'figS3' / 'approach11'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'figS4' / 'figS4' / 'approach11'
 data_dir.mkdir(exist_ok=True, parents=True)
 
 
