@@ -19,7 +19,7 @@ from scripts.parameter_scan import plot_parameter_scan
 data_dir_rates = Path(__file__).parent.parent.parent.parent / 'data' / 'fig5' /  'fig5A' / 'approach5'
 data_dir_states = Path(__file__).parent.parent.parent.parent / 'data' / 'fig5' /  'fig5BC' / 'approach1'
 out_dir = Path(__file__).parent.parent / 'panels'
-out_dir_figS4 = Path(__file__).parent.parent.parent / 'figS4' / 'panels'
+out_dir_figS6 = Path(__file__).parent.parent.parent / 'figS6' / 'panels'
 
 
 
@@ -177,8 +177,8 @@ plot_fig2C(coefficients_rates.loc['e_forward_rate', PARAMETERS_DEFAULT['e_forwar
 axs[0,0].legend()
 handles, _ = axs[0,0].get_legend_handles_labels()
 axs[0,0].legend(handles, [r'$W_{\mathrm{fail}}$', r'$W_{\mathrm{spawn}}$'], loc='lower right', ncol=2, handlelength=1)
-plt.savefig(out_dir_figS4 / ('figS4' + ".svg"))
-plt.savefig(out_dir_figS4 / ('figS4' + ".png"))
+plt.savefig(out_dir_figS6 / ('figS6' + ".svg"))
+plt.savefig(out_dir_figS6 / ('figS6' + ".png"))
 
 
 
