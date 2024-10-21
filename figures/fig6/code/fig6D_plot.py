@@ -23,7 +23,7 @@ from scripts.parameter_scan import plot_parameter_scan
 data_dir_rates = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6' /  'fig6D' / 'rates' /'approach2'
 data_dir_states = Path(__file__).parent.parent.parent.parent / 'data' / 'fig6' /  'fig6D' / 'states' /'approach2'
 out_dir = Path(__file__).parent.parent / 'panels'
-out_dir_figS5 = Path(__file__).parent.parent.parent / 'figS5' / 'panels'
+out_dir_figS7 = Path(__file__).parent.parent.parent / 'figS7' / 'panels'
 
 
 channel_lengths = [30,100,300,1000]
@@ -65,7 +65,7 @@ plt.savefig(out_dir / (figname + ".svg"))
 plt.savefig(out_dir / (figname + ".png"))
 
 
-figname = 'figS5'
+figname = 'figS7'
 feature_name = 'maximum bitrate [bit/h]'
 axs = None
 for channel_length in channel_lengths:
@@ -79,6 +79,6 @@ axs[0,-1].set_visible(True)
 axs[0,-1].spines[['top', 'bottom', 'left', 'right']].set_visible(False)
 axs[0,-1].set_xticks([])
 axs[0,-1].set_yticks([])
-plt.savefig(out_dir_figS5 / (figname + ".svg"))
-plt.savefig(out_dir_figS5 / (figname + ".png"))
+plt.savefig(out_dir_figS7 / (figname + ".svg"))
+plt.savefig(out_dir_figS7 / (figname + ".png"))
 

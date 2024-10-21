@@ -27,6 +27,8 @@ git add .\figures\fig6\fig6.png -f
 git add .\figures\fig6\panels\fig6A.png -f
 git add .\figures\fig6\panels\fig6BC.png -f
 git add .\figures\fig6\panels\fig6D.png -f
+git add .\figures\fig7\fig7.png -f
+git add .\figures\fig7\panels\fig7.png -f
 git add .\figures\figS1\figS1.png -f
 git add .\figures\figS1\panels\figS1A.png -f
 git add .\figures\figS1\panels\figS1B.png -f
@@ -75,6 +77,8 @@ git add .\figures\fig6\fig6.svg -f
 git add .\figures\fig6\panels\fig6A.svg -f
 git add .\figures\fig6\panels\fig6BC.svg -f
 git add .\figures\fig6\panels\fig6D.svg -f
+git add .\figures\fig7\fig7.svg -f
+git add .\figures\fig7\panels\fig7.svg -f
 git add .\figures\figS1\figS1.svg -f
 git add .\figures\figS1\panels\figS1A.svg -f
 git add .\figures\figS1\panels\figS1B.svg -f
