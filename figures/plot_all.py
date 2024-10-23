@@ -13,11 +13,13 @@ from fig5.code import fig5_plot
 from fig6.code import fig6A_plot
 from fig6.code import fig6BC_plot
 from fig6.code import fig6D_plot
+from fig7.code import fig7_plot
 from figS1.code import figS1A_plot
 from figS1.code import figS1B_plot
 from figS3.code import figS3_plot
 from figS5.code import figS5_plot
-from figS1T.code import figS1T_plot
+from figS1T.code import figS1TA_plot
+from figS1T.code import figS1TB_plot
 from figS2T.code import figS2T_plot
 
 from fig1.code import fig1B_plot ## run this last -- style imports interfere

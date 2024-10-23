@@ -13,10 +13,13 @@ def get_pulse_fate_counts(
         channel_width=6,
         channel_length=300,
         fate_criterion='reached',
+        is_spawning_2='more_than_one_backward',
         outdir=None,
         use_cached=False,
         **kwargs,
         ):
+
+    assert is_spawning_2 in ('more_than_one_backward', 'blocking')
 
     front_fields = (
         ['forward', 'backward'] if fate_criterion == 'generated' else 
@@ -36,11 +39,19 @@ def get_pulse_fate_counts(
             )
     data = data[data['pulse_id'] == 1]
     data['interval'] = interval
-    data['is_spawning'] = (
-        1*(data['reached_start'].gt(0) | data['reached_end'].gt(1)) + 1*(data['reached_start'].gt(1) | data['reached_end'].gt(1)) if fate_criterion == 'reached' 
-        else 1*(data['backward'].gt(0) | data['forward'].gt(0)) + 1 * (data['backward'].gt(1) | data['forward'].gt(0)) if fate_criterion == 'generated'
-        else np.nan
-    )
+    if is_spawning_2 == 'more_than_one_backward':
+
+        data['is_spawning'] = (
+            1*(data['reached_start'].gt(0) | data['reached_end'].gt(1)) + 1*(data['reached_start'].gt(1) | data['reached_end'].gt(1)) if fate_criterion == 'reached' 
+            else 1*(data['backward'].gt(0) | data['forward'].gt(0)) + 1 * (data['backward'].gt(1) | data['forward'].gt(0)) if fate_criterion == 'generated'
+            else np.nan
+        )
+    elif is_spawning_2 == 'blocking':
+        data['is_spawning'] =  (
+            1*(data['reached_start'].gt(0) | data['reached_end'].gt(1)) + 1*(data['reached_start'] + data['reached_end'] > 7) if fate_criterion == 'reached' 
+            else 1*(data['backward'].gt(0) | data['forward'].gt(0)) + 1 * (data['backward'] + data['forward'] > 7) if fate_criterion == 'generated'
+            else np.nan
+        )
     data['first_event_position'] = data[['significant_split_position', 'track_end_position']].min(axis=1).fillna(0)
 
     counts = data.value_counts(['channel_length', 'channel_width', 'interval', 'fate', 'is_spawning']).sort_index() # add front_fields if necessary

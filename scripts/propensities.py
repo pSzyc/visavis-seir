@@ -45,7 +45,7 @@ def get_propensities(channel_length, channel_width, n_simulations, outdir=None, 
     # Extintion position if failure
     pulse_fates['failure'] = (
         pulse_fates['track_end_position']
-            .fillna(1 if channel_width < 7 else np.nan) # Fill with 1 if lost_somewhere (typical cause is initiation failure for W < 7)
+            .fillna(1 if channel_width < 7 else np.nan) # Fill with 1 if lost_somewhere (typical cause is immediate failure for W < 7)
             .where(pulse_fates['fate'] == 'lost_somewhere', 
                 pulse_fates['track_end_position'].where(
                     pulse_fates['fate'] == 'failure',

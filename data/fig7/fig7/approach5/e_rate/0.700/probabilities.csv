@@ -1,4 +1,4 @@
-channel_width,channel_length,interval,successful transmission,initiation failure,propagation failure,<= 6 front spawning,> 6 front spawning,annihilation by backward front
+channel_width,channel_length,interval,successful transmission,immediate failure,propagation failure,<= 6 front spawning,> 6 front spawning,annihilation by backward front
 6,300,236,0.39666666666666667,0.021,0.018,0.22166666666666668,0.07966666666666666,0.263
 15,300,236,0.08633333333333333,0.05466666666666667,0.05333333333333334,0.089,0.37033333333333335,0.3463333333333333
 30,300,236,0.005666666666666667,0.09766666666666667,0.089,0.108,0.44433333333333336,0.25533333333333336

@@ -41,10 +41,10 @@ def make_plot(ax, ylim):
     points_to_show = propensities['l_spawning'].between(*ylim)
     ax.plot(propensities[points_to_show]['channel_width'], propensities[points_to_show]['l_spawning'], '^', color='maroon',label='front spawning', clip_on=False)
     ax.plot(xs, np.exp(a_fail * xs.reshape(-1,1) + b_fail), color='olive', alpha=0.3, 
-        label=r"$\lambda_{\mathrm{fail}}=\exp(a_{\mathrm{fail}}~×~(W - W_{\mathrm{fail}}))$",
+        label=r"$\lambda_{\mathrm{fail}}=\exp(a_{\mathrm{fail}}^'~×~(W - W_{\mathrm{fail}}^'))$",
         )
     ax.plot(xs, (a_sp * xs + b_sp).reshape(-1,1), color='maroon', alpha=.4, 
-        label=r"$\lambda_{\mathrm{spawn}}=a_{\mathrm{spawn}}~×~(W - W_{\mathrm{spawn}})$",
+        label=r"$\lambda_{\mathrm{spawn}}=a_{\mathrm{spawn}}^'~×~(W - W_{\mathrm{spawn}}^')$",
         )
     ax.plot(xs, (np.exp(a_fail * xs + b_fail) + (a_sp * xs + b_sp)).reshape(-1,1), color='navy', alpha=.4, 
         label=r"$\lambda_{\mathrm{tot}} = \lambda_{\mathrm{fail}} + \lambda_{\mathrm{spawn}}$"),

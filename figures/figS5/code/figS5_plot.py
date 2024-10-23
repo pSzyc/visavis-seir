@@ -24,9 +24,9 @@ channel_length = 300
 channel_width = 6
 intervals = [150, 90]
 
-fig, axs = subplots_from_axsize(1, len(intervals), (3.5, 2.2), wspace=.3, sharey=True)
+fig, axs = subplots_from_axsize(1, len(intervals), (3.2, 1.8), wspace=.3, sharey=True)
 
-xlim = (-4.5*150, 4.5*150)
+xlim = (-4.2*150, 4.2*150)
 
 
 for ax, interval in zip(axs, intervals):
@@ -35,7 +35,7 @@ for ax, interval in zip(axs, intervals):
     data.groupby('x')['c+0'].plot.hist(bins=np.arange(xlim[0], xlim[1] + 1, 10), alpha=0.3, density=True, ax=ax)
     ax.legend(['$S=0$ (no pulse sent)', '$S=1$ (pulse sent)'], loc='upper right')
     ax.set_xlabel('$\Delta t$ [min]')
-    ax.set_ylabel('probability')
+    ax.set_ylabel(' ')
     ax.set_yticks([])
     # ax.axvline(0, color='k', ls='--', alpha=0.3)
     for i in range(int(np.floor(xlim[0] / interval)), int(np.floor(xlim[1] / interval)) + 1):

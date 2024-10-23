@@ -12,6 +12,7 @@ root_repo_dir = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scripts.py
 
 from scripts.semi_analytical import plot_predictions, get_predictions
+from scripts.style import *
 
 panels_dir = Path(__file__).parent.parent / 'panels' 
 panels_dir.mkdir(parents=True, exist_ok=True)
@@ -23,7 +24,7 @@ sending_probabs = .1 * np.arange(1,10)
 full_sending_probabs = .01 * np.arange(1,100)
 intervals = np.linspace(20,280,101)
 
-fig, axs = subplots_from_axsize(2, 2, (3,3), top=.5, hspace=.35, wspace=.2)
+fig, axs = subplots_from_axsize(2, 2, (2.4,2.2), top=.2, hspace=.45, wspace=.3)
 
 for ax, channel_length in zip(axs.flatten(), channel_lengths):
     for it, sending_probab in enumerate(sending_probabs):
@@ -51,19 +52,23 @@ for ax, channel_length in zip(axs.flatten(), channel_lengths):
     
     max_prediction = predictions.max(axis=0)
     ax.fill_between(intervals, max_prediction, 0, color='k', alpha=.2, label='opt')
-    ax.set_title(f'L = {channel_length}')
+    ax.set_title(f'$L$ = {channel_length}', loc='left', pad=-20, fontweight='bold')
     ax.set_ylim(0,1)
+    xticks = list(ax.get_xticks())
+    ax.set_xticks([intervals.min()] + xticks + [intervals.max()])
+    ax.set_xlim(intervals.min(), intervals.max())
+
 
 for ax in axs[:, 1]:
     ax.set_ylabel('')
-    ax.set_yticklabels([])
+    # ax.set_yticklabels([])
 
 for ax in axs[0]:
     ax.set_xlabel('')
-    ax.set_xticklabels([])
+    # ax.set_xticklabels([])
 
-axs[1][1].legend(title='q', title_fontproperties={'weight': 'bold'})
+axs[1][1].legend(title='q', title_fontproperties={'weight': 'bold'}, labelspacing=.1,)
 
-plt.savefig(panels_dir / f'figS1T.svg')
-plt.savefig(panels_dir / f'figS1T.png')
+plt.savefig(panels_dir / f'figS1TB.svg')
+plt.savefig(panels_dir / f'figS1TB.png')
 

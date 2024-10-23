@@ -14,7 +14,7 @@ sys.path.insert(0, str(root_repo_dir)) # in order to be able to import from scri
 from scripts.formula import get_expected_maximum_for_defaults
 from scripts.analyze_binary import find_optimal_bitrate
 
-data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4EF' / 'approach10'#'approach9--500-rep--100-pulses'
+data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4EF' / 'approach8'#'approach9--500-rep--100-pulses'
 data_dir.mkdir(parents=True, exist_ok=True)
     
 channel_widths_s = (
@@ -58,7 +58,6 @@ for channel_widths in channel_widths_s:
         result_parts.append(result)
         entropies_parts.append(entropies)
 
-        print(result_prev is None)
         if result_prev is None:
             worth_progressing_condition = result['max_bitrate'] > 0.02 / 60
         else:
@@ -66,9 +65,6 @@ for channel_widths in channel_widths_s:
                 (result['max_bitrate'] > 0.02 / 60)
               & (result_prev[result_prev.index.get_level_values('channel_length').isin(channel_lengths_worth_progressing)].reset_index('channel_width')['max_bitrate'] < 2 * result.reset_index('channel_width')['max_bitrate']).to_numpy()
             )
-            print((result['max_bitrate'] > 0.02 / 60))
-            print((result_prev[result_prev.index.get_level_values('channel_length').isin(channel_lengths_worth_progressing)].reset_index('channel_width')['max_bitrate'] < 2 * result.reset_index('channel_width')['max_bitrate']).to_numpy())
-            print(worth_progressing_condition)
 
         worth_progressing = result[worth_progressing_condition]
         channel_lengths_worth_progressing = worth_progressing.index.get_level_values('channel_length').tolist()

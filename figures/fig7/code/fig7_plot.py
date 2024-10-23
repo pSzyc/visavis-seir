@@ -67,7 +67,7 @@ for ax, (altered_parameter, fold_changes) in zip(axs, [
     probabilities = probabilities.reset_index('interval').set_index(['interval_in_tau_r', f'tau_{parameter_letter}'], append=True)
     probabilities['total spawning'] =  probabilities['<= 6 front spawning'] + probabilities['> 6 front spawning']
 
-    measured_expected_fronts = 1 / probabilities[['<= 6 front spawning', '> 6 front spawning', 'total spawning']].div(1 - probabilities['annihilation by backward front'].to_numpy() / 2 - probabilities['initiation failure'].to_numpy(), axis=0) - 1
+    measured_expected_fronts = 1 / probabilities[['<= 6 front spawning', '> 6 front spawning', 'total spawning']].div(1 - probabilities['annihilation by backward front'].to_numpy() / 2 - probabilities['immediate failure'].to_numpy(), axis=0) - 1
 
     channel_width_to_color = {
         channel_width: f"C{i+4}"
@@ -84,20 +84,34 @@ for ax, (altered_parameter, fold_changes) in zip(axs, [
                 data_part['total spawning'],
                 label=f'{channel_width}',
                 color=channel_width_to_color[channel_width],
-                marker='o',
+                marker='s',
+                ms=3,
                 ls='none',
             )
+            if channel_width == 6:
+                ax.plot(
+                    data_part[data_part['fold_change'] == 1.][f'tau_{parameter_letter}'],
+                    data_part[data_part['fold_change'] == 1.]['total spawning'],
+                    color=channel_width_to_color[channel_width],
+                    marker='o',
+                    fillstyle='none',
+                    ms=7,
+                    ls='none',
+                )
             ax.plot(
                 predicted_expected_fronts.index,
                 predicted_expected_fronts,
                 color=channel_width_to_color[channel_width],
-                ls=':',
+                # marker='o',
+                alpha=.3,
+                ms=3,
+                ls='-',
             )
         ax.set_yscale('log')
         ax.set_ylabel('')
         ax.set_title(interval_in_tau_r)
         ax.set_xlabel(f'$\\tau_{parameter_letter.upper()}$ [min]')
-        ax.legend(title='channel width $L$')
+        ax.legend(title='channel width $W$')
 
 axs[0].set_ylabel(f'expected number of fronts \nbefore the first spawning event')
 

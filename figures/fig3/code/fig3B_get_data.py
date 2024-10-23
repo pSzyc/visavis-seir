@@ -46,7 +46,7 @@ for channel_length in channel_lengths:
 
     packed_data = pd.concat({
         'successful transmission': grouped_data.loc[:, 'transmitted', 0],
-        'initiation failure': grouped_data.loc[:, 'lost_somewhere', 0] + grouped_data.loc[:, 'lost_somewhere', 1] + grouped_data.loc[:, 'lost_somewhere', 2],
+        'immediate failure': grouped_data.loc[:, 'lost_somewhere', 0] + grouped_data.loc[:, 'lost_somewhere', 1] + grouped_data.loc[:, 'lost_somewhere', 2],
         'propagation failure': grouped_data.loc[:, 'failure', 0],
         '1 backward front spawning': grouped_data.loc[:, 'transmitted', 1] + grouped_data.loc[:, 'anihilated', 1] + grouped_data.loc[:, 'failure', 1],
         'other front spawning events': grouped_data.loc[:, 'transmitted', 2] + grouped_data.loc[:, 'anihilated', 2] + grouped_data.loc[:, 'failure', 2],
@@ -54,7 +54,7 @@ for channel_length in channel_lengths:
     })
     packed_data = packed_data.rename_axis(['fate'] + packed_data.index.names[1:])
 
-    all_started = packed_data.drop(index=['initiation failure'])
+    all_started = packed_data.drop(index=['immediate failure'])
     total_started = all_started.groupby('interval').sum()
     events = all_started.drop(index=['successful transmission']).unstack('fate')
     events_avg_position = events['first_event_position_sum'].sum(axis=1) / events['count'].sum(axis=1)

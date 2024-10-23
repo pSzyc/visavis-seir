@@ -133,8 +133,8 @@ plt.savefig(out_dir / ("fig5" + (letter or re.sub(r'\s+', '_', feature_name)) + 
 
 letter = 'A'
 feature_name = 'coefficients'
-axs = plot_parameter_scan(coefficients_rates['a_failure'], coefficients_states['a_failure'], feature_name=r'$a_{\mathrm{fail}},  \log_{10} a_{\mathrm{spawn}}$', ylim=(-6.7, 0), color='olive', alpha=.7)
-plot_parameter_scan(np.log10(coefficients_rates['a_spawning']), np.log10(coefficients_states['a_spawning']), feature_name=r'coefficient value', ylim=(-6.7, 0),  color='maroon', alpha=.7, axs=axs)
+axs = plot_parameter_scan(coefficients_rates['a_failure'], coefficients_states['a_failure'], feature_name=r'$a_{\mathrm{fail}},  \log_{10} a_{\mathrm{spawn}}$', ylim=(-7.1, 0.1), color='olive', alpha=.7)
+plot_parameter_scan(np.log10(coefficients_rates['a_spawning']), np.log10(coefficients_states['a_spawning']), feature_name=r'coefficient value', ylim=(-7.1, 0.1),  color='maroon', alpha=.7, axs=axs)
 ax = axs[1,0]
 ax.set_visible(True)
 plot_fig2C(coefficients_rates.loc['e_forward_rate', PARAMETERS_DEFAULT['e_forward_rate']], ax, show_legend=True)

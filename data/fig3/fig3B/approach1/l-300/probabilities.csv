@@ -1,4 +1,4 @@
-interval,successful transmission,initiation failure,propagation failure,1 backward front spawning,other front spawning events,annihilation by backward front
+interval,successful transmission,immediate failure,propagation failure,1 backward front spawning,other front spawning events,annihilation by backward front
 40,0.006,0.9753333333333334,0.0016666666666666668,0.013666666666666667,0.003,0.0003333333333333333
 45,0.028,0.926,0.007666666666666666,0.024666666666666667,0.011333333333333334,0.0023333333333333335
 50,0.04833333333333333,0.8573333333333333,0.023,0.048,0.020666666666666667,0.0026666666666666666

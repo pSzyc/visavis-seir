@@ -54,12 +54,11 @@ def get_extinction_probability_distant_fronts(channel_width, channel_length, gam
 def get_extinction_probability_free_fronts(channel_width, channel_length):
     return 1 - np.exp(-channel_length * get_failure_propensity_free_front(channel_width))
 
-
 probabilities = pd.concat([pd.read_csv(fig3_data_dir(channel_length) / 'probabilities.csv').set_index('interval') for channel_length in channel_lengths], names=['channel_length'], keys=channel_lengths)
 packed_data = pd.concat([pd.read_csv(fig3_data_dir(channel_length) / 'packed_data.csv').set_index(['fate', 'interval']) for channel_length in channel_lengths], names=['channel_length'], keys=channel_lengths)
 
 spawning_probabilities = probabilities['1 backward front spawning'] + probabilities['other front spawning events']
-failure_probabilities = probabilities['initiation failure'] + probabilities['propagation failure']
+failure_probabilities = probabilities['immediate failure'] + probabilities['propagation failure']
 
 expected_number_of_fronts = packed_data.groupby(['channel_length', 'interval']).sum().fillna(0)
 expected_number_of_fronts[['fronts_forward_sum', 'fronts_backward_sum']].div(expected_number_of_fronts['count'], axis=0)  # used only for forward fronts; for backward fronts a constant is used instead
@@ -186,10 +185,16 @@ def plot_predictions(intervals, channel_length, sending_probab, prediction_types
 
     predictions = get_predictions(intervals, channel_length, sending_probab, prediction_types)
 
-
     for prediction_type in prediction_types:
-        ax.plot(intervals, predictions[prediction_type],
-            **(dict(color=f"black", alpha=0.3, ls=prediction_type_to_ls[prediction_type], label=prediction_type) | kwargs)
+        ax.plot(
+            intervals, 
+            predictions[prediction_type],
+            **(dict(
+                color=f"black",
+                alpha=0.3,
+                ls=prediction_type_to_ls[prediction_type],
+                label=prediction_type,
+            ) | kwargs)
             )
 
     ax.set_xlabel('interval [min]')

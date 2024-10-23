@@ -113,7 +113,7 @@ for it, (ax,channel_length) in enumerate(zip(axs, channel_lengths)):
         intervals=np.linspace(20,280,101),
         channel_length=channel_length,
         sending_probab=.5,
-        prediction_type=['failure_and_backward', 'failure_backward_and_variance']
+        prediction_types=['failure_and_backward', 'failure_backward_and_variance'],
         ax=ax,
     )
 
