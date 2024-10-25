@@ -69,6 +69,6 @@ for ax in axs[0]:
 
 axs[1][1].legend(title='q', title_fontproperties={'weight': 'bold'}, labelspacing=.1,)
 
-plt.savefig(panels_dir / f'figS1TB.svg')
-plt.savefig(panels_dir / f'figS1TB.png')
+plt.savefig(panels_dir / f'figS8B.svg')
+plt.savefig(panels_dir / f'figS8B.png')
 

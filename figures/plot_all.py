@@ -18,8 +18,8 @@ from figS1.code import figS1A_plot
 from figS1.code import figS1B_plot
 from figS3.code import figS3_plot
 from figS5.code import figS5_plot
-from figS1T.code import figS1TA_plot
-from figS1T.code import figS1TB_plot
-from figS2T.code import figS2T_plot
+from figS8.code import figS8A_plot
+from figS8.code import figS8B_plot
+from figS9.code import figS9_plot
 
 from fig1.code import fig1B_plot ## run this last -- style imports interfere

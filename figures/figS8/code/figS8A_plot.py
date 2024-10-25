@@ -59,5 +59,5 @@ ax.set_ylabel('probability of sending a front $q$')
 ax.set_ylim(axs[1].get_ylim())
 ax.legend()
 
-plt.savefig(panels_dir / f'figS1TA.svg')
-plt.savefig(panels_dir / f'figS1TA.png')
+plt.savefig(panels_dir / f'figS8A.svg')
+plt.savefig(panels_dir / f'figS8A.png')

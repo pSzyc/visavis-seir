@@ -43,10 +43,10 @@ git add .\figures\figS6\figS6.png -f
 git add .\figures\figS6\panels\figS6.png -f
 git add .\figures\figS7\figS7.png -f
 git add .\figures\figS7\panels\figS7.png -f
-git add .\figures\figS1T\figS1T.png -f
-git add .\figures\figS1T\panels\figS1T.png -f
-git add .\figures\figS2T\figS2T.png -f
-git add .\figures\figS2T\panels\figS2T.png -f
+git add .\figures\figS8\figS8.png -f
+git add .\figures\figS8\panels\figS8.png -f
+git add .\figures\figS9\figS9.png -f
+git add .\figures\figS9\panels\figS9.png -f
 
 git add .\figures\fig1\fig1.svg -f
 git add .\figures\fig1\panels\fig1A.svg -f
@@ -93,7 +93,7 @@ git add .\figures\figS5\panels\figS5.svg -f
 git add .\figures\figS6\panels\figS6.svg -f
 @REM git add .\figures\figS7\figS7.svg -f
 git add .\figures\figS7\panels\figS7.svg -f
-@REM git add .\figures\figS1T\figS1T.svg -f
-git add .\figures\figS1T\panels\figS1T.svg -f
-git add .\figures\figS2T\figS2T.svg -f
-git add .\figures\figS2T\panels\figS2T.svg -f
+@REM git add .\figures\figS8\figS8.svg -f
+git add .\figures\figS8\panels\figS8.svg -f
+git add .\figures\figS9\figS9.svg -f
+git add .\figures\figS9\panels\figS9.svg -f

@@ -27,7 +27,7 @@ data_dir = Path(__file__).parent.parent.parent.parent / 'data' / 'fig4' / 'fig4A
 panels_dir = Path(__file__).parent.parent / 'panels'
 panels_dir.mkdir(parents=True, exist_ok=True)
 
-fig, ax = subplots_from_axsize(1, 1, (2*1.68, 2*1.5), top=.2, left=0.5, wspace=0.5, right=0.1)
+fig, ax = subplots_from_axsize(1, 1, (3.0, 2.8), top=.2, left=0.5, wspace=0.5, right=0.1)
 
  
 entropies = pd.read_csv(data_dir / f'fig4AB_entropies-c25.csv')
@@ -92,8 +92,8 @@ ax.legend(
     handler_map={tuple: HandlerTupleVertical(nrows=1, vpad=-2.3)},
     )
 
-fig.savefig(panels_dir / f'figS2T-with_legend.svg')
-fig.savefig(panels_dir / f'figS2T.png')
+fig.savefig(panels_dir / f'figS9-with_legend.svg')
+fig.savefig(panels_dir / f'figS9.png')
 
 ax.get_legend().set_visible(False)
-fig.savefig(panels_dir / f'figS2T.svg')
+fig.savefig(panels_dir / f'figS9.svg')
