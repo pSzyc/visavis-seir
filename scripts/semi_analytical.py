@@ -85,7 +85,7 @@ def chance_of_not_hitting_the_start(interval, channel_length, v):
 
 
 def get_inaccurate_probability(interval, sigma):
-    'Computes the probability that |Z| > interval for Z ~ N(0, sigma**2)'
+    'Computes the probability that |Z| > interval / 2 for Z ~ N(0, sigma**2)'
     return 1 - erf(interval / 2 / (sigma * np.sqrt(2)))
 
 
