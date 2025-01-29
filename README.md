@@ -1,25 +1,12 @@
-This code features the research article
-[_Information transmission in a cell monolayer: A numerical study_](https://doi.org/10.1101/2024.06.21.600012)
-by Paweł Nałęcz-Jawecki _et al._ (2024)
-and allows to reproduce images and movies from the article.
+> This code features the research article
+> [_Information transmission in a cell monolayer: A numerical study_](https://doi.org/10.1101/2024.06.21.600012)
+> by Paweł Nałęcz-Jawecki _et al._ (2024)
+> and allows to reproduce images and movies from the article.
 
 # License
 
-    Copyright (C) 2024 Paweł Nałęcz-Jawecki, Przemysław Szyc, Frederic Grabowski, Marek Kochańczyk
-    
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
+    Copyright (C) 2024-2025 Paweł Nałęcz-Jawecki, Przemysław Szyc, Frederic Grabowski, Marek Kochańczyk
+    Available under BSD-3-Clause licence <https://opensource.org/license/bsd-3-clause>.
 
 # Cloning the repository
 
@@ -38,7 +25,6 @@ git clone --recurse-submodules https://github.com/pSzyc/visavis-seir
 python -m venv %userprofile%\.venv\qeirq
 %userprofile%\.venv\qeirq\Scripts\activate.bat
 ```
-
 
 [Windows PowerShell] -- script execution must be enabled:
 ```
